@@ -170,18 +170,19 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- ADMIN -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnAdmin"
-        android:layout_width="wrap_content"
-        android:layout_height="42dp"
-        android:layout_marginBottom="20dp"
-        android:text="ADMIN"
-        android:textColor="@color/white"
-        android:background="@drawable/bg_button_primary"
-        app:cornerRadius="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+<!--     ADMIN -->
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/btnAdmin"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="42dp"-->
+<!--        android:text="ADMIN"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:background="@drawable/bg_button_primary"-->
+<!--        app:cornerRadius="24dp"-->
+<!--        android:layout_marginTop="24dp"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/keypad"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"/>-->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

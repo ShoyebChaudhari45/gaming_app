@@ -26,11 +26,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- WALLET VIEW -->
-            <include
-                layout="@layout/view_wallet_toolbar"
-                android:layout_gravity="end"/>
-
         </androidx.appcompat.widget.Toolbar>
 
 

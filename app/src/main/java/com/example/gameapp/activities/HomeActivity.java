@@ -181,10 +181,11 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-        walletContainer.setOnClickListener(v ->
-                Toast.makeText(this, "Wallet Clicked", Toast.LENGTH_SHORT).show()
-        );
-    }
+//        walletContainer.setOnClickListener(v ->
+//                Toast.makeText(this, "Wallet Clicked", Toast.LENGTH_SHORT).show()
+//        );
+ }
+
 
 
 
