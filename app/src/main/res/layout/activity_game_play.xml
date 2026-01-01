@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_main">
+
+    <!-- TOOLBAR -->
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/sky_blue"
+        android:navigationIcon="@drawable/ic_back"
+        android:title="Game"
+        android:titleTextColor="@color/white" />
+
+    <!-- ICON + TITLE -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/bg_circle_white"
+            android:padding="16dp"
+            android:src="@drawable/ic_single_digit"/>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/txtGameTitle"
+            android:layout_marginTop="8dp"
+            android:text="Single Digit"
+            android:textStyle="bold"
+            android:textColor="@color/dark_text"/>
+    </LinearLayout>
+
+    <!-- OPTIONS -->
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:layout_gravity="center"
+        android:padding="16dp">
+
+        <include layout="@layout/item_game_option"/>
+        <include layout="@layout/item_game_option"/>
+        <include layout="@layout/item_game_option"/>
+        <include layout="@layout/item_game_option"/>
+
+    </GridLayout>
+
+
+</LinearLayout>

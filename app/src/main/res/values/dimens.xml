@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-        <dimen name="padding_screen">16dp</dimen>
-        <dimen name="input_height">52dp</dimen>
-        <dimen name="radius_input">30dp</dimen>
-        <dimen name="radius_button">32dp</dimen>
-        <dimen name="logo_size">90dp</dimen>
+    <dimen name="padding_screen">16dp</dimen>
+    <dimen name="input_height">52dp</dimen>
+    <dimen name="radius_input">30dp</dimen>
+    <dimen name="radius_button">32dp</dimen>
+    <dimen name="logo_size">90dp</dimen>
     <dimen name="pin_btn_size">72dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 
 </resources>
 

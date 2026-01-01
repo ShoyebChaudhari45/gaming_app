@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="12dp"
+    android:layout_marginHorizontal="16dp"
+    android:background="@color/white"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/txtGameName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="KARNATAKA DAY"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/dark_text"/>
+
+        <TextView
+            android:id="@+id/txtGameResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="169 - 64 - 789"
+            android:textColor="@color/textSecondary"
+            android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:id="@+id/txtGameTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10:00 AM - 11:00 AM"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

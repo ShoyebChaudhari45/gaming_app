@@ -3,7 +3,6 @@ package com.example.gameapp.Adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,28 +13,41 @@ import com.example.gameapp.models.GameModel;
 
 import java.util.List;
 
-public class GameAdapter extends RecyclerView.Adapter<GameAdapter.VH> {
+public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameVH> {
 
-    List<GameModel> list;
+    private List<GameModel> list;
+    private OnGameClickListener listener;
 
-    public GameAdapter(List<GameModel> list) {
+    public interface OnGameClickListener {
+        void onGameClick(GameModel game);
+    }
+
+    public GameAdapter(List<GameModel> list, OnGameClickListener listener) {
         this.list = list;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
-    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_game_card, parent, false);
-        return new VH(v);
+    public GameVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_game, parent, false); // ✅ FIX
+        return new GameVH(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull VH h, int i) {
-        GameModel m = list.get(i);
-        h.name.setText(m.name);
-        h.result.setText(m.result);
-        h.time.setText(m.time);
+    public void onBindViewHolder(@NonNull GameVH holder, int position) {
+        GameModel model = list.get(position);
+
+        holder.txtName.setText(model.getName());
+        holder.txtResult.setText(model.getResult());
+        holder.txtTime.setText(model.getTime());
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onGameClick(model);
+            }
+        });
     }
 
     @Override
@@ -43,16 +55,15 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.VH> {
         return list.size();
     }
 
-    static class VH extends RecyclerView.ViewHolder {
-        TextView name, result, time;
-        Button play;
+    static class GameVH extends RecyclerView.ViewHolder {
 
-        VH(View v) {
-            super(v);
-            name = v.findViewById(R.id.txtGameName);
-            result = v.findViewById(R.id.txtResult);
-            time = v.findViewById(R.id.txtTime);
-            play = v.findViewById(R.id.btnPlay);
+        TextView txtName, txtResult, txtTime;
+
+        public GameVH(@NonNull View itemView) {
+            super(itemView);
+            txtName = itemView.findViewById(R.id.txtGameName);
+            txtResult = itemView.findViewById(R.id.txtGameResult);
+            txtTime = itemView.findViewById(R.id.txtGameTime);
         }
     }
 }

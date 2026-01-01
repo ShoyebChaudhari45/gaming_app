@@ -48,7 +48,15 @@ public class HomeActivity extends AppCompatActivity {
         list.add(new GameModel("MAIN BAZAR", "123 - 45 - 678", "11:00 AM - 12:00 PM"));
         list.add(new GameModel("STARLINE", "789 - 12 - 345", "01:00 PM - 02:00 PM"));
 
-        rvGames.setAdapter(new GameAdapter(list));
+        rvGames.setAdapter(new GameAdapter(list, game -> {
+
+            // 👉 OPEN GAME PAGE
+            Intent intent = new Intent(HomeActivity.this, GamePlayActivity.class);
+            intent.putExtra("GAME_NAME", game.getName());
+            startActivity(intent);
+
+        }));
+
 
 
         // ================= TOOLBAR =================
@@ -185,6 +193,7 @@ public class HomeActivity extends AppCompatActivity {
 //                Toast.makeText(this, "Wallet Clicked", Toast.LENGTH_SHORT).show()
 //        );
  }
+
 
 
 
