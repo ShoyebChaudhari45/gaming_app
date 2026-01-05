@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
@@ -51,6 +50,14 @@
         android:title="Share"
         android:icon="@drawable/ic_share"/>
 
+    <!-- 🔐 CHANGE PASSWORD (SECOND LAST) -->
+    <item
+        android:id="@+id/nav_change_password"
+        android:title="Change Password"
+       />
+<!--    android:icon="@drawable/ic_password"-->
+
+    <!-- 🚪 LOGOUT -->
     <item
         android:id="@+id/nav_logout"
         android:title="Logout"

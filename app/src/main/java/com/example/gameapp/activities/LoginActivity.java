@@ -2,63 +2,140 @@ package com.example.gameapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.WindowCompat;
 
 import com.example.gameapp.R;
+import com.example.gameapp.api.ApiClient;
+import com.example.gameapp.api.ApiService;
+import com.example.gameapp.models.request.LoginRequest;
+import com.example.gameapp.models.response.LoginResponse;
+import com.example.gameapp.session.SessionManager;
 import com.google.android.material.button.MaterialButton;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText edtMobile, edtPassword;
+    private static final String TAG = "LOGIN_API";
+
+    EditText edtMobile, edtPassword;
+    View progressContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
+        // ✅ ONE-TIME AUTO LOGIN
+        if (SessionManager.isLoggedIn(this)) {
+            startActivity(new Intent(this, HomeActivity.class));
+            finish();
+            return;
+        }
 
         setContentView(R.layout.activity_login);
 
         edtMobile = findViewById(R.id.edtMobile);
         edtPassword = findViewById(R.id.edtPassword);
         MaterialButton btnLogin = findViewById(R.id.btnLogin);
-        TextView txtSignup = findViewById(R.id.txtSignup); // 👈 ADD THIS
+        TextView txtSignup = findViewById(R.id.txtSignup);
+        progressContainer = findViewById(R.id.progressContainer);
 
-        btnLogin.setOnClickListener(v -> {
-            String mobile = edtMobile.getText().toString().trim();
-            String password = edtPassword.getText().toString().trim();
+        btnLogin.setOnClickListener(v -> loginUser());
 
-            if (mobile.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please enter mobile & password", Toast.LENGTH_SHORT).show();
-                return;
+        txtSignup.setOnClickListener(v ->
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class))
+        );
+    }
+
+    private void loginUser() {
+
+        String mobile = edtMobile.getText().toString().trim();
+        String password = edtPassword.getText().toString().trim();
+
+        // 🔐 VALIDATIONS
+        if (mobile.length() != 10) {
+            toast("Enter valid 10 digit mobile number");
+            return;
+        }
+
+        if (password.isEmpty()) {
+            toast("Enter password");
+            return;
+        }
+
+        showLoader(true);
+
+        LoginRequest request = new LoginRequest();
+        request.mobile_no = mobile;
+        request.password = password;
+
+        ApiService api = ApiClient.getClient().create(ApiService.class);
+        api.login(request).enqueue(new Callback<LoginResponse>() {
+
+            @Override
+            public void onResponse(Call<LoginResponse> call,
+                                   Response<LoginResponse> response) {
+
+                showLoader(false);
+                Log.d(TAG, "HTTP Code: " + response.code());
+
+                if (response.isSuccessful() && response.body() != null) {
+
+                    String token = response.body().getToken();
+
+                    if (token != null && !token.isEmpty()) {
+                        // ✅ LOGIN SUCCESS
+                        SessionManager.saveLogin(LoginActivity.this, token);
+                        showSuccessDialog(response.body().getMessage());
+                    } else {
+                        // ❌ INVALID CREDENTIALS
+                        toast("Invalid mobile number or password");
+                    }
+
+                } else {
+                    toast("Server error. Please try again");
+                }
             }
 
-            // TODO: API Login validation
-            startActivity(new Intent(this, PinActivity.class));
-            finish();
-        });
 
-        // 👉 SIGNUP CLICK
-        txtSignup.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
 
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                showLoader(false);
+                Log.e(TAG, "Login failed", t);
+                toast("Network error. Try again");
+            }
         });
     }
 
-    private long lastBackPressTime = 0;
+    // ✅ SUCCESS DIALOG AFTER LOGIN
+    private void showSuccessDialog(String message) {
+        new AlertDialog.Builder(this)
+                .setTitle("Login Successful")
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton("Continue", (dialog, which) -> {
+                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                    finish();
+                })
+                .show();
+    }
 
-    @Override
-    public void onBackPressed() {
-        if (System.currentTimeMillis() - lastBackPressTime < 2000) {
-            super.onBackPressed(); // Exit app
-        } else {
-            lastBackPressTime = System.currentTimeMillis();
-            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
-        }
+    private void showLoader(boolean show) {
+        progressContainer.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    private void toast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

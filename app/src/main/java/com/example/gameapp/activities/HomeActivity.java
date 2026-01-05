@@ -22,11 +22,14 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.example.gameapp.session.SessionManager;
+
 
 public class HomeActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
+
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
 
@@ -174,16 +177,25 @@ public class HomeActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
             }
+            else if (id == R.id.nav_change_password) {
+
+                Intent intent = new Intent(this, ChangePasswordActivity.class);
+                startActivity(intent);
+
+            }
             else if (id == R.id.nav_logout) {
-                // logout logic
-                // clear session & go to login\
+
+                // ✅ CLEAR SESSION
+                SessionManager.logout(this);
+
                 Intent intent = new Intent(this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
 
-                Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
             }
+
 
             return true;
         });
