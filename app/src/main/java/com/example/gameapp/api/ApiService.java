@@ -6,9 +6,11 @@ import com.example.gameapp.models.request.RegisterRequest;
 import com.example.gameapp.models.response.ChangePasswordResponse;
 import com.example.gameapp.models.response.LoginResponse;
 import com.example.gameapp.models.response.RegisterResponse;
+import com.example.gameapp.models.response.UserDetailsResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -38,5 +40,15 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Body ChangePasswordRequest request
     );
+
+
+    @GET("user/details")
+    Call<UserDetailsResponse> getUserDetails(
+            @Header("Authorization") String token,
+            @Header("Accept") String accept
+    );
+
+
+
 
 }
