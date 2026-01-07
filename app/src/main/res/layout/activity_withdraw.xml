@@ -1,84 +1,482 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_main">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+    <!-- ================= HEADER WITH GRADIENT ================= -->
+    <View
+        android:id="@+id/viewHeader"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:background="@drawable/bg_header_gradient"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- ================= BALANCE ================= -->
+    <!-- ================= BALANCE CARD ================= -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardBalance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="140dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="20dp">
 
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_wallet"
-                android:contentDescription="Wallet Icon"/>
+                android:contentDescription="Wallet Icon"
+                app:tint="@color/dark_blue"/>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="5"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="@color/textPrimary"/>
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Current Balance"
-                android:textColor="@color/textSecondary"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Available Balance"
+                    android:textSize="12sp"
+                    android:textColor="@color/textSecondary"
+                    android:alpha="0.7"/>
+
+                <TextView
+                    android:id="@+id/txtBalance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="₹5"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/textPrimary"
+                    android:fontFamily="sans-serif-medium"/>
+            </LinearLayout>
         </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
-        <!-- ================= PAYMENT METHOD ================= -->
-        <Spinner
-            android:id="@+id/spPayment"
+    <!-- ================= CONTENT ================= -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        app:layout_constraintTop_toBottomOf="@id/cardBalance"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"/>
-
-        <!-- ================= AMOUNT ================= -->
-        <EditText
-            android:id="@+id/etAmount"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="12dp"
-            android:hint="Enter Amount"
-            android:inputType="number"
-            android:padding="12dp"/>
-
-        <!-- ================= SUBMIT ================= -->
-        <Button
-            android:id="@+id/btnSubmit"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:text="SUBMIT"
-            android:textColor="@color/white"
-            android:background="@drawable/bg_button_primary"/>
-
-        <!-- ================= ADD PAYMENT ================= -->
-        <TextView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="ADD PAYMENT METHOD"
-            android:textStyle="bold"
-            android:textColor="@color/textPrimary"/>
+            android:paddingTop="24dp"
+            android:paddingBottom="32dp"
+            android:paddingHorizontal="24dp">
 
-        <!-- ================= PAYMENT CARDS ================= -->
-        <include layout="@layout/item_payment_method"/>
-        <include layout="@layout/item_payment_method"/>
-        <include layout="@layout/item_payment_method"/>
-        <include layout="@layout/item_payment_method"/>
+            <!-- WITHDRAW DETAILS SECTION -->
+            <LinearLayout
+                android:id="@+id/sectionHeader"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-    </LinearLayout>
-</ScrollView>
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="20dp"
+                    android:background="@color/dark_blue"
+                    android:layout_marginEnd="10dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Withdrawal Details"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/textPrimary"
+                    android:fontFamily="sans-serif-medium"/>
+            </LinearLayout>
+
+            <!-- PAYMENT METHOD -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPaymentMethod"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="1dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:strokeColor="#E0E0E0"
+                app:strokeWidth="1dp"
+                app:layout_constraintTop_toBottomOf="@id/sectionHeader"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="8dp"
+                        android:text="Payment Method"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/dark_blue"
+                        android:fontFamily="sans-serif-medium"/>
+
+                    <Spinner
+                        android:id="@+id/spPayment"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:paddingHorizontal="12dp"
+                        android:background="@android:color/transparent"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- AMOUNT INPUT -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilAmount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Withdrawal Amount"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxStrokeWidth="2dp"
+                app:boxStrokeColor="@color/input_stroke_color"
+                app:hintTextColor="@color/colorPrimary"
+                app:startIconDrawable="@drawable/ic_rupee"
+                app:startIconTint="@color/colorPrimary"
+                app:helperText="Minimum withdrawal: ₹100"
+                app:helperTextEnabled="true"
+                app:helperTextTextColor="@color/textSecondary"
+                app:layout_constraintTop_toBottomOf="@id/cardPaymentMethod"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:textSize="16sp"
+                    android:textColor="@color/textPrimary"
+                    android:paddingVertical="16dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- SUBMIT BUTTON -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSubmit"
+                android:layout_width="0dp"
+                android:layout_height="58dp"
+                android:layout_marginTop="24dp"
+                android:text="Submit Withdrawal"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:fontFamily="sans-serif-medium"
+                app:cornerRadius="12dp"
+                app:backgroundTint="@color/dark_blue"
+                app:elevation="4dp"
+                android:stateListAnimator="@null"
+                app:layout_constraintTop_toBottomOf="@id/tilAmount"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <!-- PAYMENT METHODS SECTION -->
+            <LinearLayout
+                android:id="@+id/paymentMethodsHeader"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                app:layout_constraintTop_toBottomOf="@id/btnSubmit"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="20dp"
+                    android:background="@color/dark_blue"
+                    android:layout_marginEnd="10dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Saved Payment Methods"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/textPrimary"
+                    android:fontFamily="sans-serif-medium"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAddMethod"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="+ Add New"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    app:rippleColor="@color/colorPrimary"
+                    android:minWidth="0dp"
+                    android:paddingHorizontal="12dp"/>
+            </LinearLayout>
+
+            <!-- PAYMENT METHOD CARDS -->
+            <LinearLayout
+                android:id="@+id/paymentMethodsList"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/paymentMethodsHeader"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <!-- PAYMENT METHOD CARD 1 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:strokeColor="#E0E0E0"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="16dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#E3F2FD">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_bank"
+                                app:tint="@color/dark_blue"/>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="16dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Bank Transfer"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/textPrimary"
+                                android:fontFamily="sans-serif-medium"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="HDFC Bank •••• 4567"
+                                android:textSize="13sp"
+                                android:textColor="@color/textSecondary"
+                                android:alpha="0.7"/>
+                        </LinearLayout>
+
+                        <RadioButton
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:buttonTint="@color/colorPrimary"
+                            android:checked="true"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- PAYMENT METHOD CARD 2 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:strokeColor="#E0E0E0"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="16dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#FFF3E0">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_upi"
+                                app:tint="#FF9800"/>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="16dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="UPI"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/textPrimary"
+                                android:fontFamily="sans-serif-medium"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="user@paytm"
+                                android:textSize="13sp"
+                                android:textColor="@color/textSecondary"
+                                android:alpha="0.7"/>
+                        </LinearLayout>
+
+                        <RadioButton
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:buttonTint="@color/colorPrimary"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- PAYMENT METHOD CARD 3 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:strokeColor="#E0E0E0"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="16dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#E8F5E9">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_wallet"
+                                app:tint="#4CAF50"/>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="16dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Paytm Wallet"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/textPrimary"
+                                android:fontFamily="sans-serif-medium"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="9876543210"
+                                android:textSize="13sp"
+                                android:textColor="@color/textSecondary"
+                                android:alpha="0.7"/>
+                        </LinearLayout>
+
+                        <RadioButton
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:buttonTint="@color/colorPrimary"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

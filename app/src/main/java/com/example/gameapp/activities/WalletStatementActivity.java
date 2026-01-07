@@ -2,6 +2,7 @@ package com.example.gameapp.activities;
 
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,9 +23,10 @@ public class WalletStatementActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallet_statement);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(v -> finish());
+        ImageButton btnBack = findViewById(R.id.btnBack); // ya btnMenu
+        btnBack.setOnClickListener(v -> finish());
+
+
 
         Button btnWithdraw = findViewById(R.id.btnWithdraw);
         Button btnAddFunds = findViewById(R.id.btnAddFunds);
