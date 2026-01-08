@@ -24,9 +24,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
     private static final String TAG = "FORGOT_PASSWORD";
 
-    EditText edtEmail;
-    MaterialButton btnSendOtp;
-    View progressContainer;
+    private EditText edtEmail;
+    private MaterialButton btnSendOtp;
+    private View progressContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,35 +73,34 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                            Response<CommonResponse> response) {
 
                         showLoader(false);
-                        Log.d(TAG, "Response Code: " + response.code());
 
-                        if (response.isSuccessful() && response.body() != null) {
-                            String msg = response.body().message != null
-                                    ? response.body().message
-                                    : "OTP sent to your email";
-                            toast(msg);
+                        Log.d(TAG, "HTTP CODE: " + response.code());
 
-                            // Pass email to ResetPasswordActivity
-                            Intent i = new Intent(
+                        if (!response.isSuccessful()) {
+                            toast("Server error (" + response.code() + ")");
+                            return;
+                        }
+
+                        CommonResponse res = response.body();
+
+                        if (res != null) {
+                            Log.d(TAG, "API MESSAGE: " + res.getMessage());
+
+                            toast(res.getMessage());
+
+                            // ✅ DIRECT REDIRECT ON HTTP 200
+                            Intent intent = new Intent(
                                     ForgotPasswordActivity.this,
                                     ResetPasswordActivity.class
                             );
-                            i.putExtra("email", email);
-                            startActivity(i);
-                            finish();
+                            intent.putExtra("email", email);
+                            startActivity(intent);
 
                         } else {
-                            try {
-                                String error = response.errorBody() != null
-                                        ? response.errorBody().string()
-                                        : "Failed to send OTP";
-                                Log.e(TAG, error);
-                                toast("Email not found or invalid");
-                            } catch (Exception e) {
-                                toast("Failed to send OTP");
-                            }
+                            toast("Unexpected server response");
                         }
                     }
+
 
                     @Override
                     public void onFailure(Call<CommonResponse> call, Throwable t) {
@@ -113,9 +112,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void showLoader(boolean show) {
-        if (progressContainer != null) {
-            progressContainer.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
+        progressContainer.setVisibility(show ? View.VISIBLE : View.GONE);
         btnSendOtp.setEnabled(!show);
     }
 

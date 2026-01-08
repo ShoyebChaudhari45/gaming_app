@@ -1,5 +1,7 @@
 package com.example.gameapp.Adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,48 +11,50 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gameapp.R;
+import com.example.gameapp.activities.GamePlayActivity;
 import com.example.gameapp.models.GameModel;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
+public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
 
-public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameVH> {
+    private final Context context;
+    private final List<GameModel> list;
 
-    private List<GameModel> list;
-    private OnGameClickListener listener;
-
-    public interface OnGameClickListener {
-        void onGameClick(GameModel game);
-    }
-
-    public GameAdapter(List<GameModel> list, OnGameClickListener listener) {
+    public GameAdapter(Context context, List<GameModel> list) {
+        this.context = context;
         this.list = list;
-        this.listener = listener;
     }
-
-    // tesing it again
-
-    // test
 
     @NonNull
     @Override
-    public GameVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_game, parent, false); // ✅ FIX
-        return new GameVH(view);
+    public GameViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.item_game, parent, false);
+        return new GameViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GameVH holder, int position) {
+    public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
+
         GameModel model = list.get(position);
 
-        holder.txtName.setText(model.getName());
-        holder.txtResult.setText(model.getResult());
-        holder.txtTime.setText(model.getTime());
+        // ✅ NULL SAFE
+        if (holder.txtGameName != null)
+            holder.txtGameName.setText(model.getName());
 
-        holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onGameClick(model);
-            }
+        if (holder.txtGameTime != null)
+            holder.txtGameTime.setText(model.getTime());
+
+        if (holder.txtGameResult != null)
+            holder.txtGameResult.setText(
+                    model.getResult() != null ? model.getResult() : "-"
+            );
+
+        holder.btnPlay.setOnClickListener(v -> {
+            Intent intent = new Intent(context, GamePlayActivity.class);
+            intent.putExtra("GAME_NAME", model.getName());
+            context.startActivity(intent);
         });
     }
 
@@ -59,15 +63,19 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameVH> {
         return list.size();
     }
 
-    static class GameVH extends RecyclerView.ViewHolder {
+    static class GameViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtName, txtResult, txtTime;
+        TextView txtGameName, txtGameTime, txtGameResult;
+        MaterialButton btnPlay;
 
-        public GameVH(@NonNull View itemView) {
+        public GameViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtName = itemView.findViewById(R.id.txtGameName);
-            txtResult = itemView.findViewById(R.id.txtGameResult);
-            txtTime = itemView.findViewById(R.id.txtGameTime);
+
+            // ✅ MUST MATCH XML IDS
+            txtGameName = itemView.findViewById(R.id.txtGameName);
+            txtGameTime = itemView.findViewById(R.id.txtGameTime);
+            txtGameResult = itemView.findViewById(R.id.txtGameResult);
+            btnPlay = itemView.findViewById(R.id.btnPlay);
         }
     }
 }

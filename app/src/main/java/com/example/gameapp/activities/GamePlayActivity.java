@@ -1,6 +1,8 @@
 package com.example.gameapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,5 +20,13 @@ public class GamePlayActivity extends AppCompatActivity {
 
         String gameName = getIntent().getStringExtra("GAME_NAME");
         txtTitle.setText(gameName);
+        ImageButton btnBack= findViewById(R.id.btnMenu);
+
+        btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(GamePlayActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
     }
 }

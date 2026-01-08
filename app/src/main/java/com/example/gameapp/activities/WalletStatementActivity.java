@@ -1,5 +1,6 @@
 package com.example.gameapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -30,6 +31,15 @@ public class WalletStatementActivity extends AppCompatActivity {
 
         Button btnWithdraw = findViewById(R.id.btnWithdraw);
         Button btnAddFunds = findViewById(R.id.btnAddFunds);
+
+
+
+        btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(WalletStatementActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
 
         btnWithdraw.setOnClickListener(v ->
                 Toast.makeText(this, "Withdraw clicked", Toast.LENGTH_SHORT).show());

@@ -26,18 +26,17 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
     private static final String TAG = "RESET_PASSWORD";
 
-    EditText edtOtp, edtNewPassword, edtConfirmPassword;
-    MaterialButton btnResetPassword;
-    TextView txtResendOtp;
-    View progressContainer;
-    String userEmail;
+    private EditText edtOtp, edtNewPassword, edtConfirmPassword;
+    private MaterialButton btnResetPassword;
+    private TextView txtResendOtp;
+    private View progressContainer;
+    private String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
-        // Get email from intent
         userEmail = getIntent().getStringExtra("email");
 
         edtOtp = findViewById(R.id.edtOtp);
@@ -57,19 +56,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
         String newPass = edtNewPassword.getText().toString().trim();
         String confirmPass = edtConfirmPassword.getText().toString().trim();
 
-        // Validation
-        if (otp.isEmpty()) {
-            toast("Enter OTP");
-            return;
-        }
-
         if (otp.length() != 6) {
-            toast("OTP must be 6 digits");
-            return;
-        }
-
-        if (newPass.isEmpty()) {
-            toast("Enter new password");
+            toast("Enter valid 6 digit OTP");
             return;
         }
 
@@ -91,8 +79,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
         request.new_password = newPass;
         request.new_password_confirmation = confirmPass;
 
-        Log.d(TAG, "Resetting password for: " + userEmail);
-
         ApiClient.getClient()
                 .create(ApiService.class)
                 .resetPassword(request)
@@ -103,40 +89,31 @@ public class ResetPasswordActivity extends AppCompatActivity {
                                            Response<CommonResponse> response) {
 
                         showLoader(false);
-                        Log.d(TAG, "Response Code: " + response.code());
 
-                        if (response.isSuccessful() && response.body() != null) {
-                            String msg = response.body().getMessage() != null
-                                    ? response.body().getMessage()
-                                    : "Password reset successful";
-                            toast(msg);
+                        Log.d(TAG, "HTTP CODE: " + response.code());
 
-                            // Navigate to Login
-                            Intent i = new Intent(
-                                    ResetPasswordActivity.this,
-                                    LoginActivity.class
-                            );
-                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(i);
-                            finish();
-
-                        } else {
-                            try {
-                                String error = response.errorBody() != null
-                                        ? response.errorBody().string()
-                                        : "Failed to reset password";
-                                Log.e(TAG, error);
-
-                                if (error.contains("otp") || error.contains("invalid")) {
-                                    toast("Invalid or expired OTP");
-                                } else {
-                                    toast("Failed to reset password");
-                                }
-                            } catch (Exception e) {
-                                toast("Failed to reset password");
-                            }
+                        if (!response.isSuccessful()) {
+                            toast("Failed to reset password (" + response.code() + ")");
+                            return;
                         }
+
+                        CommonResponse res = response.body();
+
+                        if (res != null) {
+                            toast(res.getMessage());
+                        } else {
+                            toast("Password updated successfully");
+                        }
+
+                        // ✅ ALWAYS REDIRECT ON HTTP 200
+                        Intent intent = new Intent(
+                                ResetPasswordActivity.this,
+                                LoginActivity.class
+                        );
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
                     }
 
                     @Override
@@ -161,8 +138,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
         ResendOtpRequest request = new ResendOtpRequest();
         request.email = userEmail;
 
-        Log.d(TAG, "Resending OTP to: " + userEmail);
-
         ApiClient.getClient()
                 .create(ApiService.class)
                 .resendOtp(request)
@@ -175,10 +150,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                         showLoader(false);
 
                         if (response.isSuccessful() && response.body() != null) {
-                            String msg = response.body().getMessage() != null
-                                    ? response.body().getMessage()
-                                    : "OTP resent successfully";
-                            toast(msg);
+                            toast(response.body().getMessage());
                         } else {
                             toast("Failed to resend OTP");
                         }
@@ -187,16 +159,13 @@ public class ResetPasswordActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<CommonResponse> call, Throwable t) {
                         showLoader(false);
-                        Log.e(TAG, "Resend OTP Error", t);
                         toast("Network error");
                     }
                 });
     }
 
     private void showLoader(boolean show) {
-        if (progressContainer != null) {
-            progressContainer.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
+        progressContainer.setVisibility(show ? View.VISIBLE : View.GONE);
         btnResetPassword.setEnabled(!show);
         txtResendOtp.setEnabled(!show);
     }

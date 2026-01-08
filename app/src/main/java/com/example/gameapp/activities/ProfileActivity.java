@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import com.example.gameapp.api.ApiService;
 import com.example.gameapp.models.response.UserDetailsResponse;
 import com.example.gameapp.session.SessionManager;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import retrofit2.Call;
@@ -29,7 +31,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     TextInputEditText etName, etEmail, etMobile;
     TextView tvUserType, tvMemberSince;
-    View progressContainer;
+    View progressContainer, viewHeader;
+    ImageButton btnBack;
+    MaterialCardView profileCard;
 
     MaterialButton btnEdit, btnSubmit, btnLogout;
 
@@ -44,10 +48,27 @@ public class ProfileActivity extends AppCompatActivity {
         tvUserType = findViewById(R.id.tvUserType);
         tvMemberSince = findViewById(R.id.tvMemberSince);
         progressContainer = findViewById(R.id.progressContainer);
+        viewHeader = findViewById(R.id.viewHeader);
+        btnBack = findViewById(R.id.btnBack);
+        profileCard = findViewById(R.id.profileCard);
 
         btnEdit = findViewById(R.id.btnEdit);
         btnSubmit = findViewById(R.id.btnSubmit);
         btnLogout = findViewById(R.id.btnLogout);
+
+        // Back button functionality
+        btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
+
+        // Header click to go to homepage
+        viewHeader.setOnClickListener(v -> goToHomePage());
+
+        // Profile card click to go to homepage (optional)
+        profileCard.setOnClickListener(v -> goToHomePage());
 
         btnEdit.setOnClickListener(v -> {
             etName.setEnabled(true);
@@ -58,6 +79,21 @@ public class ProfileActivity extends AppCompatActivity {
         btnLogout.setOnClickListener(v -> logout());
 
         fetchUserDetails();
+    }
+
+    // ================= NAVIGATION =================
+
+    private void goToHomePage() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Go back to previous activity or homepage
+        super.onBackPressed();
     }
 
     // ================= API CALL =================

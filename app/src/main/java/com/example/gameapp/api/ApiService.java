@@ -4,9 +4,13 @@ import com.example.gameapp.models.request.ChangePasswordRequest;
 import com.example.gameapp.models.request.ForgotPasswordRequest;
 import com.example.gameapp.models.request.LoginRequest;
 import com.example.gameapp.models.request.RegisterRequest;
+import com.example.gameapp.models.request.ResendOtpRequest;
+import com.example.gameapp.models.request.ResetPasswordRequest;
 import com.example.gameapp.models.response.ChangePasswordResponse;
 import com.example.gameapp.models.response.CommonResponse;
+import com.example.gameapp.models.response.GameResponse;
 import com.example.gameapp.models.response.LoginResponse;
+import com.example.gameapp.models.response.PriceResponse;
 import com.example.gameapp.models.response.RegisterResponse;
 import com.example.gameapp.models.response.UserDetailsResponse;
 
@@ -50,16 +54,32 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Header("Accept") String accept
     );
-    @POST("api/user/forgot-password")
-    Call<CommonResponse> forgotPassword(@Body ForgotPasswordRequest body);
-    @POST("api/user/forgot-password")
+
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    @POST("user/forgot-password")
     Call<CommonResponse> forgotPassword(@Body ForgotPasswordRequest request);
 
-    @POST("api/user/reset-password")
+
+    @POST("user/reset-password")
     Call<CommonResponse> resetPassword(@Body ResetPasswordRequest request);
 
-    @POST("api/user/resend-otp")
+    @POST("user/resend-otp")
     Call<CommonResponse> resendOtp(@Body ResendOtpRequest request);
+
+    @GET("prices")
+    Call<PriceResponse> getPrices(
+            @Header("Authorization") String token,
+            @Header("Accept") String accept
+    );
+
+    @GET("games")
+    Call<GameResponse> getGames(
+            @Header("Authorization") String token
+    );
+
 
 
 }

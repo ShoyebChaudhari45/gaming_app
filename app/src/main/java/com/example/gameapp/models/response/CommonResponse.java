@@ -1,14 +1,21 @@
 package com.example.gameapp.models.response;
 
-
+import com.google.gson.annotations.SerializedName;
 
 public class CommonResponse {
-    private boolean success;
-    private String message;
-    private Object data;
 
-    // Added Getters
-    public boolean isSuccess() { return success; }
-    public String getMessage() { return message; }
-    public Object getData() { return data; }
+    // Laravel may send "status" or "success"
+    @SerializedName(value = "success", alternate = {"status"})
+    private boolean success;
+
+    @SerializedName("message")
+    private String message;
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public String getMessage() {
+        return message;
+    }
 }
