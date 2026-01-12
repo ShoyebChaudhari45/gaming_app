@@ -24,13 +24,12 @@ public class BidActivity extends AppCompatActivity {
     private ImageButton btnBack;
     private EditText etDigits, etPoints;
 
-    // 🔥 FIX: RadioButton instead of MaterialButton
     private RadioButton btnOpen, btnClose;
     private MaterialButton btnProceed;
     private MaterialCardView cardOpen, cardClose;
 
     private String gameName, gameType, tapType;
-    private boolean isOpenSelected = true; // default
+    private boolean isOpenSelected = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +77,19 @@ public class BidActivity extends AppCompatActivity {
     private void setupClickListeners() {
         btnBack.setOnClickListener(v -> finish());
 
+        // Card par click karne se bhi select ho
+        cardOpen.setOnClickListener(v -> {
+            isOpenSelected = true;
+            updateOpenCloseSelection(true);
+            btnOpen.setChecked(true);
+        });
+
+        cardClose.setOnClickListener(v -> {
+            isOpenSelected = false;
+            updateOpenCloseSelection(false);
+            btnClose.setChecked(true);
+        });
+
         btnOpen.setOnClickListener(v -> {
             isOpenSelected = true;
             updateOpenCloseSelection(true);
@@ -93,21 +105,41 @@ public class BidActivity extends AppCompatActivity {
 
     private void updateOpenCloseSelection(boolean isOpen) {
         if (isOpen) {
+            // Open selected - dark blue with elevation
             cardOpen.setCardBackgroundColor(getColor(R.color.dark_blue));
-            cardOpen.setCardElevation(6f);
+            cardOpen.setCardElevation(4f);
+            cardOpen.setStrokeWidth(0);
 
-            cardClose.setCardBackgroundColor(getColor(R.color.light_blue));
+            // Close unselected - light gray/blue
+            cardClose.setCardBackgroundColor(0xFFE8EAF6);
             cardClose.setCardElevation(0f);
+            cardClose.setStrokeWidth(2);
+            cardClose.setStrokeColor(0xFFB0BEC5);
 
+            // Text colors
+            btnOpen.setTextColor(getColor(android.R.color.white));
+            btnClose.setTextColor(0xFF607D8B);
+
+            // Check states
             btnOpen.setChecked(true);
             btnClose.setChecked(false);
         } else {
+            // Close selected - dark blue with elevation
             cardClose.setCardBackgroundColor(getColor(R.color.dark_blue));
-            cardClose.setCardElevation(6f);
+            cardClose.setCardElevation(4f);
+            cardClose.setStrokeWidth(0);
 
-            cardOpen.setCardBackgroundColor(getColor(R.color.light_blue));
+            // Open unselected - light gray/blue
+            cardOpen.setCardBackgroundColor(0xFFE8EAF6);
             cardOpen.setCardElevation(0f);
+            cardOpen.setStrokeWidth(2);
+            cardOpen.setStrokeColor(0xFFB0BEC5);
 
+            // Text colors
+            btnClose.setTextColor(getColor(android.R.color.white));
+            btnOpen.setTextColor(0xFF607D8B);
+
+            // Check states
             btnOpen.setChecked(false);
             btnClose.setChecked(true);
         }

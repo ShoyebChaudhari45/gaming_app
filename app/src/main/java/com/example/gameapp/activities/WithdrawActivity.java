@@ -44,9 +44,7 @@ public class WithdrawActivity extends AppCompatActivity {
         ImageButton btnBack = findViewById(R.id.btnBack);
         txtPoints = findViewById(R.id.txtBalance);
         etAmount = findViewById(R.id.etAmount);
-        rbUpi = findViewById(R.id.rbUpi);
-        rbBank = findViewById(R.id.rbBank);
-        rbPaytm = findViewById(R.id.rbPaytm);
+
         btnSubmit = findViewById(R.id.btnSubmit);
 
         progressDialog = new ProgressDialog(this);

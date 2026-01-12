@@ -51,12 +51,6 @@ public class SupportActivity extends AppCompatActivity {
                 ))
         );
 
-        findViewById(R.id.rowTelegram).setOnClickListener(v ->
-                startActivity(new Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse("https://t.me/example")
-                ))
-        );
 
         findViewById(R.id.rowProof).setOnClickListener(v ->
                 Toast.makeText(this, "Withdraw Proof clicked", Toast.LENGTH_SHORT).show()

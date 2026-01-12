@@ -29,24 +29,25 @@
 
         <!-- MENU BUTTON -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/btnMenuCard"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="2dp"
+            android:id="@+id/cardBack"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
             app:cardBackgroundColor="#30FFFFFF"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageButton
-                android:id="@+id/btnMenu"
+                android:id="@+id/btnBack"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_back"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                app:tint="@color/dark_blue"/>
+                android:padding="10dp"
+                android:src="@drawable/ic_back"
+                app:tint="@color/dark_blue" />
         </com.google.android.material.card.MaterialCardView>
 
         <!-- TITLE -->

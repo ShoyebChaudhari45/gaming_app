@@ -78,10 +78,10 @@ public class TapAdapter extends RecyclerView.Adapter<TapAdapter.Holder> {
         Holder(@NonNull View v) {
             super(v);
             txtGameName = v.findViewById(R.id.txtGameName);
-            txtResult   = v.findViewById(R.id.txtResult);
             txtOpenTime = v.findViewById(R.id.txtOpenTime);
             txtCloseTime = v.findViewById(R.id.txtCloseTime); // unused but safe
-            txtStatus   = v.findViewById(R.id.txtStatus);
+            txtStatus = v.findViewById(R.id.txtOpenStatus);
+
         }
     }
 }
