@@ -1,15 +1,16 @@
 package com.example.gameapp.models.response;
 
-import java.util.List;
-
-
-
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class PriceResponse {
 
-    public boolean success;
+    @SerializedName("status_code")
+    public int statusCode;
 
-    // IMPORTANT: data is List<String>, NOT List<Price>
+    @SerializedName("message")
+    public String message;
+
+    @SerializedName("data")
     public List<String> data;
 }

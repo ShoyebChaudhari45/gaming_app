@@ -30,6 +30,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText edtMobile, edtPassword;
     private View progressContainer;
+    private long lastBackPressedTime = 0;
+
 
     // 🔐 Password rule:
     // 1 uppercase, 1 lowercase, 1 number, 1 special char, min 8 chars
@@ -152,5 +154,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+    @Override
+    public void onBackPressed() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastBackPressedTime < 2000) {
+            finish();
+        } else {
+            lastBackPressedTime = currentTime;
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+        }
     }
 }

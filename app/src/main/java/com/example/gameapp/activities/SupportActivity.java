@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.gameapp.R;
 
 public class SupportActivity extends AppCompatActivity {
-
+    private long lastBackPressedTime = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,5 +55,15 @@ public class SupportActivity extends AppCompatActivity {
         findViewById(R.id.rowProof).setOnClickListener(v ->
                 Toast.makeText(this, "Withdraw Proof clicked", Toast.LENGTH_SHORT).show()
         );
+    }
+    @Override
+    public void onBackPressed() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastBackPressedTime < 2000) {
+            finish();
+        } else {
+            lastBackPressedTime = currentTime;
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+        }
     }
 }

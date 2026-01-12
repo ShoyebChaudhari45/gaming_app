@@ -28,7 +28,7 @@ import retrofit2.Response;
 public class GameRatesActivity extends AppCompatActivity {
 
     private RecyclerView rv;
-
+    private long lastBackPressedTime = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,4 +118,14 @@ public class GameRatesActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onBackPressed() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastBackPressedTime < 2000) {
+            finish();
+        } else {
+            lastBackPressedTime = currentTime;
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

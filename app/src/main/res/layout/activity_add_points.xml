@@ -328,12 +328,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:columnCount="3"
-                android:rowCount="2"
-                android:alignmentMode="alignBounds"
-                android:columnOrderPreserved="false"
-                android:useDefaultMargins="false">
+                android:alignmentMode="alignMargins"
+                android:useDefaultMargins="true"
+                android:columnOrderPreserved="false">
 
-                <!-- Row 1 -->
+
+            <!-- Row 1 -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

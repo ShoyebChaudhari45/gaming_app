@@ -29,6 +29,7 @@ import android.text.InputType;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    private long lastBackPressedTime = 0;
     private static final String TAG = "REGISTER_API";
 
     private EditText edtName, edtMobile, edtEmail, edtPassword;
@@ -196,5 +197,15 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+    @Override
+    public void onBackPressed() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastBackPressedTime < 2000) {
+            finish();
+        } else {
+            lastBackPressedTime = currentTime;
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+        }
     }
 }

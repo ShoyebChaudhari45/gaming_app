@@ -30,6 +30,7 @@ public class BidActivity extends AppCompatActivity {
 
     private String gameName, gameType, tapType;
     private boolean isOpenSelected = true;
+    private long lastBackPressedTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,5 +191,15 @@ public class BidActivity extends AppCompatActivity {
 
     private void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void onBackPressed() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastBackPressedTime < 2000) {
+            finish();
+        } else {
+            lastBackPressedTime = currentTime;
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -3,8 +3,9 @@ package com.example.gameapp.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,7 +17,9 @@ import com.example.gameapp.api.ApiClient;
 import com.example.gameapp.api.ApiService;
 import com.example.gameapp.models.request.DepositRequest;
 import com.example.gameapp.models.response.DepositResponse;
+import com.example.gameapp.models.response.PriceResponse;
 import com.example.gameapp.session.SessionManager;
+import com.google.android.material.button.MaterialButton;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,8 +32,8 @@ public class AddPointsActivity extends AppCompatActivity {
     private EditText edtPoints;
     private TextView txtPoints;
     private ProgressDialog progressDialog;
-
     private ApiService apiService;
+    private GridLayout gridPrices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +45,10 @@ public class AddPointsActivity extends AppCompatActivity {
                 .findViewById(android.R.id.edit);
 
         txtPoints = findViewById(R.id.txtPoints);
+        gridPrices = findViewById(R.id.grid);
 
-        Button btnAddPoints = findViewById(R.id.btnAddPoints);
+        MaterialButton btnAddPoints = findViewById(R.id.btnAddPoints);
         ImageButton btnBack = findViewById(R.id.btnBack);
-
-        Button btn500 = findViewById(R.id.btn500);
-        Button btn1000 = findViewById(R.id.btn1000);
-        Button btn2000 = findViewById(R.id.btn2000);
-        Button btn5000 = findViewById(R.id.btn5000);
-        Button btn10000 = findViewById(R.id.btn10000);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Processing...");
@@ -61,19 +59,15 @@ public class AddPointsActivity extends AppCompatActivity {
         // ================= SHOW BALANCE =================
         txtPoints.setText(String.valueOf(SessionManager.getBalance(this)));
 
+        // ================= LOAD PRICES FROM BACKEND =================
+        loadQuickPrices();
+
         // ================= BACK =================
         btnBack.setOnClickListener(v -> {
             startActivity(new Intent(this, HomeActivity.class)
                     .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             finish();
         });
-
-        // ================= QUICK BUTTONS =================
-        btn500.setOnClickListener(v -> edtPoints.setText("500"));
-        btn1000.setOnClickListener(v -> edtPoints.setText("1000"));
-        btn2000.setOnClickListener(v -> edtPoints.setText("2000"));
-        btn5000.setOnClickListener(v -> edtPoints.setText("5000"));
-        btn10000.setOnClickListener(v -> edtPoints.setText("10000"));
 
         // ================= ADD POINTS =================
         btnAddPoints.setOnClickListener(v -> {
@@ -95,7 +89,82 @@ public class AddPointsActivity extends AppCompatActivity {
         });
     }
 
-    // ================= API CALL =================
+    // =====================================================
+    // LOAD QUICK SELECT PRICES FROM API
+    // =====================================================
+    private void loadQuickPrices() {
+
+        apiService.getPrices(
+                "Bearer " + SessionManager.getToken(this),
+                "application/json"
+        ).enqueue(new Callback<PriceResponse>() {
+
+            @Override
+            public void onResponse(Call<PriceResponse> call,
+                                   Response<PriceResponse> response) {
+
+                if (response.isSuccessful()
+                        && response.body() != null
+                        && response.body().data != null) {
+
+                    gridPrices.removeAllViews();
+
+                    for (String price : response.body().data) {
+                        MaterialButton button = createPriceButton(price);
+                        gridPrices.addView(button);
+                    }
+                } else {
+                    Toast.makeText(
+                            AddPointsActivity.this,
+                            "Price list not available",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PriceResponse> call, Throwable t) {
+                Toast.makeText(
+                        AddPointsActivity.this,
+                        "Failed to load prices",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
+    }
+
+    // =====================================================
+    // CREATE DYNAMIC PRICE BUTTON
+    // =====================================================
+    private MaterialButton createPriceButton(String amount) {
+
+        MaterialButton btn = new MaterialButton(this);
+        btn.setText("₹" + amount);
+        btn.setAllCaps(false);
+        btn.setTextSize(18);
+        btn.setTextColor(getResources().getColor(R.color.dark_blue));
+        btn.setCornerRadius(14);
+        btn.setStrokeWidth(2);
+        btn.setStrokeColorResource(R.color.dark_blue);
+        btn.setBackgroundTintList(
+                getResources().getColorStateList(android.R.color.white)
+        );
+
+        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+        params.width = 0;
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+        params.setMargins(6, 6, 6, 6);
+        btn.setLayoutParams(params);
+
+        btn.setOnClickListener(v -> edtPoints.setText(amount));
+
+        return btn;
+    }
+
+    // =====================================================
+    // DEPOSIT API
+    // =====================================================
     private void callDepositApi(int amount) {
 
         progressDialog.show();
@@ -106,16 +175,16 @@ public class AddPointsActivity extends AppCompatActivity {
                 "Bearer " + SessionManager.getToken(this),
                 request
         ).enqueue(new Callback<DepositResponse>() {
+
             @Override
-            public void onResponse(Call<DepositResponse> call, Response<DepositResponse> response) {
+            public void onResponse(Call<DepositResponse> call,
+                                   Response<DepositResponse> response) {
 
                 progressDialog.dismiss();
 
                 if (response.isSuccessful() && response.body() != null) {
 
-                    int currentBalance = SessionManager.getBalance(AddPointsActivity.this);
-                    int newBalance = currentBalance + amount;
-
+                    int newBalance = SessionManager.getBalance(AddPointsActivity.this) + amount;
                     SessionManager.saveBalance(AddPointsActivity.this, newBalance);
 
                     txtPoints.setText(String.valueOf(newBalance));
@@ -126,7 +195,6 @@ public class AddPointsActivity extends AppCompatActivity {
                             response.body().getMessage(),
                             Toast.LENGTH_LONG
                     ).show();
-
                 } else {
                     Toast.makeText(
                             AddPointsActivity.this,
@@ -148,7 +216,9 @@ public class AddPointsActivity extends AppCompatActivity {
         });
     }
 
-    // ================= BACK PRESS =================
+    // =====================================================
+    // BACK PRESS (DOUBLE TAP EXIT)
+    // =====================================================
     @Override
     public void onBackPressed() {
         long currentTime = System.currentTimeMillis();

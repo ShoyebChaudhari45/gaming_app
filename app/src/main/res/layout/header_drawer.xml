@@ -52,7 +52,7 @@
             android:fontFamily="sans-serif-medium"/>
 
         <TextView
-            android:id="@+id/txtPlayerPhone"
+            android:id="@+id/txtPlayerMobile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -73,6 +73,7 @@
             app:cardBackgroundColor="#30FFFFFF">
 
             <TextView
+                android:id="@+id/txtviewprofile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="VIEW PROFILE"

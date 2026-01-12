@@ -25,14 +25,14 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     private static final String TAG = "CHANGE_PASSWORD";
 
-    EditText edtEmail, edtNewPassword, edtConfirmPassword;
+    private EditText edtNewPassword, edtConfirmPassword;
+    private long lastBackPressedTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
 
-        edtEmail = findViewById(R.id.edtEmail);
         edtNewPassword = findViewById(R.id.edtNewPassword);
         edtConfirmPassword = findViewById(R.id.edtConfirmPassword);
         MaterialButton btnChange = findViewById(R.id.btnChangePassword);
@@ -42,16 +42,21 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     private void changePassword() {
 
-        String email = edtEmail.getText().toString().trim();
+        // ✅ GET EMAIL FROM SESSION (NOT UI)
+        String email = SessionManager.getEmail(this);
+
+        if (email == null || email.isEmpty()) {
+            toast("User email not found. Please login again.");
+            SessionManager.logout(this);
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
         String newPass = edtNewPassword.getText().toString().trim();
         String confirmPass = edtConfirmPassword.getText().toString().trim();
 
         // ✅ VALIDATIONS
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            toast("Enter valid email");
-            return;
-        }
-
         if (newPass.length() < 6) {
             toast("Password must be at least 6 characters");
             return;
@@ -79,7 +84,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 Log.d(TAG, "HTTP Code: " + response.code());
 
                 if (response.isSuccessful() && response.body() != null) {
-
                     showSuccessDialog(response.body().message);
                     return;
                 }
@@ -110,5 +114,16 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     private void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastBackPressedTime < 2000) {
+            finish();
+        } else {
+            lastBackPressedTime = currentTime;
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+        }
     }
 }

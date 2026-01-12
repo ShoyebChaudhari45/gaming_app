@@ -12,6 +12,18 @@ public class SessionManager {
     private static final String KEY_TOKEN = "token";
     private static final String KEY_LOGGED_IN = "logged_in";
     private static final String KEY_BALANCE = "balance";
+    private static final String KEY_EMAIL = "user_email";
+
+    public static void saveEmail(Context context, String email) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putString(KEY_EMAIL, email).apply();
+    }
+
+    public static String getEmail(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY_EMAIL, null);
+    }
+
 
     // ✅ SAVE LOGIN
     public static void saveLogin(Context context, String token) {

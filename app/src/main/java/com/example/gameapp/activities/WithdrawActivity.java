@@ -76,9 +76,8 @@ public class WithdrawActivity extends AppCompatActivity {
                 return;
             }
 
-            String paymentMode = "upi";
-            if (rbBank.isChecked()) paymentMode = "bank";
-            else if (rbPaytm.isChecked()) paymentMode = "paytm";
+            String paymentMode = "upi"; // default mode
+
 
             withdrawAmount(amount, paymentMode);
         });

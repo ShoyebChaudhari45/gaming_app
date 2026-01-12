@@ -38,6 +38,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     // Edit mode state
     private boolean isEditMode = false;
+    private long lastBackPressedTime = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,5 +250,15 @@ public class ProfileActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+    }
+    @Override
+    public void onBackPressed() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastBackPressedTime < 2000) {
+            finish();
+        } else {
+            lastBackPressedTime = currentTime;
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+        }
     }
 }

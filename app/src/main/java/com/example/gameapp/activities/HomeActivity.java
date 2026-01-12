@@ -40,6 +40,7 @@ public class HomeActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private ImageButton btnMenu;
     private RecyclerView rvGameTaps;
+    private long lastBackPressedTime = 0;
 
     // ✅ NEW – Drawer header views
     private TextView txtPlayerName, txtPlayerMobile,txtViewProfile;
@@ -190,6 +191,9 @@ public class HomeActivity extends AppCompatActivity {
                                     HomeActivity.this,
                                     user.balance
                             );
+                            //save email
+                            SessionManager.saveEmail(HomeActivity.this, user.email);
+
 
                             Log.d(TAG, "User loaded: " + user.name);
                         }
@@ -294,5 +298,15 @@ public class HomeActivity extends AppCompatActivity {
 
     private void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void onBackPressed() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastBackPressedTime < 2000) {
+            finish();
+        } else {
+            lastBackPressedTime = currentTime;
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+        }
     }
 }

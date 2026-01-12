@@ -28,6 +28,7 @@ import retrofit2.Response;
 public class GameTypesActivity extends AppCompatActivity {
 
     private static final String TAG = "GameTypesActivity";
+    private long lastBackPressedTime = 0;
 
     private RecyclerView rvGameTypes;
     private TextView txtTitle;
@@ -125,5 +126,15 @@ public class GameTypesActivity extends AppCompatActivity {
 
     private void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void onBackPressed() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastBackPressedTime < 2000) {
+            finish();
+        } else {
+            lastBackPressedTime = currentTime;
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+        }
     }
 }
