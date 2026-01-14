@@ -41,10 +41,7 @@
             android:title="Bid History"
             android:icon="@drawable/ic_history"/>
 
-        <item
-            android:id="@+id/nav_win_history"
-            android:title="Win History"
-            android:icon="@drawable/ic_trophy"/>
+
 
     </group>
 

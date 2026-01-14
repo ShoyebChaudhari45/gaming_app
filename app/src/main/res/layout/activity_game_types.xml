@@ -52,7 +52,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="10dp"
                     android:src="@drawable/ic_back"
-                    app:tint="@color/dark_blue" />
+                    app:tint="@color/white" />
             </com.google.android.material.card.MaterialCardView>
 
 

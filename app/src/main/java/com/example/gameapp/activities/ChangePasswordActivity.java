@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -28,6 +29,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private EditText edtNewPassword, edtConfirmPassword;
     private long lastBackPressedTime = 0;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,15 @@ public class ChangePasswordActivity extends AppCompatActivity {
         MaterialButton btnChange = findViewById(R.id.btnChangePassword);
 
         btnChange.setOnClickListener(v -> changePassword());
+        ImageButton btnBack= findViewById(R.id.btnBack);
+
+        btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(ChangePasswordActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
+
     }
 
     private void changePassword() {
@@ -57,7 +68,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         String confirmPass = edtConfirmPassword.getText().toString().trim();
 
         // ✅ VALIDATIONS
-        if (newPass.length() < 6) {
+        if (newPass.length() < 4) {
             toast("Password must be at least 6 characters");
             return;
         }

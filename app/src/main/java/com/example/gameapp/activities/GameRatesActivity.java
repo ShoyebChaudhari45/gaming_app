@@ -44,6 +44,14 @@ public class GameRatesActivity extends AppCompatActivity {
         rv = findViewById(R.id.rvRates);
         rv.setLayoutManager(new LinearLayoutManager(this));
 
+
+        btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(GameRatesActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
+
         loadRates();
     }
 

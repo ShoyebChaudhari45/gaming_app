@@ -48,6 +48,15 @@ public class GameTypesActivity extends AppCompatActivity {
         initViews();
         setupRecyclerView();
         loadGameTypes();
+        ImageButton btnBack= findViewById(R.id.btnBack);
+
+        btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(GameTypesActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
+
     }
 
     private void getIntentData() {
@@ -111,6 +120,7 @@ public class GameTypesActivity extends AppCompatActivity {
         intent.putExtra("tap_type", tapType);
         intent.putExtra("game_name", gameName);
         intent.putExtra("game_type", gameType.getName());
+        intent.putExtra("game_image", gameType.getImage()); // ✅ Pass game image
         intent.putExtra("end_time", endTime);
         intent.putExtra("status", status);
         startActivity(intent);

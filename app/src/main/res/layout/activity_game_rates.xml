@@ -29,7 +29,6 @@
         app:cardBackgroundColor="#30FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
         <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="match_parent"
@@ -37,7 +36,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="10dp"
             android:src="@drawable/ic_back"
-            app:tint="@color/dark_blue" />
+            app:tint="@android:color/white" />
     </com.google.android.material.card.MaterialCardView>
 
     <!-- ================= LOGO CARD ================= -->
