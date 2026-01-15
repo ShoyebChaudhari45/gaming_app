@@ -20,6 +20,7 @@ import com.example.gameapp.R;
 import com.example.gameapp.api.ApiClient;
 import com.example.gameapp.api.ApiService;
 import com.example.gameapp.models.response.GameItem;
+import com.example.gameapp.models.response.SupportResponse;
 import com.example.gameapp.models.response.TapsResponse;
 import com.example.gameapp.models.response.UserDetailsResponse;
 import com.example.gameapp.session.SessionManager;
@@ -42,7 +43,7 @@ public class HomeActivity extends AppCompatActivity {
     private long lastBackPressedTime = 0;
 
     private TextView txtPlayerName, txtPlayerMobile, txtViewProfile;
-    private TextView txtBalance; // ⭐ MAIN BALANCE TextView
+    private TextView txtBalance;
 
     private static final String TAG = "HomeActivity";
 
@@ -61,6 +62,9 @@ public class HomeActivity extends AppCompatActivity {
 
         loadUserDetails();
         loadGameTaps();
+
+        // ⭐ LOAD SUPPORT DATA TO GET WHATSAPP NUMBER
+        loadSupportData();
     }
 
     private void initViews() {
@@ -69,7 +73,6 @@ public class HomeActivity extends AppCompatActivity {
         btnMenu = findViewById(R.id.btnMenu);
         rvGameTaps = findViewById(R.id.rvGameTaps);
 
-        // ⭐ BALANCE TextView in HEADER
         txtBalance = findViewById(R.id.txtBalance);
 
         View headerView = navigationView.getHeaderView(0);
@@ -95,14 +98,17 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setupActionButtons() {
+        // ⭐ WHATSAPP BUTTON - Uses saved WhatsApp number
         findViewById(R.id.btnWhatsApp).setOnClickListener(v -> {
             String number = SessionManager.getSupportWhatsapp(this);
 
             if (number == null || number.isEmpty()) {
                 toast("Support WhatsApp number not available");
+                Log.w(TAG, "WhatsApp number not found in SessionManager");
                 return;
             }
 
+            Log.d(TAG, "Opening WhatsApp with number: " + number);
             openWhatsApp(number);
         });
 
@@ -168,6 +174,46 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    // ⭐ NEW METHOD: Load Support Data to get WhatsApp number
+    private void loadSupportData() {
+        String token = "Bearer " + SessionManager.getToken(this);
+
+        ApiClient.getClient()
+                .create(ApiService.class)
+                .getSupport(token)
+                .enqueue(new Callback<SupportResponse>() {
+
+                    @Override
+                    public void onResponse(Call<SupportResponse> call,
+                                           Response<SupportResponse> response) {
+
+                        if (response.isSuccessful()
+                                && response.body() != null
+                                && response.body().isStatus()
+                                && response.body().getData() != null) {
+
+                            SupportResponse.SupportData supportData = response.body().getData();
+
+                            // ⭐ SAVE WHATSAPP NUMBER TO SESSION
+                            if (supportData.hasValidWhatsapp()) {
+                                String whatsappNumber = supportData.getWhatsappNo();
+                                SessionManager.saveSupportWhatsapp(HomeActivity.this, whatsappNumber);
+                                Log.d(TAG, "WhatsApp number saved: " + whatsappNumber);
+                            } else {
+                                Log.w(TAG, "No valid WhatsApp number in support data");
+                            }
+                        } else {
+                            Log.e(TAG, "Failed to load support data");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<SupportResponse> call, Throwable t) {
+                        Log.e(TAG, "Support API call failed: " + t.getMessage());
+                    }
+                });
+    }
+
     private void loadUserDetails() {
         ApiClient.getClient()
                 .create(ApiService.class)
@@ -190,7 +236,6 @@ public class HomeActivity extends AppCompatActivity {
                             txtPlayerName.setText(user.name);
                             txtPlayerMobile.setText(user.mobileNo);
 
-                            // ⭐ SAVE & DISPLAY BALANCE
                             SessionManager.saveBalance(HomeActivity.this, user.balance);
                             updateBalanceUI();
 
@@ -302,8 +347,10 @@ public class HomeActivity extends AppCompatActivity {
     private void openWhatsApp(String number) {
         Log.d(TAG, "openWhatsApp called with: " + number);
         try {
+            // Remove all non-numeric characters except +
             String clean = number.replaceAll("[^0-9+]", "");
 
+            // Remove leading + if present for wa.me link
             if (clean.startsWith("+")) {
                 clean = clean.substring(1);
             }
@@ -322,18 +369,15 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    // ⭐ CRITICAL: UPDATE BALANCE WHEN RETURNING FROM BidActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 101 && resultCode == RESULT_OK) {
-            // ⭐ Refresh balance from SessionManager
             updateBalanceUI();
         }
     }
 
-    // ⭐ NEW METHOD: Refresh UI from SessionManager
     private void updateBalanceUI() {
         int balance = SessionManager.getBalance(this);
         if (txtBalance != null) {
@@ -341,11 +385,14 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    // ⭐ REFRESH BALANCE WHENEVER HOME SCREEN APPEARS
     @Override
     protected void onResume() {
         super.onResume();
-        updateBalanceUI(); // Always refresh when user returns to home
+        updateBalanceUI();
+
+        // ⭐ OPTIONAL: Refresh support data when returning to home
+        // Uncomment if you want to always have latest WhatsApp number
+        // loadSupportData();
     }
 
     @Override
@@ -361,4 +408,3 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 }
-
