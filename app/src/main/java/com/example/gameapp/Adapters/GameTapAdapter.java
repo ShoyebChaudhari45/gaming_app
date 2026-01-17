@@ -148,8 +148,9 @@ public class GameTapAdapter
                 break;
             default:
                 txtStatus.setText("CLOSED");
-                cardStatus.setCardBackgroundColor(0xFFD32F2F);
-                txtPlayGame.setTextColor(0xFF999999);
+                txtStatus.setTextColor(0xFFFFFFFF); // White text
+                cardStatus.setCardBackgroundColor(0xFFE53935); // Material Red
+                txtPlayGame.setTextColor(0xFF757575); // Gray text for closed
                 break;
         }
     }
