@@ -8,7 +8,7 @@ A full-featured Android gaming application built using Java and Retrofit, featur
 User Registration & Login
 
 Forgot / Reset Password
-
+  
 Change Password
 
 Profile Management
