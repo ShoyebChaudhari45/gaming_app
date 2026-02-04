@@ -86,3 +86,5 @@ public class SessionManager {
                 .apply();
     }
 }
+
+// all sessions will be store here like login , logout , balance and all other things which will be resued later
