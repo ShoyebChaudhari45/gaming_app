@@ -139,7 +139,7 @@ public class GameTapAdapter
             case "running":
                 txtStatus.setText("OPEN");
                 cardStatus.setCardBackgroundColor(0xFF4CAF50);
-                txtPlayGame.setTextColor(0xFF4CAF50);
+                txtPlayGame.setTextColor(0xFFFFFFFF);
                 break;
             case "upcoming":
                 txtStatus.setText("UPCOMING");

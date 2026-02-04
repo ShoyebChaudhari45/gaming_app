@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="4dp"
     app:cardBackgroundColor="@android:color/white"
     app:strokeWidth="1dp"
     app:strokeColor="#FFE0E0E0">
@@ -16,166 +16,203 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="12dp">
 
-        <!-- TOP ROW: Game Name -->
-        <TextView
-            android:id="@+id/txtGameName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="KARNATAKA DAY"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:fontFamily="sans-serif-bold"
-            android:letterSpacing="0.02"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:gravity="center"/>
-
-        <!-- RESULT CODE -->
-        <TextView
-            android:id="@+id/txtResultCode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="***-**-***"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="#FF6B00"
-            android:fontFamily="monospace"
-            android:letterSpacing="0.1"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="12dp"
-            android:gravity="center"/>
-
-        <!-- BOTTOM ROW: Times, Status + Play Button -->
+        <!-- ================= TOP ROW ================= -->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="4dp">
 
-            <!-- LEFT: OPEN TIME -->
-            <LinearLayout
-                android:id="@+id/layoutOpenTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
+            <!-- Left Icon -->
+            <ImageView
+                android:id="@+id/imgGameIcon"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:src="@drawable/graph"
                 android:layout_alignParentStart="true"
-                android:layout_centerVertical="true">
+                android:layout_centerVertical="true"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Open:"
-                    android:textSize="11sp"
-                    android:textColor="#666666"/>
-
-                <TextView
-                    android:id="@+id/txtOpenTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="10:00 AM"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:textColor="#333333"
-                    android:layout_marginTop="2dp"/>
-            </LinearLayout>
-
-            <!-- RIGHT: Status Badge + Play Button Column -->
-            <LinearLayout
-                android:id="@+id/layoutPlaySection"
+            <!-- Game Name -->
+            <TextView
+                android:id="@+id/txtGameName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true">
+                android:layout_toEndOf="@id/imgGameIcon"
+                android:layout_marginStart="8dp"
+                android:text="MADHUR MORNING"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:maxLines="1"
+                android:ellipsize="end"/>
 
-                <!-- STATUS BADGE -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardStatus"
-                    android:layout_width="wrap_content"
+            <!-- Result Code -->
+            <TextView
+                android:id="@+id/txtResultCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtGameName"
+                android:layout_toEndOf="@id/imgGameIcon"
+                android:layout_marginStart="8dp"
+                android:text="257-4*-***"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#FF6B00"
+                android:fontFamily="monospace"/>
+
+            <!-- Play / Pause Button -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnPlay"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#F44336">
+
+                <ImageView
+                    android:id="@+id/imgPlayIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_play"
+                    app:tint="@android:color/white"/>
+            </com.google.android.material.card.MaterialCardView>
+
+        </RelativeLayout>
+
+        <!-- ================= BOTTOM INFO ROW ================= -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:weightSum="3">
+
+            <!-- OPEN BIDS -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#FF4CAF50">
+
+                <LinearLayout
+                    android:id="@+id/layoutOpenTime"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    app:cardCornerRadius="4dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="#FFEBEE">
+                    android:orientation="vertical"
+                    android:padding="8dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Open Bids"
+                        android:textSize="11sp"
+                        android:textColor="#4CAF50"/>
+
+                    <TextView
+                        android:id="@+id/txtOpenTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="11:25 AM"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="#2E7D32"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- CLOSE BIDS -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#E91E1E">
+
+                <LinearLayout
+                    android:id="@+id/layoutCloseTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Close Bids"
+                        android:textSize="11sp"
+                        android:textColor="#F32121"/>
+
+                    <TextView
+                        android:id="@+id/txtCloseTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12:25 PM"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="#A10D0D"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- MARKET STATUS -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardStatus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#FFEBEE"
+                app:strokeWidth="1dp"
+               >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Market Status"
+                        android:textSize="11sp"
+                        android:textColor="#FFFFFF"/>
 
                     <TextView
                         android:id="@+id/txtStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="CLOSED"
-                        android:textSize="9sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
-                        android:textColor="#D32F2F"
-                        android:paddingHorizontal="10dp"
-                        android:paddingVertical="4dp"
-                        android:fontFamily="sans-serif-medium"/>
-                </com.google.android.material.card.MaterialCardView>
+                        android:textColor="#ffffff"/>
 
-                <!-- PLAY BUTTON -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/btnPlay"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    app:cardCornerRadius="24dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="#D32F2F">
+                    <!-- 🔴 REQUIRED BY ADAPTER -->
+                    <TextView
+                        android:id="@+id/txtPlayGame"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Play Game"
+                        android:textSize="1sp"
+                        android:visibility="gone"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                    <ImageView
-                        android:id="@+id/imgPlayIcon"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_play"
-                        app:tint="@android:color/white"/>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- PLAY GAME TEXT -->
-                <TextView
-                    android:id="@+id/txtPlayGame"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Play Game"
-                    android:textSize="9sp"
-                    android:textStyle="bold"
-                    android:textColor="#333333"
-                    android:layout_marginTop="4dp"/>
-
-            </LinearLayout>
-
-            <!-- MIDDLE: CLOSE TIME (positioned between open and play section) -->
-            <LinearLayout
-                android:id="@+id/layoutCloseTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_toEndOf="@id/layoutOpenTime"
-                android:layout_toStartOf="@id/layoutPlaySection"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:gravity="end">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Close:"
-                    android:textSize="11sp"
-                    android:textColor="#666666"/>
-
-                <TextView
-                    android:id="@+id/txtCloseTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="11:00 AM"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:textColor="#333333"
-                    android:layout_marginTop="2dp"/>
-            </LinearLayout>
-
-        </RelativeLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
