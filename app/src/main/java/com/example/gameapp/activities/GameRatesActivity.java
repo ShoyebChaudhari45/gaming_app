@@ -58,14 +58,32 @@ public class GameRatesActivity extends AppCompatActivity {
     private void loadRates() {
         String token = "Bearer " + SessionManager.getToken(this);
 
-        ApiClient.getClient()
-                .create(ApiService.class)
-                .getGameRates(token)
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+
+        apiService.getGameRates(token)
                 .enqueue(new Callback<GameRateResponse>() {
 
                     @Override
                     public void onResponse(Call<GameRateResponse> call,
                                            Response<GameRateResponse> response) {
+
+                        // 🔥 RAW RESPONSE PRINT
+                        try {
+                            String raw = response.errorBody() != null
+                                    ? response.errorBody().string()
+                                    : "No Error Body";
+
+                            Log.e("GAME_RATES_RAW", "RAW RESPONSE: " + raw);
+
+                        } catch (Exception e) {
+                            Log.e("GAME_RATES_RAW", "Error reading raw body", e);
+                        }
+
+                        // 🔥 PRINT FULL RESPONSE USING GSON
+                        try {
+                            Log.d("GAME_RATES_JSON", "FULL JSON: " +
+                                    new com.google.gson.Gson().toJson(response.body()));
+                        } catch (Exception ignored) {}
 
                         if (!response.isSuccessful()
                                 || response.body() == null
@@ -81,13 +99,15 @@ public class GameRatesActivity extends AppCompatActivity {
 
                         for (GameRateItem item : response.body().getData()) {
 
-                            // Use the game name directly from backend
                             String name = item.getGame() != null ? item.getGame() : "Unknown";
 
-                            // Create rate format: "price-digit" (e.g., "10-95")
                             String price = item.getPrice() != null ? item.getPrice() : "0";
                             String digit = item.getDigit() != null ? item.getDigit() : "0";
+
                             String rate = price + "-" + digit;
+
+                            // 🔥 Log each game item
+                            Log.d("GAME_RATE_ITEM", "Name: " + name + " | Rate: " + rate);
 
                             list.add(new GameRateModel(name, rate));
                         }
@@ -97,12 +117,15 @@ public class GameRatesActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<GameRateResponse> call, Throwable t) {
+                        Log.e("GAME_RATES_ERROR", "Network error", t);
+
                         Toast.makeText(GameRatesActivity.this,
                                 "Network error",
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
 
     @Override
     public void onBackPressed() {
