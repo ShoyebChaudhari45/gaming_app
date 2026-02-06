@@ -36,9 +36,11 @@ public class UserDetailsResponse {
         @SerializedName("user_type")
         public String userType;
 
-        // ✅ NEW FIELD
         @SerializedName("balance")
         public int balance;
+
+        @SerializedName("qr_code")   // ⭐ NEW
+        public String qrCode;
 
         @SerializedName("created_at")
         public String createdAt;

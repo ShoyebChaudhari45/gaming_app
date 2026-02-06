@@ -1,7 +1,6 @@
 package com.example.gameapp.models.response;
 
 public class DepositResponse {
-
     private int status_code;
     private String message;
     private Data data;
@@ -21,7 +20,10 @@ public class DepositResponse {
     public static class Data {
         private int employee_id;
         private String type;
-        private int amount;
+        private String amount;  // ⭐ STRING - Backend sends "500" not 500
+        private String payment_proof;
+        private String status;
+        private String qr_code;
 
         public int getEmployee_id() {
             return employee_id;
@@ -31,8 +33,30 @@ public class DepositResponse {
             return type;
         }
 
+        // ⭐ Return as INT for easy use
         public int getAmount() {
+            try {
+                return Integer.parseInt(amount);
+            } catch (Exception e) {
+                return 0;
+            }
+        }
+
+        // ⭐ Get original string if needed
+        public String getAmountString() {
             return amount;
+        }
+
+        public String getPayment_proof() {
+            return payment_proof;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public String getQr_code() {
+            return qr_code != null ? qr_code : "";
         }
     }
 }

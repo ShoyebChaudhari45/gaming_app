@@ -10,6 +10,8 @@ public class SessionManager {
     private static final String KEY_LOGGED_IN = "logged_in";
     private static final String KEY_BALANCE = "balance";
     private static final String KEY_EMAIL = "user_email";
+    // save QR Code
+    private static final String KEY_QR_CODE = "qr_code";
 
     // NEW KEY for storing Support WhatsApp Number
     private static final String KEY_SUPPORT_WHATSAPP = "support_whatsapp";
@@ -75,6 +77,17 @@ public class SessionManager {
         SharedPreferences prefs =
                 context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getString(KEY_SUPPORT_WHATSAPP, "");
+    }
+
+    ///  save Qr and get Qr
+    public static void saveQrCode(Context context, String qrUrl) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putString(KEY_QR_CODE, qrUrl).apply();
+    }
+
+    public static String getQrCode(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY_QR_CODE, "");
     }
 
     // ========================= LOGOUT =========================

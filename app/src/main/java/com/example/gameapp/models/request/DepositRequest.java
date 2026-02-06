@@ -2,17 +2,17 @@ package com.example.gameapp.models.request;
 
 public class DepositRequest {
 
-    private int price;
+    private int amount;  // ⭐ Backend expects "amount" not "price"
 
-    public DepositRequest(int price) {
-        this.price = price;
+    public DepositRequest(int amount) {
+        this.amount = amount;
     }
 
-    public int getPrice() {
-        return price;
+    public int getAmount() {
+        return amount;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }

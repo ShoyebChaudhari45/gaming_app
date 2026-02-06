@@ -11,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.gameapp.R;
 import com.example.gameapp.api.ApiClient;
 import com.example.gameapp.api.ApiService;
@@ -180,6 +179,8 @@ public class AddPointsActivity extends AppCompatActivity {
     // =====================================================
     // DEPOSIT API
     // =====================================================
+
+
     private void callDepositApi(int amount) {
 
         progressDialog.show();
@@ -192,41 +193,44 @@ public class AddPointsActivity extends AppCompatActivity {
         ).enqueue(new Callback<DepositResponse>() {
 
             @Override
-            public void onResponse(Call<DepositResponse> call,
-                                   Response<DepositResponse> response) {
+            public void onResponse(Call<DepositResponse> call, Response<DepositResponse> response) {
 
                 progressDialog.dismiss();
 
-                if (response.isSuccessful() && response.body() != null) {
+                if (response.isSuccessful() && response.body() != null &&
+                        response.body().getStatus_code() == 200 &&
+                        response.body().getData() != null) {
 
-                    int newBalance =
-                            SessionManager.getBalance(AddPointsActivity.this) + amount;
+                    int transactionId = response.body().getData().getEmployee_id();
 
-                    SessionManager.saveBalance(AddPointsActivity.this, newBalance);
+                    // 🔥 OPEN UPLOAD PROOF SCREEN
+                    Intent i = new Intent(AddPointsActivity.this, UploadProofActivity.class);
+                    i.putExtra("amount", amount);
+                    i.putExtra("transaction_id", transactionId);
+                    startActivity(i);
 
-                    txtPoints.setText(String.valueOf(newBalance));
-                    edtPoints.setText("");
-
-                    Toast.makeText(AddPointsActivity.this,
-                            response.body().getMessage(),
-                            Toast.LENGTH_LONG).show();
-
+                    finish();
                 } else {
-                    Toast.makeText(AddPointsActivity.this,
-                            "Deposit failed",
-                            Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(AddPointsActivity.this, "Deposit Failed!", Toast.LENGTH_SHORT).show();
+                    try {
+                        String err = response.errorBody() != null ? response.errorBody().string() : "null";
+                        android.util.Log.e("DEPOSIT_ERROR", err);
+                        Toast.makeText(AddPointsActivity.this, "Failed: " + err, Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }
             }
 
             @Override
             public void onFailure(Call<DepositResponse> call, Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(AddPointsActivity.this,
-                        "Error: " + t.getMessage(),
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddPointsActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
     // =====================================================
     // BACK PRESS → HOME

@@ -245,6 +245,20 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <ImageView
+                android:id="@+id/imgProof"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="12dp"
+                android:scaleType="centerCrop"
+                android:background="#EFEFEF"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnUploadProof"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload Proof"/>
+
 
             <!-- SUBMIT BUTTON -->
             <com.google.android.material.button.MaterialButton

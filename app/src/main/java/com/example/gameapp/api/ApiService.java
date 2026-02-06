@@ -29,12 +29,16 @@ import com.example.gameapp.models.response.UserDetailsResponse;
 import com.example.gameapp.models.response.WalletStatementResponse;
 import com.example.gameapp.models.response.WithdrawResponse;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface ApiService {
@@ -108,23 +112,24 @@ public interface ApiService {
             @Body UpdateProfileRequest request
     );
 
-    @Headers({
-            "Accept: application/json",
-            "Content-Type: application/json"
-    })
+    // 1. Deposit request (JSON)
+    // STEP 1: CREATE DEPOSIT ENTRY (NO FILE)
+    @Multipart
     @POST("wallet/deposit")
     Call<DepositResponse> depositAmount(
             @Header("Authorization") String token,
-            @Body DepositRequest request
+            @Part("amount") RequestBody amount,
+            @Part MultipartBody.Part payment_proof
     );
-    @Headers({
-            "Accept: application/json",
-            "Content-Type: application/json"
-    })
+
+
+    @Multipart
     @POST("wallet/withdraw")
     Call<WithdrawResponse> withdrawAmount(
             @Header("Authorization") String token,
-            @Body WithdrawRequest request
+            @Part("amount") RequestBody amount,
+            @Part("payment_mode") RequestBody paymentMode,
+            @Part MultipartBody.Part payment_proof
     );
 
     @GET("wallet/statement")

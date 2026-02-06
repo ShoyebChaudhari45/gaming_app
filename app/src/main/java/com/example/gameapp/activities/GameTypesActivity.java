@@ -122,22 +122,17 @@ public class GameTypesActivity extends AppCompatActivity {
         intent.putExtra("game_name", gameName);
         intent.putExtra("game_image", gameType.getImage());
 
-        // 🔥 FINAL CONFIRMED TYPE MAPPING
-        String uiName = gameType.getName().trim().toUpperCase(Locale.ENGLISH);
-        String backendType = "DP"; // DEFAULT for ALL GAMES
+// pass open/close statuses
+        intent.putExtra("open_status", getIntent().getStringExtra("open_status"));
+        intent.putExtra("close_status", getIntent().getStringExtra("close_status"));
 
-        if (uiName.equals("SP"))
-            backendType = "SP";
-        else if (uiName.equals("DP"))
-            backendType = "DP";
-        else if (uiName.equals("TRIPPLE PANNA"))
-            backendType = "TP";
-
+// dynamic type
+        String backendType = gameType.getName().trim();
         intent.putExtra("game_type", backendType);
 
-        Log.d(TAG, "Selected UI Game=" + uiName + " -> Backend Type=" + backendType);
-
         startActivity(intent);
+
+
     }
 
     private void toast(String msg) {

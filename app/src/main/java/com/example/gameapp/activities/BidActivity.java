@@ -40,6 +40,7 @@ public class BidActivity extends AppCompatActivity {
 
     private int openId = -1;
     private int closeId = -1;
+    private String openStatus, closeStatus;
 
     private TextView txtTitle, txtBalance, txtCurrentDate;
     private ImageButton btnBack;
@@ -74,6 +75,8 @@ public class BidActivity extends AppCompatActivity {
 
         openId = getIntent().getIntExtra("open_id", -1);
         closeId = getIntent().getIntExtra("close_id", -1);
+        openStatus = getIntent().getStringExtra("open_status");
+        closeStatus = getIntent().getStringExtra("close_status");
     }
 
     private void initViews() {
@@ -104,21 +107,53 @@ public class BidActivity extends AppCompatActivity {
         if (gameImage != null)
             Glide.with(this).load(gameImage).placeholder(R.drawable.ic_placeholder).into(imgGameType);
 
-        if (openId != -1) updateOpenCloseSelection(true);
-        else if (closeId != -1) updateOpenCloseSelection(false);
+        // ⭐ GET STATUS FROM INTENT
+        String openStatus = getIntent().getStringExtra("open_status");
+        String closeStatus = getIntent().getStringExtra("close_status");
 
-        if (openId == -1) {
-            cardOpen.setEnabled(false);
-            cardOpen.setAlpha(0.5f);
-            btnOpen.setEnabled(false);
+        // ⭐ CHECK VALID STATUSES
+        boolean isOpenAvailable = openStatus != null &&
+                (openStatus.equalsIgnoreCase("running") ||
+                        openStatus.equalsIgnoreCase("open") ||
+                        openStatus.equalsIgnoreCase("upcoming"));
+
+        boolean isCloseAvailable = closeStatus != null &&
+                (closeStatus.equalsIgnoreCase("running") ||
+                        closeStatus.equalsIgnoreCase("open") ||
+                        closeStatus.equalsIgnoreCase("upcoming"));
+
+        // ⭐ DEFAULT SELECTION (open priority)
+        if (isOpenAvailable) {
+            isOpenSelected = true;
+            updateOpenCloseSelection(true);
+        } else if (isCloseAvailable) {
+            isOpenSelected = false;
+            updateOpenCloseSelection(false);
         }
 
-        if (closeId == -1) {
+        // ⭐ DISABLE OPEN IF NOT AVAILABLE
+        if (!isOpenAvailable) {
+            cardOpen.setEnabled(false);
+            cardOpen.setAlpha(0.4f);
+            btnOpen.setEnabled(false);
+        } else {
+            cardOpen.setEnabled(true);
+            cardOpen.setAlpha(1f);
+            btnOpen.setEnabled(true);
+        }
+
+        // ⭐ DISABLE CLOSE IF NOT AVAILABLE
+        if (!isCloseAvailable) {
             cardClose.setEnabled(false);
-            cardClose.setAlpha(0.5f);
+            cardClose.setAlpha(0.4f);
             btnClose.setEnabled(false);
+        } else {
+            cardClose.setEnabled(true);
+            cardClose.setAlpha(1f);
+            btnClose.setEnabled(true);
         }
     }
+
 
     private void setupClickListeners() {
 

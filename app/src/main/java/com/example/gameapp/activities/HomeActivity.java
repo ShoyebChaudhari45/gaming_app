@@ -14,6 +14,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.gameapp.Adapters.GameTapAdapter;
 import com.example.gameapp.R;
@@ -38,6 +39,8 @@ public class HomeActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+    private SwipeRefreshLayout swipeRefresh;
+
     private ImageButton btnMenu;
     private RecyclerView rvGameTaps;
     private long lastBackPressedTime = 0;
@@ -72,16 +75,27 @@ public class HomeActivity extends AppCompatActivity {
         btnMenu = findViewById(R.id.btnMenu);
         rvGameTaps = findViewById(R.id.rvGameTaps);
         txtBalance = findViewById(R.id.txtBalance);
+        swipeRefresh = findViewById(R.id.swipeRefresh);
+
 
         View headerView = navigationView.getHeaderView(0);
         txtPlayerName = headerView.findViewById(R.id.txtPlayerName);
         txtPlayerMobile = headerView.findViewById(R.id.txtPlayerMobile);
         txtViewProfile = headerView.findViewById(R.id.txtviewprofile);
 
+        swipeRefresh.setOnRefreshListener(() -> {
+            loadUserDetails();
+            loadGameTaps();
+            swipeRefresh.setRefreshing(false);
+        });
+
+
         txtViewProfile.setOnClickListener(v -> {
             drawerLayout.closeDrawer(GravityCompat.START);
             startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
         });
+
+
     }
 
     private void setupRecyclerView() {
@@ -212,15 +226,21 @@ public class HomeActivity extends AppCompatActivity {
 
                             UserDetailsResponse.User user = response.body().data;
 
+                            // Set basic UI
                             txtPlayerName.setText(user.name);
                             txtPlayerMobile.setText(user.mobileNo);
 
+                            // 🔥 Save balance
                             SessionManager.saveBalance(HomeActivity.this, user.balance);
                             updateBalanceUI();
 
+                            // 🔥 Save email
                             SessionManager.saveEmail(HomeActivity.this, user.email);
 
-                            Log.d(TAG, "User loaded: " + user.name);
+                            // 🔥 NEW: Save QR code
+                            SessionManager.saveQrCode(HomeActivity.this, user.qrCode);
+
+                            Log.d(TAG, "User loaded: " + user.name + " | QR saved: " + user.qrCode);
                         }
                     }
 
@@ -230,6 +250,7 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void loadGameTaps() {
         ApiClient.getClient()
@@ -350,18 +371,22 @@ public class HomeActivity extends AppCompatActivity {
 
         if (openTap != null) {
             i.putExtra("open_id", openTap.getId());
+            i.putExtra("open_status", openTap.getStatus());
             i.putExtra("game_name", openTap.getGameName());
         }
 
         if (closeTap != null) {
             i.putExtra("close_id", closeTap.getId());
+            i.putExtra("close_status", closeTap.getStatus());
+
             if (!i.hasExtra("game_name")) {
                 i.putExtra("game_name", closeTap.getGameName());
             }
         }
 
-        startActivityForResult(i, 101);
+        startActivity(i);
     }
+
 
     private void shareApp() {
         Intent i = new Intent(Intent.ACTION_SEND);
