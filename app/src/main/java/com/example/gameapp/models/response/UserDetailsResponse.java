@@ -39,8 +39,9 @@ public class UserDetailsResponse {
         @SerializedName("balance")
         public int balance;
 
-        @SerializedName("qr_code")   // ⭐ NEW
+        @SerializedName("qr_code")
         public String qrCode;
+
 
         @SerializedName("created_at")
         public String createdAt;

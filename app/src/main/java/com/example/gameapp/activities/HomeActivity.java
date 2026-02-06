@@ -26,6 +26,7 @@ import com.example.gameapp.models.response.TapsResponse;
 import com.example.gameapp.models.response.UserDetailsResponse;
 import com.example.gameapp.session.SessionManager;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -238,7 +239,25 @@ public class HomeActivity extends AppCompatActivity {
                             SessionManager.saveEmail(HomeActivity.this, user.email);
 
                             // 🔥 NEW: Save QR code
-                            SessionManager.saveQrCode(HomeActivity.this, user.qrCode);
+                            String qr = user.qrCode;
+
+                            if (qr != null && !qr.isEmpty()) {
+
+                                // If backend gives path only like /qr_codes/QR.jpeg
+                                if (!qr.startsWith("http")) {
+                                    qr = "https://lottery.durwankurgroup.com/" + qr;
+                                }
+
+                                SessionManager.saveQrCode(HomeActivity.this, qr);
+                                Log.d(TAG, "Final QR saved: " + qr);
+                            }
+                            try {
+                                String raw = new Gson().toJson(response.body());
+                                Log.e("RAW_ANDROID_RESPONSE", raw);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
 
                             Log.d(TAG, "User loaded: " + user.name + " | QR saved: " + user.qrCode);
                         }

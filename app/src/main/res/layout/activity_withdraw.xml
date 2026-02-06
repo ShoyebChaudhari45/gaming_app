@@ -245,20 +245,74 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <ImageView
-                android:id="@+id/imgProof"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_marginTop="12dp"
-                android:scaleType="centerCrop"
-                android:background="#EFEFEF"/>
+            <!-- UPLOAD PROOF SECTION -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload Proof"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="@color/textPrimary"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.02"
+                android:textAllCaps="true"
+                android:alpha="0.7"
+                android:layout_marginBottom="12dp"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:strokeColor="@color/dark_blue"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/imgProof"
+                        android:layout_width="140dp"
+                        android:layout_height="140dp"
+                        android:scaleType="centerCrop"
+                        android:background="#F5F5F5"
+                        android:padding="4dp"
+                        app:srcCompat="@drawable/ic_placeholder"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Upload payment screenshot"
+                        android:textSize="12sp"
+                        android:textColor="@color/textSecondary"
+                        android:alpha="0.7"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnUploadProof"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Upload Proof"/>
-
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Choose File"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="@color/dark_blue"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.02"
+                app:cornerRadius="14dp"
+                app:backgroundTint="@android:color/white"
+                app:strokeColor="@color/dark_blue"
+                app:strokeWidth="2dp"
+                app:rippleColor="#FFF9C4"
+                android:layout_marginBottom="24dp"
+                android:stateListAnimator="@null"/>
 
             <!-- SUBMIT BUTTON -->
             <com.google.android.material.button.MaterialButton
