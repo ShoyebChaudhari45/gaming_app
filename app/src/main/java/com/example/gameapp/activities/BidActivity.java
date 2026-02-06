@@ -94,7 +94,7 @@ public class BidActivity extends AppCompatActivity {
         etDigits = findViewById(R.id.etDigits);
 
         etDigits.setFilters(new InputFilter[]{
-                new InputFilter.LengthFilter(20) // allow everything up to 20 characters
+                new InputFilter.LengthFilter(20)
         });
 
     }
@@ -107,11 +107,9 @@ public class BidActivity extends AppCompatActivity {
         if (gameImage != null)
             Glide.with(this).load(gameImage).placeholder(R.drawable.ic_placeholder).into(imgGameType);
 
-        // ⭐ GET STATUS FROM INTENT
         String openStatus = getIntent().getStringExtra("open_status");
         String closeStatus = getIntent().getStringExtra("close_status");
 
-        // ⭐ CHECK VALID STATUSES
         boolean isOpenAvailable = openStatus != null &&
                 (openStatus.equalsIgnoreCase("running") ||
                         openStatus.equalsIgnoreCase("open") ||
@@ -122,7 +120,6 @@ public class BidActivity extends AppCompatActivity {
                         closeStatus.equalsIgnoreCase("open") ||
                         closeStatus.equalsIgnoreCase("upcoming"));
 
-        // ⭐ DEFAULT SELECTION (open priority)
         if (isOpenAvailable) {
             isOpenSelected = true;
             updateOpenCloseSelection(true);
@@ -131,7 +128,6 @@ public class BidActivity extends AppCompatActivity {
             updateOpenCloseSelection(false);
         }
 
-        // ⭐ DISABLE OPEN IF NOT AVAILABLE
         if (!isOpenAvailable) {
             cardOpen.setEnabled(false);
             cardOpen.setAlpha(0.4f);
@@ -142,7 +138,6 @@ public class BidActivity extends AppCompatActivity {
             btnOpen.setEnabled(true);
         }
 
-        // ⭐ DISABLE CLOSE IF NOT AVAILABLE
         if (!isCloseAvailable) {
             cardClose.setEnabled(false);
             cardClose.setAlpha(0.4f);
@@ -159,7 +154,6 @@ public class BidActivity extends AppCompatActivity {
 
         btnBack.setOnClickListener(v -> finish());
 
-        // Card click
         cardOpen.setOnClickListener(v -> {
             if (openId != -1) {
                 isOpenSelected = true;
@@ -174,7 +168,6 @@ public class BidActivity extends AppCompatActivity {
             }
         });
 
-        // Radio click FIX 🔥
         btnOpen.setOnClickListener(v -> {
             if (openId != -1) {
                 isOpenSelected = true;
@@ -257,7 +250,10 @@ public class BidActivity extends AppCompatActivity {
             return;
         }
 
-        showConfirmationDialog(digits, points, gameType);
+        // ⭐ FIXED TYPE (backend expects "Open" or "Close")
+        String apiType = isOpenSelected ? "Open" : "Close";
+
+        showConfirmationDialog(digits, points, apiType);
     }
 
     private void showConfirmationDialog(String digits, int points, String type) {
@@ -281,9 +277,12 @@ public class BidActivity extends AppCompatActivity {
 
         int selectedTapId = isOpenSelected ? openId : closeId;
 
+        // ⭐ FIXED: use correct backend type
+        String apiType = isOpenSelected ? "Open" : "Close";
+
         LotteryRateRequest request = new LotteryRateRequest(
                 selectedTapId,
-                type,
+                apiType,
                 digits,
                 points
         );
