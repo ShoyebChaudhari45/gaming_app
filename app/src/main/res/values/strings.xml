@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Game App</string>
+    <string name="app_name">KT App</string>
     <string name="navigation_drawer_close" />
     <string name="navigation_drawer_open" />
     <!-- Strings used for fragments for navigation -->

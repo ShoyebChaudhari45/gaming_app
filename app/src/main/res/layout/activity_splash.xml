@@ -37,7 +37,10 @@
             android:layout_gravity="center"
             android:src="@drawable/ic_app_logo"
             android:contentDescription="App Logo"
-            android:scaleType="fitCenter"/>
+            android:scaleType="centerCrop"
+            android:background="@drawable/circle_mask"
+            android:clipToOutline="true"/>
+
     </com.google.android.material.card.MaterialCardView>
 
     <!-- APP NAME / TAGLINE -->
@@ -45,7 +48,7 @@
         android:id="@+id/txtAppName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="GameApp"
+        android:text=""
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@color/textPrimary"
