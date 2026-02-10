@@ -36,7 +36,7 @@
             android:layout_height="80dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_app_logo"
-            android:scaleType="fitCenter"/>
+            android:scaleType="centerCrop"/>
     </com.google.android.material.card.MaterialCardView>
 
     <!-- CONTENT -->
@@ -187,6 +187,21 @@
                     android:textColor="@color/colorPrimary"/>
             </LinearLayout>
 
+            <!-- PANEL ACCESS -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPanelAccess"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="54dp"
+                android:layout_marginTop="16dp"
+                android:text="Panel Access"
+                app:icon="@drawable/ic_panel"
+                app:iconGravity="textStart"
+                app:cornerRadius="12dp"
+                android:textColor="@color/text_primary"
+                app:layout_constraintTop_toBottomOf="@id/layoutSignup"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <!-- DIVIDER -->
             <LinearLayout
@@ -195,7 +210,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/layoutSignup"
+                app:layout_constraintTop_toBottomOf="@id/btnPanelAccess"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 

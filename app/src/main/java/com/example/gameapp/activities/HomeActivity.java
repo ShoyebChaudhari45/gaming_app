@@ -160,7 +160,13 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(new Intent(this, ChangePasswordActivity.class));
             } else if (id == R.id.nav_share) {
                 shareApp();
-            } else if (id == R.id.nav_logout) {
+            }
+            else if (id == R.id.nav_panel_access) {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://lottery.durwankurgroup.com/panel/login"));
+                startActivity(intent);
+            }
+            else if (id == R.id.nav_logout) {
                 SessionManager.logout(this);
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();

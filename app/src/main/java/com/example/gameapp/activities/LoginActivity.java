@@ -1,6 +1,7 @@
 package com.example.gameapp.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -47,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         progressContainer = findViewById(R.id.progressContainer);
 
         MaterialButton btnLogin = findViewById(R.id.btnLogin);
+        MaterialButton btnPanelAccess = findViewById(R.id.btnPanelAccess);
         TextView txtSignup = findViewById(R.id.txtSignup);
         TextView txtForgot = findViewById(R.id.txtForgot);
 
@@ -59,6 +61,11 @@ public class LoginActivity extends AppCompatActivity {
         );
 
         btnLogin.setOnClickListener(v -> loginUser());
+
+        btnPanelAccess.setOnClickListener(v -> {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://lottery.durwankurgroup.com/panel/login"));
+            startActivity(browserIntent);
+        });
     }
 
     // ================= LOGIN =================

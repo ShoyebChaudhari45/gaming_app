@@ -61,6 +61,10 @@
             android:id="@+id/nav_share"
             android:title="Share App"
             android:icon="@drawable/ic_share"/>
+        <item
+            android:id="@+id/nav_panel_access"
+            android:title="Panel Access"
+            android:icon="@drawable/ic_panel"/>
 
     </group>
 
