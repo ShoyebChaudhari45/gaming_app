@@ -25,6 +25,7 @@ import com.example.gameapp.models.response.UserDetailsResponse;
 import com.example.gameapp.session.SessionManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -96,7 +97,6 @@ public class BidActivity extends AppCompatActivity {
         etDigits.setFilters(new InputFilter[]{
                 new InputFilter.LengthFilter(20)
         });
-
     }
 
     private void setupUI() {
@@ -148,7 +148,6 @@ public class BidActivity extends AppCompatActivity {
             btnClose.setEnabled(true);
         }
     }
-
 
     private void setupClickListeners() {
 
@@ -250,42 +249,58 @@ public class BidActivity extends AppCompatActivity {
             return;
         }
 
-        // ⭐ FIXED TYPE (backend expects "Open" or "Close")
-        String apiType = isOpenSelected ? "Open" : "Close";
+        // ⭐ TYPE FIX — Convert to Title Case
+        String apiType = toTitleCase(gameType);
 
         showConfirmationDialog(digits, points, apiType);
     }
 
-    private void showConfirmationDialog(String digits, int points, String type) {
+    // ⭐ FUNCTION TO FIX TYPE FORMATTING (JODI → Jodi, CYCLE → Cycle)
+    private String toTitleCase(String input) {
+        if (input == null || input.isEmpty()) return input;
+
+        // SPECIAL CASES (Do not change)
+        if (input.equalsIgnoreCase("SP") || input.equalsIgnoreCase("DP")) {
+            return input.toUpperCase();
+        }
+
+        // Normal Title Case conversion
+        return input.substring(0, 1).toUpperCase() +
+                input.substring(1).toLowerCase();
+    }
+
+    private void showConfirmationDialog(String digit, int price, String type) {
+
+        int timeId = isOpenSelected ? openId : closeId;
+
+        String message =
+                "time_id: " + timeId +
+                        "\ntype: " + type +
+                        "\ndigit: " + digit +
+                        "\nprice: " + price;
 
         new AlertDialog.Builder(this)
                 .setTitle("Confirm Bid")
-                .setMessage(
-                        "Game: " + gameName +
-                                "\nType: " + type +
-                                "\nDigits: " + digits +
-                                "\nPoints: " + points +
-                                "\nSession: " + (isOpenSelected ? "OPEN" : "CLOSE")
-                )
+                .setMessage(message)
                 .setPositiveButton("Confirm",
-                        (dialog, which) -> submitBid(digits, points, type))
+                        (dialog, which) -> submitBid(digit, price, type))
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    private void submitBid(String digits, int points, String type) {
+    private void submitBid(String digit, int price, String type) {
 
-        int selectedTapId = isOpenSelected ? openId : closeId;
-
-        // ⭐ FIXED: use correct backend type
-        String apiType = isOpenSelected ? "Open" : "Close";
+        int timeId = isOpenSelected ? openId : closeId;
 
         LotteryRateRequest request = new LotteryRateRequest(
-                selectedTapId,
-                apiType,
-                digits,
-                points
+                timeId,
+                type,
+                digit,
+                price
         );
+
+        // ⭐ FULL REQUEST LOG
+        Log.e("FINAL_REQUEST", new Gson().toJson(request));
 
         ApiClient.getClient()
                 .create(ApiService.class)
@@ -302,12 +317,25 @@ public class BidActivity extends AppCompatActivity {
 
                         if (resp.isSuccessful() && resp.body() != null) {
                             refreshWalletBalance(resp.body().getMessage());
+
                         } else {
                             try {
-                                String error = resp.errorBody() != null
+                                String errorJson = resp.errorBody() != null
                                         ? resp.errorBody().string()
                                         : "Unknown error";
-                                toast("Bid failed: " + error);
+
+                                String cleanMsg = "Bid failed";
+
+                                if (errorJson.contains("\"message\"")) {
+                                    int start = errorJson.indexOf("\"message\"") + 11;
+                                    int end = errorJson.indexOf("\"", start);
+                                    if (end > start) {
+                                        cleanMsg = errorJson.substring(start, end);
+                                    }
+                                }
+
+                                toast(cleanMsg);
+
                             } catch (Exception e) {
                                 toast("Bid failed");
                             }
@@ -356,7 +384,7 @@ public class BidActivity extends AppCompatActivity {
 
     private void showSuccessDialog(String message) {
         new AlertDialog.Builder(this)
-                .setTitle("✅ Bid Success")
+                .setTitle("Bid Success")
                 .setMessage(message)
                 .setPositiveButton("OK", (d, w) -> finish())
                 .setCancelable(false)
