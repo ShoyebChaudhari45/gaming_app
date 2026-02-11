@@ -16,6 +16,7 @@ import com.example.gameapp.api.ApiClient;
 import com.example.gameapp.api.ApiService;
 import com.example.gameapp.models.request.LoginRequest;
 import com.example.gameapp.models.response.LoginResponse;
+import com.example.gameapp.models.response.UserDetailsResponse;
 import com.example.gameapp.session.SessionManager;
 import com.google.android.material.button.MaterialButton;
 
@@ -36,8 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Auto login
         if (SessionManager.isLoggedIn(this)) {
-            startActivity(new Intent(this, HomeActivity.class));
-            finish();
+            navigateToHome();
             return;
         }
 
@@ -113,8 +113,9 @@ public class LoginActivity extends AppCompatActivity {
                     // If backend returns token → login success
                     if (token != null && !token.isEmpty()) {
                         SessionManager.saveLogin(LoginActivity.this, token);
-                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                        finish();
+
+                        // ⭐ FETCH USER DETAILS TO GET USER TYPE
+                        fetchUserDetailsAndNavigate(token);
                         return;
                     }
                 }
@@ -135,6 +136,71 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // ⭐ NEW: Fetch user details and navigate based on user_type
+    private void fetchUserDetailsAndNavigate(String token) {
+        ApiClient.getClient()
+                .create(ApiService.class)
+                .getUserDetails(
+                        "Bearer " + token,
+                        "application/json"
+                )
+                .enqueue(new Callback<UserDetailsResponse>() {
+
+                    @Override
+                    public void onResponse(Call<UserDetailsResponse> call,
+                                           Response<UserDetailsResponse> response) {
+
+                        showLoader(false);
+
+                        if (response.isSuccessful()
+                                && response.body() != null
+                                && response.body().data != null) {
+
+                            UserDetailsResponse.User user = response.body().data;
+
+                            // ⭐ SAVE USER TYPE
+                            SessionManager.saveUserType(LoginActivity.this, user.userType);
+                            SessionManager.saveUserName(LoginActivity.this, user.name);
+                            SessionManager.saveUserMobile(LoginActivity.this, user.mobileNo);
+                            SessionManager.saveEmail(LoginActivity.this, user.email);
+                            SessionManager.saveBalance(LoginActivity.this, user.balance);
+
+                            // Save QR Code
+                            String qr = user.qrCode;
+                            if (qr != null && !qr.isEmpty()) {
+                                if (!qr.startsWith("http")) {
+                                    qr = "https://lottery.durwankurgroup.com/" + qr;
+                                }
+                                SessionManager.saveQrCode(LoginActivity.this, qr);
+                            }
+
+                            // ⭐ NAVIGATE BASED ON USER TYPE
+                            navigateToHome();
+
+                        } else {
+                            toast("Failed to fetch user details");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserDetailsResponse> call, Throwable t) {
+                        showLoader(false);
+                        Log.e(TAG, "User details failed: " + t.getMessage());
+                        toast("Failed to fetch user details");
+                    }
+                });
+    }
+
+    // ⭐ Navigate based on user type
+    private void navigateToHome() {
+        if (SessionManager.isEmployee(this)) {
+            startActivity(new Intent(this, EmployeeHomeActivity.class));
+        } else {
+            startActivity(new Intent(this, HomeActivity.class));
+        }
+        finish();
+    }
+
     // ================= HELPERS =================
     private void showLoader(boolean show) {
         progressContainer.setVisibility(show ? View.VISIBLE : View.GONE);
@@ -149,5 +215,4 @@ public class LoginActivity extends AppCompatActivity {
         finishAffinity();
         System.exit(0);
     }
-
 }

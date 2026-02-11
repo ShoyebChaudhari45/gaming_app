@@ -39,6 +39,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+
 public class BidActivity extends AppCompatActivity {
 
     private static final String TAG = "BidActivity";
@@ -107,18 +110,20 @@ public class BidActivity extends AppCompatActivity {
         if (gameImage != null)
             Glide.with(this).load(gameImage).placeholder(R.drawable.ic_placeholder).into(imgGameType);
 
+        setupDigitAutoFormat();
+
         String openStatus = getIntent().getStringExtra("open_status");
         String closeStatus = getIntent().getStringExtra("close_status");
 
         boolean isOpenAvailable = openStatus != null &&
-                (openStatus.equalsIgnoreCase("running") ||
-                        openStatus.equalsIgnoreCase("open") ||
-                        openStatus.equalsIgnoreCase("upcoming"));
+                (openStatus.equalsIgnoreCase("running")
+                        || openStatus.equalsIgnoreCase("open")
+                        || openStatus.equalsIgnoreCase("upcoming"));
 
         boolean isCloseAvailable = closeStatus != null &&
-                (closeStatus.equalsIgnoreCase("running") ||
-                        closeStatus.equalsIgnoreCase("open") ||
-                        closeStatus.equalsIgnoreCase("upcoming"));
+                (closeStatus.equalsIgnoreCase("running")
+                        || closeStatus.equalsIgnoreCase("open")
+                        || closeStatus.equalsIgnoreCase("upcoming"));
 
         if (isOpenAvailable) {
             isOpenSelected = true;
@@ -215,6 +220,44 @@ public class BidActivity extends AppCompatActivity {
                 btnClose, ColorStateList.valueOf(getColor(android.R.color.white)));
     }
 
+    // =====================================================
+    //               🔥 VALIDATION ADDED HERE 🔥
+    // =====================================================
+
+    private boolean isValidDigitFormat(String digits) {
+
+        // Remove "=" for clean checking
+        String clean = digits.replace("=", "");
+
+        // ❌ Only digits allowed
+        if (!clean.matches("[0-9]+")) {
+            return false;
+        }
+
+        // JODI → 2-digit blocks
+        if (gameType.equalsIgnoreCase("Jodi")) {
+            return clean.length() % 2 == 0;
+        }
+
+        // OPEN / SP / DP / CYCLE → always valid (1 digit each)
+        if (gameType.equalsIgnoreCase("Open") ||
+                gameType.equalsIgnoreCase("SP") ||
+                gameType.equalsIgnoreCase("DP") ||
+                gameType.equalsIgnoreCase("Cycle")) {
+            return clean.length() > 0; // atleast 1
+        }
+
+        // PATTE / TRIPPLE PANNA → 3-digit blocks
+        if (gameType.equalsIgnoreCase("Patte") ||
+                gameType.equalsIgnoreCase("TP") ||
+                gameType.equalsIgnoreCase("Tripple Panna") ||
+                gameType.equalsIgnoreCase("Triple panna")) {
+            return clean.length() % 3 == 0;
+        }
+
+        return true;
+    }
+
     private void validateAndConfirmBid() {
 
         int selectedTapId = isOpenSelected ? openId : closeId;
@@ -224,7 +267,7 @@ public class BidActivity extends AppCompatActivity {
             return;
         }
 
-        String digits = etDigits.getText().toString().trim();
+        String digits = cleanLastEquals(etDigits.getText().toString().trim());
         String pointsStr = etPoints.getText().toString().trim();
 
         if (digits.isEmpty()) {
@@ -249,22 +292,99 @@ public class BidActivity extends AppCompatActivity {
             return;
         }
 
-        // ⭐ TYPE FIX — Convert to Title Case
+        // 🔥 NEW VALIDATION — strictly checks the digit pattern
+        if (!isValidDigitFormat(digits)) {
+            toast("Invalid digit pattern for " + gameType);
+            return;
+        }
+
         String apiType = toTitleCase(gameType);
 
         showConfirmationDialog(digits, points, apiType);
     }
 
-    // ⭐ FUNCTION TO FIX TYPE FORMATTING (JODI → Jodi, CYCLE → Cycle)
+
+    // =====================================================
+    //               🔥 AUTO-FORMAT LOGIC SAME 🔥
+    // =====================================================
+
+    private void setupDigitAutoFormat() {
+
+        etDigits.addTextChangedListener(new TextWatcher() {
+
+            boolean isEditing = false;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                if (isEditing) return;
+                isEditing = true;
+
+                String input = editable.toString();
+
+                // remove old "=" and SPACES and non-digits
+                String clean = input.replace("=", "")
+                        .replace(" ", "")
+                        .replaceAll("[^0-9]", "");
+
+                StringBuilder formatted = new StringBuilder();
+
+                int blockSize;
+
+                if (gameType.equalsIgnoreCase("Jodi")) {
+                    blockSize = 2;
+                } else if (gameType.equalsIgnoreCase("Open")
+                        || gameType.equalsIgnoreCase("SP")
+                        || gameType.equalsIgnoreCase("DP")
+                        || gameType.equalsIgnoreCase("Cycle")) {
+                    blockSize = 1;
+                } else if (gameType.equalsIgnoreCase("Patte")
+                        || gameType.equalsIgnoreCase("TP")
+                        || gameType.equalsIgnoreCase("Tripple Panna")
+                        || gameType.equalsIgnoreCase("Triple panna")) {
+                    blockSize = 3;
+                } else {
+                    blockSize = clean.length();
+                }
+
+                // Build formatted text
+                for (int i = 0; i < clean.length(); i++) {
+
+                    formatted.append(clean.charAt(i));
+
+                    boolean shouldInsert = (i + 1) % blockSize == 0;
+
+                    if (shouldInsert && (i + 1) < clean.length()) {
+                        formatted.append("=");
+                    }
+                }
+
+                etDigits.setText(formatted.toString());
+                etDigits.setSelection(etDigits.getText().length());
+
+                isEditing = false;
+            }
+
+        });
+    }
+
+
+
+    // =====================================================
+    //          🔥 REMAINING CODE UNTOUCHED 🔥
+    // =====================================================
+
     private String toTitleCase(String input) {
         if (input == null || input.isEmpty()) return input;
-
-        // SPECIAL CASES (Do not change)
-        if (input.equalsIgnoreCase("SP") || input.equalsIgnoreCase("DP")) {
+        if (input.equalsIgnoreCase("SP") || input.equalsIgnoreCase("DP"))
             return input.toUpperCase();
-        }
 
-        // Normal Title Case conversion
         return input.substring(0, 1).toUpperCase() +
                 input.substring(1).toLowerCase();
     }
@@ -287,19 +407,21 @@ public class BidActivity extends AppCompatActivity {
                 .setNegativeButton("Cancel", null)
                 .show();
     }
+    private String cleanLastEquals(String digits) {
+        if (digits.endsWith("=")) {
+            return digits.substring(0, digits.length() - 1);
+        }
+        return digits;
+    }
 
     private void submitBid(String digit, int price, String type) {
 
         int timeId = isOpenSelected ? openId : closeId;
 
         LotteryRateRequest request = new LotteryRateRequest(
-                timeId,
-                type,
-                digit,
-                price
+                timeId, type, digit, price
         );
 
-        // ⭐ FULL REQUEST LOG
         Log.e("FINAL_REQUEST", new Gson().toJson(request));
 
         ApiClient.getClient()
@@ -383,7 +505,6 @@ public class BidActivity extends AppCompatActivity {
     }
 
     private void showSuccessDialogWithSound(String message) {
-        // Play success sound
         try {
             MediaPlayer mp = MediaPlayer.create(this, R.raw.success_sound);
             mp.start();
@@ -392,7 +513,6 @@ public class BidActivity extends AppCompatActivity {
             Log.e(TAG, "Sound error: " + e.getMessage());
         }
 
-        // Create custom dialog
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_success, null);
         TextView txtMessage = dialogView.findViewById(R.id.txtSuccessMessage);
         txtMessage.setText(message);
@@ -404,7 +524,6 @@ public class BidActivity extends AppCompatActivity {
 
         dialog.show();
 
-        // Auto close after 2 seconds
         new Handler().postDelayed(() -> {
             if (dialog.isShowing()) {
                 dialog.dismiss();

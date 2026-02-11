@@ -10,11 +10,65 @@ public class SessionManager {
     private static final String KEY_LOGGED_IN = "logged_in";
     private static final String KEY_BALANCE = "balance";
     private static final String KEY_EMAIL = "user_email";
-    // save QR Code
     private static final String KEY_QR_CODE = "qr_code";
-
-    // NEW KEY for storing Support WhatsApp Number
     private static final String KEY_SUPPORT_WHATSAPP = "support_whatsapp";
+
+    // ⭐ NEW: User Type Management
+    private static final String KEY_USER_TYPE = "user_type";
+    private static final String KEY_USER_NAME = "user_name";
+    private static final String KEY_USER_MOBILE = "user_mobile";
+
+    // User Type Constants
+    public static final String USER_TYPE_CUSTOMER = "customer";
+    public static final String USER_TYPE_EMPLOYEE = "employee";
+
+    // ========================= USER TYPE =========================
+
+    public static void saveUserType(Context context, String userType) {
+        SharedPreferences prefs =
+                context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putString(KEY_USER_TYPE, userType).apply();
+    }
+
+    public static String getUserType(Context context) {
+        SharedPreferences prefs =
+                context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY_USER_TYPE, USER_TYPE_CUSTOMER); // Default to customer
+    }
+
+    public static boolean isEmployee(Context context) {
+        return USER_TYPE_EMPLOYEE.equalsIgnoreCase(getUserType(context));
+    }
+
+    public static boolean isCustomer(Context context) {
+        return USER_TYPE_CUSTOMER.equalsIgnoreCase(getUserType(context));
+    }
+
+    // ========================= USER INFO =========================
+
+    public static void saveUserName(Context context, String name) {
+        SharedPreferences prefs =
+                context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putString(KEY_USER_NAME, name).apply();
+    }
+
+    public static String getUserName(Context context) {
+        SharedPreferences prefs =
+                context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY_USER_NAME, "");
+    }
+
+    public static void saveUserMobile(Context context, String mobile) {
+        SharedPreferences prefs =
+                context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putString(KEY_USER_MOBILE, mobile).apply();
+    }
+
+    public static String getUserMobile(Context context) {
+        SharedPreferences prefs =
+                context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY_USER_MOBILE, "");
+    }
 
     // ========================= EMAIL =========================
 
@@ -65,7 +119,6 @@ public class SessionManager {
     }
 
     // ========================= SUPPORT WHATSAPP =========================
-    // 🔥 Used for Home Screen WhatsApp Button
 
     public static void saveSupportWhatsapp(Context context, String number) {
         SharedPreferences prefs =
@@ -79,7 +132,8 @@ public class SessionManager {
         return prefs.getString(KEY_SUPPORT_WHATSAPP, "");
     }
 
-    ///  save Qr and get Qr
+    // ========================= QR CODE =========================
+
     public static void saveQrCode(Context context, String qrUrl) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         prefs.edit().putString(KEY_QR_CODE, qrUrl).apply();
@@ -99,5 +153,3 @@ public class SessionManager {
                 .apply();
     }
 }
-
-// all sessions will be store here like login , logout , balance and all other things which will be resued later

@@ -64,6 +64,14 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
+
+        // ⭐ PROTECT: Only customers can access this screen
+        if (SessionManager.isEmployee(this)) {
+            startActivity(new Intent(this, EmployeeHomeActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_home);
 
         initViews();
@@ -74,6 +82,20 @@ public class HomeActivity extends AppCompatActivity {
         loadUserDetails();
         loadGameTaps();
         loadSupportData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // ⭐ PROTECT: Check user type on resume
+        if (SessionManager.isEmployee(this)) {
+            startActivity(new Intent(this, EmployeeHomeActivity.class));
+            finish();
+            return;
+        }
+
+        updateBalanceUI();
     }
 
     private void initViews() {
@@ -103,7 +125,6 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setupRecyclerView() {
         rvGameTaps.setLayoutManager(new LinearLayoutManager(this));
-        // ⭐ UPDATED LAMBDA TO ACCEPT VIEW PARAMETER
         gameTapAdapter = new GameTapAdapter(this, gameItems, this::openGameSelection);
         rvGameTaps.setAdapter(gameTapAdapter);
     }
@@ -342,14 +363,12 @@ public class HomeActivity extends AppCompatActivity {
         );
     }
 
-    // 🔥 CLEAN CLOSED STATUS CHECKER
     private boolean isClosed(String status) {
         if (status == null) return true;
         status = status.trim().toLowerCase();
         return status.contains("closed");
     }
 
-    // ⭐ UPDATED METHOD SIGNATURE TO ACCEPT VIEW
     private void openGameSelection(TapsResponse.Tap openTap,
                                    TapsResponse.Tap closeTap,
                                    View clickedView) {
@@ -366,14 +385,12 @@ public class HomeActivity extends AppCompatActivity {
 
         if (bothClosed) {
 
-            // 💥 SHAKE EFFECT on clicked card
             if (clickedView != null) {
                 clickedView.startAnimation(
                         AnimationUtils.loadAnimation(this, R.anim.shake_view)
                 );
             }
 
-            // 💥 VIBRATION
             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             if (vibrator != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -445,12 +462,6 @@ public class HomeActivity extends AppCompatActivity {
     private void updateBalanceUI() {
         int balance = SessionManager.getBalance(this);
         txtBalance.setText(String.valueOf(balance));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        updateBalanceUI();
     }
 
     @Override

@@ -23,12 +23,22 @@ public class SplashActivity extends AppCompatActivity {
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (SessionManager.isLoggedIn(this)) {
-                startActivity(new Intent(this, HomeActivity.class));
+                // ⭐ ROLE-BASED NAVIGATION
+                navigateBasedOnUserType();
             } else {
                 startActivity(new Intent(this, LoginActivity.class));
             }
             finish();
         }, 2000);
+    }
+
+    // ⭐ Navigate to appropriate home screen based on user type
+    private void navigateBasedOnUserType() {
+        if (SessionManager.isEmployee(this)) {
+            startActivity(new Intent(this, EmployeeHomeActivity.class));
+        } else {
+            startActivity(new Intent(this, HomeActivity.class));
+        }
     }
 
     @Override
