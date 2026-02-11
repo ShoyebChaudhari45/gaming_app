@@ -58,7 +58,6 @@ public class GameTapAdapter
 
         h.txtGameName.setText(item.getGameName().toUpperCase());
 
-        // ⭐ FIX: Display result if available
         String resultText = getResultText(openTap, closeTap);
         h.txtResultCode.setText(resultText);
 
@@ -69,7 +68,6 @@ public class GameTapAdapter
                 closeTap != null ? closeTap.getEndTime() : "--:--"
         );
 
-        // ⭐ FIX: Determine status from both taps
         String status = determineGameStatus(openTap, closeTap);
 
         Log.d(TAG, item.getGameName() + " - Final Status: " + status);
@@ -77,42 +75,30 @@ public class GameTapAdapter
         setupStatus(h.txtStatus, h.cardStatus, h.txtPlayGame, status);
         setupPlayButton(h.btnPlay, h.imgPlayIcon, status);
 
-        // Only allow click if not closed
-        if (!"closed".equalsIgnoreCase(status)) {
-            h.cardGame.setOnClickListener(v ->
-                    listener.onGameTapClick(openTap, closeTap));
-            h.btnPlay.setOnClickListener(v ->
-                    listener.onGameTapClick(openTap, closeTap));
-        } else {
-            h.cardGame.setOnClickListener(null);
-            h.btnPlay.setOnClickListener(null);
-        }
+        // ⭐ ALWAYS ALLOW CLICK → HomeActivity will decide open/closed logic
+        h.cardGame.setOnClickListener(v ->
+                listener.onGameTapClick(openTap, closeTap));
+
+        h.btnPlay.setOnClickListener(v ->
+                listener.onGameTapClick(openTap, closeTap));
     }
 
-    // ⭐ NEW: Get result text (shows result if available, else shows ***)
     private String getResultText(TapsResponse.Tap openTap, TapsResponse.Tap closeTap) {
-        // Try to get result from open tap first
         if (openTap != null && openTap.getResult() != null && !openTap.getResult().isEmpty()) {
             return openTap.getResult();
         }
-
-        // Try close tap
         if (closeTap != null && closeTap.getResult() != null && !closeTap.getResult().isEmpty()) {
             return closeTap.getResult();
         }
-
-        // Default placeholder
         return "***-**-***";
     }
 
-    // ⭐ FIX: Determine status by checking both taps
     private String determineGameStatus(TapsResponse.Tap openTap, TapsResponse.Tap closeTap) {
         String openStatus = openTap != null ? openTap.getStatus() : null;
         String closeStatus = closeTap != null ? closeTap.getStatus() : null;
 
         Log.d(TAG, "Open Status: " + openStatus + ", Close Status: " + closeStatus);
 
-        // If either tap is "running" or "open", game is open
         if ("running".equalsIgnoreCase(openStatus) || "open".equalsIgnoreCase(openStatus)) {
             return "open";
         }
@@ -120,12 +106,10 @@ public class GameTapAdapter
             return "open";
         }
 
-        // If either tap is "upcoming", game is upcoming
         if ("upcoming".equalsIgnoreCase(openStatus) || "upcoming".equalsIgnoreCase(closeStatus)) {
             return "upcoming";
         }
 
-        // Otherwise, game is closed
         return "closed";
     }
 
@@ -141,16 +125,18 @@ public class GameTapAdapter
                 cardStatus.setCardBackgroundColor(0xFF4CAF50);
                 txtPlayGame.setTextColor(0xFFFFFFFF);
                 break;
+
             case "upcoming":
                 txtStatus.setText("UPCOMING");
                 cardStatus.setCardBackgroundColor(0xFFFF9800);
                 txtPlayGame.setTextColor(0xFFFF9800);
                 break;
+
             default:
                 txtStatus.setText("CLOSED");
-                txtStatus.setTextColor(0xFFFFFFFF); // White text
-                cardStatus.setCardBackgroundColor(0xFFE53935); // Material Red
-                txtPlayGame.setTextColor(0xFF757575); // Gray text for closed
+                txtStatus.setTextColor(0xFFFFFFFF);
+                cardStatus.setCardBackgroundColor(0xFFE53935);
+                txtPlayGame.setTextColor(0xFF757575);
                 break;
         }
     }
@@ -165,10 +151,12 @@ public class GameTapAdapter
                 btnPlay.setCardBackgroundColor(0xFF4CAF50);
                 imgIcon.setImageResource(R.drawable.ic_play);
                 break;
+
             case "upcoming":
                 btnPlay.setCardBackgroundColor(0xFFFF9800);
                 imgIcon.setImageResource(R.drawable.ic_clock);
                 break;
+
             default:
                 btnPlay.setCardBackgroundColor(0xFFD32F2F);
                 imgIcon.setImageResource(R.drawable.ic_pause);

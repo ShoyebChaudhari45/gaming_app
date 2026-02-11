@@ -1,361 +1,361 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawerLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <!-- ================= MAIN CONTENT ================= -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.drawerlayout.widget.DrawerLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/bg_main">
+        android:layout_height="match_parent">
 
-        <!-- MODERN GRADIENT HEADER - REDUCED HEIGHT -->
-        <View
-            android:id="@+id/viewHeader"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@drawable/bg_header_gradient"
-            app:layout_constraintHeight_percent="0.35"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+        <!-- ================= MAIN CONTENT ================= -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_main">
 
-        <!-- HEADER CONTENT - COMPACT VERSION -->
-        <LinearLayout
-            android:id="@+id/headerLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="6dp"
-            android:paddingBottom="18dp"
-            android:paddingHorizontal="16dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            <!-- MODERN GRADIENT HEADER - REDUCED HEIGHT -->
+            <View
+                android:id="@+id/viewHeader"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/bg_header_gradient"
+                app:layout_constraintHeight_percent="0.35"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-            <!-- TOP BAR - COMPACT -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp">
+            <!-- HEADER CONTENT - COMPACT VERSION -->
+            <LinearLayout
+                android:id="@+id/headerLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="6dp"
+                android:paddingBottom="18dp"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-                <ImageButton
-                    android:id="@+id/btnMenu"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_menu"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="6dp"
-                    android:scaleType="fitCenter"
-                    app:tint="@android:color/white"/>
+                <!-- TOP BAR - COMPACT -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="@string/app_name"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium"
-                    android:letterSpacing="0.01"/>
+                    <ImageButton
+                        android:id="@+id/btnMenu"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_menu"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="6dp"
+                        android:scaleType="fitCenter"
+                        app:tint="@android:color/white"/>
 
-                <!-- WALLET CARD - COMPACT WITH BALANCE -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="3dp"
-                    app:cardBackgroundColor="@android:color/white">
-
-                    <LinearLayout
+                    <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp">
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="@string/app_name"
+                        android:textColor="@android:color/white"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.01"/>
 
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_wallet"
-                            app:tint="@color/dark_blue"/>
+                    <!-- WALLET CARD - COMPACT WITH BALANCE -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="3dp"
+                        app:cardBackgroundColor="@android:color/white">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_wallet"
+                                app:tint="@color/dark_blue"/>
+
+                            <TextView
+                                android:id="@+id/txtBalance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:text="0"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/dark_blue"
+                                android:fontFamily="sans-serif-medium"/>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </RelativeLayout>
+
+                <!-- WELCOME SECTION - COMPACT -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Welcome Back!"
+                        android:textColor="@android:color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.01"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Play smart, win big"
+                        android:textColor="@android:color/white"
+                        android:textSize="15sp"
+                        android:alpha="0.9"/>
+
+                </LinearLayout>
+
+                <!-- QUICK ACTIONS - COMPACT -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:gravity="center">
+
+                    <!-- WhatsApp -->
+                    <LinearLayout
+                        android:id="@+id/btnWhatsApp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="4dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackgroundBorderless">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            app:cardCornerRadius="25dp"
+                            app:cardElevation="4dp"
+                            app:cardBackgroundColor="@android:color/white">
+
+                            <ImageView
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_whatsapp"
+                                android:scaleType="fitCenter"
+                                />
+                        </com.google.android.material.card.MaterialCardView>
 
                         <TextView
-                            android:id="@+id/txtBalance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:text="0"
+                            android:layout_marginTop="5dp"
+                            android:text="WhatsApp"
+                            android:textColor="@android:color/white"
                             android:textSize="13sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/dark_blue"
-                            android:fontFamily="sans-serif-medium"/>
-
+                            android:textStyle="bold"/>
                     </LinearLayout>
 
-                </com.google.android.material.card.MaterialCardView>
-
-            </RelativeLayout>
-
-            <!-- WELCOME SECTION - COMPACT -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Welcome Back!"
-                    android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium"
-                    android:letterSpacing="0.01"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="Play smart, win big"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp"
-                    android:alpha="0.9"/>
-
-            </LinearLayout>
-
-            <!-- QUICK ACTIONS - COMPACT -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                android:weightSum="2"
-                android:gravity="center">
-
-                <!-- WhatsApp -->
-                <LinearLayout
-                    android:id="@+id/btnWhatsApp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackgroundBorderless">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
-                        app:cardCornerRadius="21dp"
-                        app:cardElevation="4dp"
-                        app:cardBackgroundColor="@android:color/white">
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_whatsapp"
-                            android:scaleType="fitCenter"
-                            app:tint="#25D366"/>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <!-- Starline -->
+                    <LinearLayout
+                        android:id="@+id/btnStarline"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="WhatsApp"
-                        android:textColor="@android:color/white"
-                        android:textSize="10sp"
-                        android:textStyle="bold"/>
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="4dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackgroundBorderless">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            app:cardCornerRadius="25dp"
+                            app:cardElevation="4dp"
+                            app:cardBackgroundColor="@android:color/white">
+
+                            <ImageView
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_star"
+                                android:scaleType="fitCenter"
+                                app:tint="#FFD700"/>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Starline"
+                            android:textColor="@android:color/white"
+                            android:textSize="13sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
                 </LinearLayout>
 
-                <!-- Starline -->
+
+                <!-- WALLET ACTIONS - COMPACT -->
                 <LinearLayout
-                    android:id="@+id/btnStarline"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackgroundBorderless">
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
-                        app:cardCornerRadius="21dp"
-                        app:cardElevation="4dp"
-                        app:cardBackgroundColor="@android:color/white">
+                    <!-- Add Points -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAddPoints"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp"
+                        android:text="Add Points"
+                        android:textColor="@color/dark_blue"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textAllCaps="false"
+                        app:icon="@drawable/ic_add_circle"
+                        app:iconGravity="textStart"
+                        app:iconPadding="4dp"
+                        app:iconTint="@color/dark_blue"
+                        app:iconSize="16dp"
+                        app:cornerRadius="20dp"
+                        app:backgroundTint="@android:color/white"
+                        app:elevation="3dp"
+                        app:rippleColor="#E0E0E0"/>
 
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_star"
-                            android:scaleType="fitCenter"
-                            app:tint="#FFD700"/>
-                    </com.google.android.material.card.MaterialCardView>
+                    <!-- Withdraw -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnWithdraw"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="5dp"
+                        android:text="Withdraw"
+                        android:textColor="@color/dark_blue"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textAllCaps="false"
+                        app:icon="@drawable/ic_download"
+                        app:iconGravity="textStart"
+                        app:iconPadding="4dp"
+                        app:iconTint="@color/dark_blue"
+                        app:iconSize="16dp"
+                        app:cornerRadius="20dp"
+                        app:backgroundTint="@android:color/white"
+                        app:elevation="3dp"
+                        app:rippleColor="#E0E0E0"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="Starline"
-                        android:textColor="@android:color/white"
-                        android:textSize="10sp"
-                        android:textStyle="bold"/>
                 </LinearLayout>
 
             </LinearLayout>
 
-
-            <!-- WALLET ACTIONS - COMPACT -->
+            <!-- GAMES SECTION -->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <!-- Add Points -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnAddPoints"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="5dp"
-                    android:text="Add Points"
-                    android:textColor="@color/dark_blue"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textAllCaps="false"
-                    app:icon="@drawable/ic_add_circle"
-                    app:iconGravity="textStart"
-                    app:iconPadding="4dp"
-                    app:iconTint="@color/dark_blue"
-                    app:iconSize="16dp"
-                    app:cornerRadius="20dp"
-                    app:backgroundTint="@android:color/white"
-                    app:elevation="3dp"
-                    app:rippleColor="#E0E0E0"/>
-
-                <!-- Withdraw -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnWithdraw"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="5dp"
-                    android:text="Withdraw"
-                    android:textColor="@color/dark_blue"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textAllCaps="false"
-                    app:icon="@drawable/ic_download"
-                    app:iconGravity="textStart"
-                    app:iconPadding="4dp"
-                    app:iconTint="@color/dark_blue"
-                    app:iconSize="16dp"
-                    app:cornerRadius="20dp"
-                    app:backgroundTint="@android:color/white"
-                    app:elevation="3dp"
-                    app:rippleColor="#E0E0E0"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <!-- GAMES SECTION -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            android:background="@color/bg_main"
-            app:layout_constraintTop_toBottomOf="@id/viewHeader"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <!-- SECTION HEADER -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="14dp">
-
-                <View
-                    android:layout_width="4dp"
-                    android:layout_height="18dp"
-                    android:background="@color/dark_blue"
-                    android:layout_marginEnd="10dp"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Available Games"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/textPrimary"
-                    android:fontFamily="sans-serif-medium"/>
-
-
-            </LinearLayout>
-
-            <!-- GAME TAPS LIST -->
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/swipeRefresh"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_weight="1">
+                android:orientation="vertical"
+                android:background="@color/bg_main"
+                app:layout_constraintTop_toBottomOf="@id/viewHeader"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvGameTaps"
+                <!-- SECTION HEADER -->
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    android:paddingVertical="4dp"
-                    android:paddingHorizontal="12dp"
-                    android:overScrollMode="never"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="14dp">
 
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                    <View
+                        android:layout_width="4dp"
+                        android:layout_height="18dp"
+                        android:background="@color/dark_blue"
+                        android:layout_marginEnd="10dp"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Available Games"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/textPrimary"
+                        android:fontFamily="sans-serif-medium"/>
 
 
-        </LinearLayout>
+                </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- GAME TAPS LIST -->
+                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/swipeRefresh"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
 
-    <!-- ================= NAVIGATION DRAWER ================= -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigationView"
-        android:layout_width="280dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@android:color/white"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/header_drawer"
-        app:menu="@menu/drawer_menu"
-        app:itemIconTint="@color/nav_item_color"
-        app:itemTextColor="@color/nav_item_color"
-        app:itemShapeFillColor="@color/nav_item_background"
-        app:itemShapeInsetStart="12dp"
-        app:itemShapeInsetEnd="12dp"
-        app:itemShapeInsetTop="4dp"
-        app:itemShapeInsetBottom="4dp"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvGameTaps"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToPadding="false"
+                        android:paddingVertical="4dp"
+                        android:paddingHorizontal="12dp"
+                        android:overScrollMode="never"/>
 
-</androidx.drawerlayout.widget.DrawerLayout>
+                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- ================= NAVIGATION DRAWER ================= -->
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/navigationView"
+            android:layout_width="280dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@android:color/white"
+            android:fitsSystemWindows="true"
+            app:headerLayout="@layout/header_drawer"
+            app:menu="@menu/drawer_menu"
+            app:itemIconTint="@color/nav_item_color"
+            app:itemTextColor="@color/nav_item_color"
+            app:itemShapeFillColor="@color/nav_item_background"
+            app:itemShapeInsetStart="12dp"
+            app:itemShapeInsetEnd="12dp"
+            app:itemShapeInsetTop="4dp"
+            app:itemShapeInsetBottom="4dp"/>
+
+    </androidx.drawerlayout.widget.DrawerLayout>

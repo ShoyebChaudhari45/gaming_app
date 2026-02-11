@@ -1,13 +1,19 @@
 package com.example.gameapp.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.GravityCompat;
@@ -53,7 +59,8 @@ public class HomeActivity extends AppCompatActivity {
 
     private final List<GameItem> gameItems = new ArrayList<>();
     private GameTapAdapter gameTapAdapter;
-
+    // ⭐ NEW: store last clicked view so we can shake it
+    private View lastClickedView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -78,7 +85,6 @@ public class HomeActivity extends AppCompatActivity {
         txtBalance = findViewById(R.id.txtBalance);
         swipeRefresh = findViewById(R.id.swipeRefresh);
 
-
         View headerView = navigationView.getHeaderView(0);
         txtPlayerName = headerView.findViewById(R.id.txtPlayerName);
         txtPlayerMobile = headerView.findViewById(R.id.txtPlayerMobile);
@@ -90,13 +96,10 @@ public class HomeActivity extends AppCompatActivity {
             swipeRefresh.setRefreshing(false);
         });
 
-
         txtViewProfile.setOnClickListener(v -> {
             drawerLayout.closeDrawer(GravityCompat.START);
             startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
         });
-
-
     }
 
     private void setupRecyclerView() {
@@ -113,7 +116,6 @@ public class HomeActivity extends AppCompatActivity {
                 Log.w(TAG, "WhatsApp number not found in SessionManager");
                 return;
             }
-            Log.d(TAG, "Opening WhatsApp with number: " + number);
             openWhatsApp(number);
         });
 
@@ -160,13 +162,11 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(new Intent(this, ChangePasswordActivity.class));
             } else if (id == R.id.nav_share) {
                 shareApp();
-            }
-            else if (id == R.id.nav_panel_access) {
+            } else if (id == R.id.nav_panel_access) {
                 Intent intent = new Intent(Intent.ACTION_VIEW,
                         Uri.parse("https://lottery.durwankurgroup.com/panel/login"));
                 startActivity(intent);
-            }
-            else if (id == R.id.nav_logout) {
+            } else if (id == R.id.nav_logout) {
                 SessionManager.logout(this);
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
@@ -196,20 +196,15 @@ public class HomeActivity extends AppCompatActivity {
                             SupportResponse.SupportData supportData = response.body().getData();
 
                             if (supportData.hasValidWhatsapp()) {
-                                String whatsappNumber = supportData.getWhatsappNo();
-                                SessionManager.saveSupportWhatsapp(HomeActivity.this, whatsappNumber);
-                                Log.d(TAG, "WhatsApp number saved: " + whatsappNumber);
-                            } else {
-                                Log.w(TAG, "No valid WhatsApp number in support data");
+                                SessionManager.saveSupportWhatsapp(HomeActivity.this,
+                                        supportData.getWhatsappNo());
                             }
-                        } else {
-                            Log.e(TAG, "Failed to load support data");
                         }
                     }
 
                     @Override
                     public void onFailure(Call<SupportResponse> call, Throwable t) {
-                        Log.e(TAG, "Support API call failed: " + t.getMessage());
+                        Log.e(TAG, "Support API failed: " + t.getMessage());
                     }
                 });
     }
@@ -233,49 +228,32 @@ public class HomeActivity extends AppCompatActivity {
 
                             UserDetailsResponse.User user = response.body().data;
 
-                            // Set basic UI
                             txtPlayerName.setText(user.name);
                             txtPlayerMobile.setText(user.mobileNo);
 
-                            // 🔥 Save balance
                             SessionManager.saveBalance(HomeActivity.this, user.balance);
                             updateBalanceUI();
 
-                            // 🔥 Save email
                             SessionManager.saveEmail(HomeActivity.this, user.email);
 
-                            // 🔥 NEW: Save QR code
                             String qr = user.qrCode;
-
                             if (qr != null && !qr.isEmpty()) {
-
-                                // If backend gives path only like /qr_codes/QR.jpeg
                                 if (!qr.startsWith("http")) {
                                     qr = "https://lottery.durwankurgroup.com/" + qr;
                                 }
-
                                 SessionManager.saveQrCode(HomeActivity.this, qr);
-                                Log.d(TAG, "Final QR saved: " + qr);
-                            }
-                            try {
-                                String raw = new Gson().toJson(response.body());
-                                Log.e("RAW_ANDROID_RESPONSE", raw);
-                            } catch (Exception e) {
-                                e.printStackTrace();
                             }
 
-
-                            Log.d(TAG, "User loaded: " + user.name + " | QR saved: " + user.qrCode);
+                            Log.e("RAW_ANDROID_RESPONSE", new Gson().toJson(response.body()));
                         }
                     }
 
                     @Override
                     public void onFailure(Call<UserDetailsResponse> call, Throwable t) {
-                        Log.e(TAG, "User details failed", t);
+                        Log.e(TAG, "User details failed: " + t.getMessage());
                     }
                 });
     }
-
 
     private void loadGameTaps() {
         ApiClient.getClient()
@@ -290,44 +268,24 @@ public class HomeActivity extends AppCompatActivity {
                         if (!response.isSuccessful()
                                 || response.body() == null
                                 || response.body().getData() == null) {
-                            Log.e(TAG, "Invalid API response");
                             return;
                         }
 
                         gameItems.clear();
 
                         for (TapsResponse.GameData game : response.body().getData()) {
-                            Log.d(TAG, "Processing game: " + game.getName());
 
                             TapsResponse.Tap openTap = null;
                             TapsResponse.Tap closeTap = null;
 
-                            List<TapsResponse.Tap> times = game.getTimes();
-
-                            // ⭐ FIX: Use "type" field to identify open/close taps
-                            for (TapsResponse.Tap tap : times) {
+                            for (TapsResponse.Tap tap : game.getTimes()) {
                                 tap.setGameName(game.getName());
 
-                                String type = tap.getType();
-                                String status = tap.getStatus();
-
-                                Log.d(TAG, game.getName() + " - Type: " + type + ", Status: " + status);
-
-                                if ("open".equalsIgnoreCase(type)) {
+                                if ("open".equalsIgnoreCase(tap.getType())) {
                                     openTap = tap;
-                                } else if ("close".equalsIgnoreCase(type)) {
+                                } else if ("close".equalsIgnoreCase(tap.getType())) {
                                     closeTap = tap;
                                 }
-                            }
-
-                            // Fallback if type is missing
-                            if (openTap == null && times.size() > 0) {
-                                openTap = times.get(0);
-                                openTap.setGameName(game.getName());
-                            }
-                            if (closeTap == null && times.size() > 1) {
-                                closeTap = times.get(1);
-                                closeTap.setGameName(game.getName());
                             }
 
                             gameItems.add(new GameItem(
@@ -339,24 +297,19 @@ public class HomeActivity extends AppCompatActivity {
 
                         sortGamesByStatus();
                         gameTapAdapter.notifyDataSetChanged();
-
-                        Log.d(TAG, "Total games loaded: " + gameItems.size());
                     }
 
                     @Override
                     public void onFailure(Call<TapsResponse> call, Throwable t) {
-                        Log.e(TAG, "Network error loading games", t);
                         toast("Network error");
                     }
                 });
     }
 
-    // ⭐ FIX: Proper priority based on actual status
     private int getGamePriority(GameItem item) {
         TapsResponse.Tap openTap = item.getOpenTap();
         TapsResponse.Tap closeTap = item.getCloseTap();
 
-        // Check both taps for "running" or "open" status
         boolean hasOpen = false;
         boolean hasUpcoming = false;
 
@@ -380,7 +333,7 @@ public class HomeActivity extends AppCompatActivity {
 
         if (hasOpen) return 1;
         if (hasUpcoming) return 2;
-        return 3; // closed
+        return 3;
     }
 
     private void sortGamesByStatus() {
@@ -389,8 +342,49 @@ public class HomeActivity extends AppCompatActivity {
         );
     }
 
+    // 🔥 NEW IMPORTANT FIX — CLEAN CLOSED STATUS CHECKER
+    private boolean isClosed(String status) {
+        if (status == null) return true;
+        status = status.trim().toLowerCase();
+        return status.contains("closed");
+    }
+
     private void openGameSelection(TapsResponse.Tap openTap,
                                    TapsResponse.Tap closeTap) {
+
+        boolean bothClosed = true;
+
+        if (openTap != null && !isClosed(openTap.getStatus())) {
+            bothClosed = false;
+        }
+
+        if (closeTap != null && !isClosed(closeTap.getStatus())) {
+            bothClosed = false;
+        }
+
+        if (bothClosed) {
+
+            // 💥 SHAKE EFFECT on clicked card
+            if (lastClickedView != null) {
+                lastClickedView.startAnimation(
+                        AnimationUtils.loadAnimation(this, R.anim.shake_view)
+                );
+            }
+
+            // 💥 VIBRATION
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (vibrator != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(
+                            200, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    vibrator.vibrate(200);
+                }
+            }
+
+            toast("Market is closed");
+            return;
+        }
 
         Intent i = new Intent(this, GameTypesActivity.class);
 
@@ -412,7 +406,6 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-
     private void shareApp() {
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("text/plain");
@@ -426,24 +419,15 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void openWhatsApp(String number) {
-        Log.d(TAG, "openWhatsApp called with: " + number);
         try {
             String clean = number.replaceAll("[^0-9+]", "");
-            if (clean.startsWith("+")) {
-                clean = clean.substring(1);
-            }
+            if (clean.startsWith("+")) clean = clean.substring(1);
 
             String url = "https://wa.me/" + clean;
-            Log.d(TAG, "WhatsApp URL: " + url);
 
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(intent);
-            Log.d(TAG, "WhatsApp opened successfully");
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
         } catch (Exception e) {
-            Log.e(TAG, "Error opening WhatsApp: " + e.getMessage());
-            Toast.makeText(this,
-                    "WhatsApp is not installed",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "WhatsApp is not installed", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -458,9 +442,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void updateBalanceUI() {
         int balance = SessionManager.getBalance(this);
-        if (txtBalance != null) {
-            txtBalance.setText(String.valueOf(balance));
-        }
+        txtBalance.setText(String.valueOf(balance));
     }
 
     @Override
@@ -475,7 +457,6 @@ public class HomeActivity extends AppCompatActivity {
 
         if (currentTime - lastBackPressedTime < 2000) {
             finishAffinity();
-            System.exit(0);
         } else {
             lastBackPressedTime = currentTime;
             Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
