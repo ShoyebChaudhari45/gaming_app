@@ -25,7 +25,8 @@ public class GameTapAdapter
 
     public interface OnGameTapClickListener {
         void onGameTapClick(TapsResponse.Tap openTap,
-                            TapsResponse.Tap closeTap);
+                            TapsResponse.Tap closeTap,
+                            View clickedView); // ⭐ ADDED VIEW PARAMETER
     }
 
     private final Context context;
@@ -75,12 +76,12 @@ public class GameTapAdapter
         setupStatus(h.txtStatus, h.cardStatus, h.txtPlayGame, status);
         setupPlayButton(h.btnPlay, h.imgPlayIcon, status);
 
-        // ⭐ ALWAYS ALLOW CLICK → HomeActivity will decide open/closed logic
+        // ⭐ PASS THE CARD VIEW TO THE LISTENER
         h.cardGame.setOnClickListener(v ->
-                listener.onGameTapClick(openTap, closeTap));
+                listener.onGameTapClick(openTap, closeTap, h.cardGame));
 
         h.btnPlay.setOnClickListener(v ->
-                listener.onGameTapClick(openTap, closeTap));
+                listener.onGameTapClick(openTap, closeTap, h.cardGame));
     }
 
     private String getResultText(TapsResponse.Tap openTap, TapsResponse.Tap closeTap) {

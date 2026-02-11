@@ -59,8 +59,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private final List<GameItem> gameItems = new ArrayList<>();
     private GameTapAdapter gameTapAdapter;
-    // ⭐ NEW: store last clicked view so we can shake it
-    private View lastClickedView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -104,6 +103,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setupRecyclerView() {
         rvGameTaps.setLayoutManager(new LinearLayoutManager(this));
+        // ⭐ UPDATED LAMBDA TO ACCEPT VIEW PARAMETER
         gameTapAdapter = new GameTapAdapter(this, gameItems, this::openGameSelection);
         rvGameTaps.setAdapter(gameTapAdapter);
     }
@@ -342,15 +342,17 @@ public class HomeActivity extends AppCompatActivity {
         );
     }
 
-    // 🔥 NEW IMPORTANT FIX — CLEAN CLOSED STATUS CHECKER
+    // 🔥 CLEAN CLOSED STATUS CHECKER
     private boolean isClosed(String status) {
         if (status == null) return true;
         status = status.trim().toLowerCase();
         return status.contains("closed");
     }
 
+    // ⭐ UPDATED METHOD SIGNATURE TO ACCEPT VIEW
     private void openGameSelection(TapsResponse.Tap openTap,
-                                   TapsResponse.Tap closeTap) {
+                                   TapsResponse.Tap closeTap,
+                                   View clickedView) {
 
         boolean bothClosed = true;
 
@@ -365,8 +367,8 @@ public class HomeActivity extends AppCompatActivity {
         if (bothClosed) {
 
             // 💥 SHAKE EFFECT on clicked card
-            if (lastClickedView != null) {
-                lastClickedView.startAnimation(
+            if (clickedView != null) {
+                clickedView.startAnimation(
                         AnimationUtils.loadAnimation(this, R.anim.shake_view)
                 );
             }
