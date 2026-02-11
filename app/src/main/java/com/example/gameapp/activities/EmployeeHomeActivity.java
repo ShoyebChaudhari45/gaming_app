@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.GravityCompat;
@@ -41,8 +42,8 @@ public class EmployeeHomeActivity extends AppCompatActivity {
 
     private long lastBackPressedTime = 0;
 
-    private TextView txtEmployeeName, txtEmployeeMobile;
     private TextView txtPlayerName, txtPlayerMobile, txtViewProfile;
+    private TextView txtBalance;
 
     // Game input fields
     private EditText edtDigit, edtPoint;
@@ -53,7 +54,18 @@ public class EmployeeHomeActivity extends AppCompatActivity {
 
     // Keypad buttons
     private MaterialButton btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9;
-    private MaterialButton btnDelete;
+    private MaterialButton btnDelete, btnSubmit;
+
+    // Selected game tracking
+    private MaterialButton selectedGameButton = null;
+    private String selectedGameType = null;
+
+    // Color states
+    private int selectedColor;
+    private int unselectedColor;
+
+    // TextWatcher flag to prevent recursive calls
+    private boolean isFormatting = false;
 
     private static final String TAG = "EmployeeHomeActivity";
 
@@ -72,11 +84,16 @@ public class EmployeeHomeActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_employee_home);
 
+        // Initialize colors
+        selectedColor = getResources().getColor(R.color.dark_blue);
+        unselectedColor = getResources().getColor(R.color.dark_blue);
+
         initViews();
         setupDrawer();
         setupActionButtons();
         setupGameButtons();
         setupKeypad();
+        setupDigitAutoFormat();
         loadEmployeeDetails();
         loadSupportData();
     }
@@ -91,7 +108,7 @@ public class EmployeeHomeActivity extends AppCompatActivity {
             return;
         }
 
-        updateUI();
+        updateBalanceUI();
     }
 
     private void initViews() {
@@ -100,6 +117,7 @@ public class EmployeeHomeActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.navigationView);
         swipeRefresh = findViewById(R.id.swipeRefresh);
         btnMenu = findViewById(R.id.btnMenu);
+        txtBalance = findViewById(R.id.txtBalance);
 
         // Header views
         View headerView = navigationView.getHeaderView(0);
@@ -132,6 +150,7 @@ public class EmployeeHomeActivity extends AppCompatActivity {
         btn8 = findViewById(R.id.btn8);
         btn9 = findViewById(R.id.btn9);
         btnDelete = findViewById(R.id.btnDelete);
+        btnSubmit = findViewById(R.id.btnSubmit);
 
         swipeRefresh.setOnRefreshListener(() -> {
             loadEmployeeDetails();
@@ -144,21 +163,12 @@ public class EmployeeHomeActivity extends AppCompatActivity {
             startActivity(new Intent(this, ProfileActivity.class));
         });
 
-        // Auto-focus management
-        edtDigit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        // Make EditTexts non-keyboard input
+        edtDigit.setShowSoftInputOnFocus(false);
+        edtPoint.setShowSoftInputOnFocus(false);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() >= 3) {
-                    edtPoint.requestFocus();
-                }
-            }
-        });
+        // Request focus on digit field initially
+        edtDigit.requestFocus();
     }
 
     private void setupDrawer() {
@@ -209,31 +219,216 @@ public class EmployeeHomeActivity extends AppCompatActivity {
 
     private void setupActionButtons() {
 
-        findViewById(R.id.btnWhatsApp).setOnClickListener(v -> {
-            String number = SessionManager.getSupportWhatsapp(this);
-            if (number == null || number.isEmpty()) {
-                toast("Support WhatsApp number not available");
-                return;
-            }
-            openWhatsApp(number);
-        });
+        findViewById(R.id.btnAddPoints).setOnClickListener(v ->
+                startActivity(new Intent(this, AddPointsActivity.class))
+        );
 
-        findViewById(R.id.btnPanelAccess).setOnClickListener(v -> {
-            Intent i = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://lottery.durwankurgroup.com/panel/login"));
-            startActivity(i);
-        });
+        findViewById(R.id.btnWithdraw).setOnClickListener(v ->
+                startActivity(new Intent(this, WithdrawActivity.class))
+        );
     }
 
     private void setupGameButtons() {
 
-        btnJodi.setOnClickListener(v -> handleGameButtonClick("Jodi"));
-        btnOpen.setOnClickListener(v -> handleGameButtonClick("Open"));
-        btnCycle.setOnClickListener(v -> handleGameButtonClick("Cycle"));
-        btnPatte.setOnClickListener(v -> handleGameButtonClick("Patte"));
-        btnTp.setOnClickListener(v -> handleGameButtonClick("Triple Patte"));
-        btnSp.setOnClickListener(v -> handleGameButtonClick("Single Patte"));
-        btnDp.setOnClickListener(v -> handleGameButtonClick("Double Patte"));
+        btnJodi.setOnClickListener(v -> selectGameButton(btnJodi, "Jodi"));
+        btnOpen.setOnClickListener(v -> selectGameButton(btnOpen, "Open"));
+        btnCycle.setOnClickListener(v -> selectGameButton(btnCycle, "Cycle"));
+        btnPatte.setOnClickListener(v -> selectGameButton(btnPatte, "Patte"));
+        btnTp.setOnClickListener(v -> selectGameButton(btnTp, "TP"));
+        btnSp.setOnClickListener(v -> selectGameButton(btnSp, "SP"));
+        btnDp.setOnClickListener(v -> selectGameButton(btnDp, "DP"));
+    }
+
+    /**
+     * Handles game button selection with visual feedback.
+     * Only one game can be selected at a time.
+     */
+    private void selectGameButton(MaterialButton clickedButton, String gameType) {
+
+        // If clicking the already selected button, do nothing (use Submit button instead)
+        if (selectedGameButton == clickedButton) {
+            return;
+        }
+
+        // Deselect previously selected button
+        if (selectedGameButton != null) {
+            selectedGameButton.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(unselectedColor)
+            );
+            selectedGameButton.setStrokeWidth(0);
+        }
+
+        // Select the new button with visual feedback
+        clickedButton.setBackgroundTintList(
+                android.content.res.ColorStateList.valueOf(
+                        getResources().getColor(android.R.color.holo_green_dark)
+                )
+        );
+        clickedButton.setStrokeColor(
+                android.content.res.ColorStateList.valueOf(
+                        getResources().getColor(android.R.color.white)
+                )
+        );
+        clickedButton.setStrokeWidth(4);
+
+        // Update selection tracking
+        selectedGameButton = clickedButton;
+        selectedGameType = gameType;
+
+        // Clear inputs when changing game type
+        edtDigit.setText("");
+        edtPoint.setText("");
+        edtDigit.requestFocus();
+
+        toast("Selected: " + gameType);
+        Log.d(TAG, "Game type selected: " + gameType);
+    }
+
+    /**
+     * Process the game entry when a selected game button is clicked again
+     */
+    private void processGameEntry() {
+        if (selectedGameType == null) {
+            toast("Please select a game type first");
+            return;
+        }
+
+        String digit = cleanLastEquals(edtDigit.getText().toString().trim());
+        String point = edtPoint.getText().toString().trim();
+
+        if (digit.isEmpty()) {
+            toast("Please enter digit");
+            edtDigit.requestFocus();
+            return;
+        }
+
+        if (point.isEmpty()) {
+            toast("Please enter point");
+            edtPoint.requestFocus();
+            return;
+        }
+
+        // Validate digit format
+        if (!isValidDigitFormat(digit)) {
+            toast("Invalid digit pattern for " + selectedGameType);
+            return;
+        }
+
+        int pointValue;
+        try {
+            pointValue = Integer.parseInt(point);
+        } catch (Exception e) {
+            toast("Invalid points");
+            return;
+        }
+
+        if (pointValue <= 0) {
+            toast("Points must be greater than 0");
+            return;
+        }
+
+        // Show confirmation
+        showConfirmationDialog(digit, pointValue, selectedGameType);
+    }
+
+    /**
+     * Validate digit format based on game type
+     */
+    private boolean isValidDigitFormat(String digits) {
+
+        // Remove "=" for clean checking
+        String clean = digits.replace("=", "");
+
+        // Only digits allowed
+        if (!clean.matches("[0-9]+")) {
+            return false;
+        }
+
+        // JODI → 2-digit blocks
+        if (selectedGameType.equalsIgnoreCase("Jodi")) {
+            return clean.length() % 2 == 0;
+        }
+
+        // OPEN / SP / DP / CYCLE → always valid (1 digit each)
+        if (selectedGameType.equalsIgnoreCase("Open") ||
+                selectedGameType.equalsIgnoreCase("SP") ||
+                selectedGameType.equalsIgnoreCase("DP") ||
+                selectedGameType.equalsIgnoreCase("Cycle")) {
+            return clean.length() > 0;
+        }
+
+        // PATTE / TP → 3-digit blocks
+        if (selectedGameType.equalsIgnoreCase("Patte") ||
+                selectedGameType.equalsIgnoreCase("TP")) {
+            return clean.length() % 3 == 0;
+        }
+
+        return true;
+    }
+
+    /**
+     * Setup auto-formatting for digit input based on game type
+     */
+    private void setupDigitAutoFormat() {
+
+        edtDigit.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                if (isFormatting || selectedGameType == null) return;
+                isFormatting = true;
+
+                String input = editable.toString();
+
+                // Remove old "=" and spaces and non-digits
+                String clean = input.replace("=", "")
+                        .replace(" ", "")
+                        .replaceAll("[^0-9]", "");
+
+                StringBuilder formatted = new StringBuilder();
+
+                int blockSize;
+
+                if (selectedGameType.equalsIgnoreCase("Jodi")) {
+                    blockSize = 2;
+                } else if (selectedGameType.equalsIgnoreCase("Open")
+                        || selectedGameType.equalsIgnoreCase("SP")
+                        || selectedGameType.equalsIgnoreCase("DP")
+                        || selectedGameType.equalsIgnoreCase("Cycle")) {
+                    blockSize = 1;
+                } else if (selectedGameType.equalsIgnoreCase("Patte")
+                        || selectedGameType.equalsIgnoreCase("TP")) {
+                    blockSize = 3;
+                } else {
+                    blockSize = clean.length();
+                }
+
+                // Build formatted text
+                for (int i = 0; i < clean.length(); i++) {
+
+                    formatted.append(clean.charAt(i));
+
+                    boolean shouldInsert = (i + 1) % blockSize == 0;
+
+                    if (shouldInsert && (i + 1) < clean.length()) {
+                        formatted.append("=");
+                    }
+                }
+
+                edtDigit.setText(formatted.toString());
+                edtDigit.setSelection(edtDigit.getText().length());
+
+                isFormatting = false;
+            }
+
+        });
     }
 
     private void setupKeypad() {
@@ -256,6 +451,8 @@ public class EmployeeHomeActivity extends AppCompatActivity {
         btn9.setOnClickListener(numberClickListener);
 
         btnDelete.setOnClickListener(v -> deleteFromActiveField());
+
+        btnSubmit.setOnClickListener(v -> processGameEntry());
     }
 
     private void appendToActiveField(String number) {
@@ -286,32 +483,49 @@ public class EmployeeHomeActivity extends AppCompatActivity {
         }
     }
 
-    private void handleGameButtonClick(String gameType) {
-        String digit = edtDigit.getText().toString().trim();
-        String point = edtPoint.getText().toString().trim();
-
-        if (digit.isEmpty()) {
-            toast("Please enter digit");
-            edtDigit.requestFocus();
-            return;
+    private String cleanLastEquals(String digits) {
+        if (digits.endsWith("=")) {
+            return digits.substring(0, digits.length() - 1);
         }
+        return digits;
+    }
 
-        if (point.isEmpty()) {
-            toast("Please enter point");
-            edtPoint.requestFocus();
-            return;
-        }
+    private void showConfirmationDialog(String digit, int price, String type) {
 
-        // Process the game entry
-        toast("Processing " + gameType + ": Digit=" + digit + ", Point=" + point);
+        String message =
+                "Game Type: " + type +
+                        "\nDigit: " + digit +
+                        "\nPoint: " + price;
+
+        new AlertDialog.Builder(this)
+                .setTitle("Confirm Entry")
+                .setMessage(message)
+                .setPositiveButton("Confirm",
+                        (dialog, which) -> submitEntry(digit, price, type))
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void submitEntry(String digit, int price, String type) {
+        // TODO: Implement actual game submission logic
+        toast("Entry Submitted: " + type + " - " + digit + " - " + price);
 
         // Clear fields after submission
         edtDigit.setText("");
         edtPoint.setText("");
         edtDigit.requestFocus();
 
-        // TODO: Implement actual game submission logic
-        Log.d(TAG, "Game Entry - Type: " + gameType + ", Digit: " + digit + ", Point: " + point);
+        // Clear selection
+        if (selectedGameButton != null) {
+            selectedGameButton.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(unselectedColor)
+            );
+            selectedGameButton.setStrokeWidth(0);
+        }
+        selectedGameButton = null;
+        selectedGameType = null;
+
+        Log.d(TAG, "Game Entry - Type: " + type + ", Digit: " + digit + ", Point: " + price);
     }
 
     private void loadSupportData() {
@@ -370,6 +584,10 @@ public class EmployeeHomeActivity extends AppCompatActivity {
                             txtPlayerName.setText(user.name);
                             txtPlayerMobile.setText(user.mobileNo);
 
+                            // Save and display balance
+                            SessionManager.saveBalance(EmployeeHomeActivity.this, user.balance);
+                            updateBalanceUI();
+
                             SessionManager.saveUserName(EmployeeHomeActivity.this, user.name);
                             SessionManager.saveUserMobile(EmployeeHomeActivity.this, user.mobileNo);
                             SessionManager.saveEmail(EmployeeHomeActivity.this, user.email);
@@ -396,9 +614,9 @@ public class EmployeeHomeActivity extends AppCompatActivity {
                 });
     }
 
-    private void updateUI() {
-        txtPlayerName.setText(SessionManager.getUserName(this));
-        txtPlayerMobile.setText(SessionManager.getUserMobile(this));
+    private void updateBalanceUI() {
+        int balance = SessionManager.getBalance(this);
+        txtBalance.setText(String.valueOf(balance));
     }
 
     private void shareApp() {

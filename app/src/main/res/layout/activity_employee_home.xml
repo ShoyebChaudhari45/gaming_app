@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@drawable/bg_header_gradient"
-            app:layout_constraintHeight_percent="0.22"
+            app:layout_constraintHeight_percent="0.28"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -56,11 +56,51 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="Employee Portal"
+                    android:text="@string/app_name"
                     android:textColor="@android:color/white"
                     android:textSize="22sp"
                     android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium"/>
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.01"/>
+
+                <!-- WALLET CARD -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    app:cardCornerRadius="19dp"
+                    app:cardElevation="3dp"
+                    app:cardBackgroundColor="@android:color/white">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_wallet"
+                            app:tint="@color/dark_blue"/>
+
+                        <TextView
+                            android:id="@+id/txtBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="0"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/dark_blue"
+                            android:fontFamily="sans-serif-medium"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
             </RelativeLayout>
 
@@ -68,7 +108,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="4dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -76,9 +116,10 @@
                     android:layout_height="wrap_content"
                     android:text="Game Management"
                     android:textColor="@android:color/white"
-                    android:textSize="20sp"
+                    android:textSize="19sp"
                     android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium"/>
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.01"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -86,96 +127,58 @@
                     android:layout_marginTop="2dp"
                     android:text="Enter bids and manage games"
                     android:textColor="@android:color/white"
-                    android:textSize="15sp"
+                    android:textSize="13sp"
                     android:alpha="0.9"/>
 
             </LinearLayout>
 
-            <!-- QUICK ACTIONS -->
+            <!-- WALLET ACTIONS -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:orientation="horizontal"
-                android:weightSum="2"
-                android:gravity="center">
+                android:weightSum="2">
 
-                <!-- WhatsApp -->
-                <LinearLayout
-                    android:id="@+id/btnWhatsApp"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAddPoints"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="38dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackgroundBorderless">
+                    android:layout_marginEnd="5dp"
+                    android:text="Add Points"
+                    android:textColor="@color/dark_blue"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textAllCaps="false"
+                    app:icon="@drawable/ic_add_circle"
+                    app:iconGravity="textStart"
+                    app:iconPadding="4dp"
+                    app:iconTint="@color/dark_blue"
+                    app:iconSize="15dp"
+                    app:cornerRadius="19dp"
+                    app:backgroundTint="@android:color/white"
+                    app:elevation="3dp"/>
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        app:cardCornerRadius="25dp"
-                        app:cardElevation="4dp"
-                        app:cardBackgroundColor="@android:color/white">
-
-                        <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_whatsapp"
-                            android:scaleType="fitCenter"/>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="Support"
-                        android:textColor="@android:color/white"
-                        android:textSize="13sp"
-                        android:textStyle="bold"/>
-                </LinearLayout>
-
-                <!-- Panel Access -->
-                <LinearLayout
-                    android:id="@+id/btnPanelAccess"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnWithdraw"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="38dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackgroundBorderless">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        app:cardCornerRadius="25dp"
-                        app:cardElevation="4dp"
-                        app:cardBackgroundColor="@android:color/white">
-
-                        <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_star"
-                            android:scaleType="fitCenter"
-                            app:tint="@color/dark_blue"/>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="Panel"
-                        android:textColor="@android:color/white"
-                        android:textSize="13sp"
-                        android:textStyle="bold"/>
-                </LinearLayout>
+                    android:layout_marginStart="5dp"
+                    android:text="Withdraw"
+                    android:textColor="@color/dark_blue"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textAllCaps="false"
+                    app:icon="@drawable/ic_download"
+                    app:iconGravity="textStart"
+                    app:iconPadding="4dp"
+                    app:iconTint="@color/dark_blue"
+                    app:iconSize="15dp"
+                    app:cornerRadius="19dp"
+                    app:backgroundTint="@android:color/white"
+                    app:elevation="3dp"/>
 
             </LinearLayout>
 
@@ -201,47 +204,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <!-- INPUT SECTION HEADER -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
-
-                        <View
-                            android:layout_width="4dp"
-                            android:layout_height="18dp"
-                            android:background="@color/dark_blue"
-                            android:layout_marginEnd="10dp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Entry Form"
-                            android:textSize="17sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/textPrimary"
-                            android:fontFamily="sans-serif-medium"/>
-
-                    </LinearLayout>
+                    android:padding="12dp">
 
                     <!-- DIGIT AND POINT INPUTS -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp"
+                        android:layout_marginBottom="10dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="3dp"
                         app:cardBackgroundColor="@android:color/white">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:padding="16dp"
+                            android:padding="10dp"
                             android:weightSum="2">
 
                             <!-- DIGIT INPUT -->
@@ -249,31 +227,33 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:layout_marginEnd="8dp"
+                                android:layout_marginEnd="5dp"
                                 android:orientation="vertical">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Digit"
-                                    android:textSize="14sp"
+                                    android:textSize="12sp"
                                     android:textStyle="bold"
                                     android:textColor="@color/textPrimary"
-                                    android:layout_marginBottom="6dp"/>
+                                    android:layout_marginBottom="4dp"/>
 
                                 <EditText
                                     android:id="@+id/edtDigit"
                                     android:layout_width="match_parent"
-                                    android:layout_height="56dp"
+                                    android:layout_height="44dp"
                                     android:background="@drawable/bg_input_field"
                                     android:hint="000"
-                                    android:inputType="number"
-                                    android:maxLength="3"
+                                    android:inputType="none"
+                                    android:focusable="true"
+                                    android:focusableInTouchMode="true"
                                     android:gravity="center"
-                                    android:textSize="20sp"
+                                    android:textSize="16sp"
                                     android:textStyle="bold"
                                     android:textColor="@color/textPrimary"
-                                    android:paddingHorizontal="12dp"/>
+                                    android:paddingHorizontal="10dp"
+                                    android:textCursorDrawable="@null"/>
 
                             </LinearLayout>
 
@@ -282,31 +262,33 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:layout_marginStart="8dp"
+                                android:layout_marginStart="5dp"
                                 android:orientation="vertical">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Point"
-                                    android:textSize="14sp"
+                                    android:textSize="12sp"
                                     android:textStyle="bold"
                                     android:textColor="@color/textPrimary"
-                                    android:layout_marginBottom="6dp"/>
+                                    android:layout_marginBottom="4dp"/>
 
                                 <EditText
                                     android:id="@+id/edtPoint"
                                     android:layout_width="match_parent"
-                                    android:layout_height="56dp"
+                                    android:layout_height="44dp"
                                     android:background="@drawable/bg_input_field"
                                     android:hint="00"
-                                    android:inputType="number"
-                                    android:maxLength="4"
+                                    android:inputType="none"
+                                    android:focusable="true"
+                                    android:focusableInTouchMode="true"
                                     android:gravity="center"
-                                    android:textSize="20sp"
+                                    android:textSize="16sp"
                                     android:textStyle="bold"
                                     android:textColor="@color/textPrimary"
-                                    android:paddingHorizontal="12dp"/>
+                                    android:paddingHorizontal="10dp"
+                                    android:textCursorDrawable="@null"/>
 
                             </LinearLayout>
 
@@ -314,45 +296,20 @@
 
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- GAME BUTTONS SECTION -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
-
-                        <View
-                            android:layout_width="4dp"
-                            android:layout_height="18dp"
-                            android:background="@color/dark_blue"
-                            android:layout_marginEnd="10dp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Game Types"
-                            android:textSize="17sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/textPrimary"
-                            android:fontFamily="sans-serif-medium"/>
-
-                    </LinearLayout>
-
                     <!-- GAME BUTTONS GRID -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp"
+                        android:layout_marginBottom="10dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="3dp"
                         app:cardBackgroundColor="@android:color/white">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:padding="12dp">
+                            android:padding="8dp">
 
                             <!-- ROW 1: JODI, OPEN -->
                             <LinearLayout
@@ -360,35 +317,37 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
                                 android:weightSum="2"
-                                android:layout_marginBottom="8dp">
+                                android:layout_marginBottom="5dp">
 
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/btnJodi"
                                     android:layout_width="0dp"
-                                    android:layout_height="60dp"
+                                    android:layout_height="42dp"
                                     android:layout_weight="1"
-                                    android:layout_marginEnd="4dp"
+                                    android:layout_marginEnd="2.5dp"
                                     android:text="JODI"
                                     android:textColor="@android:color/white"
-                                    android:textSize="16sp"
+                                    android:textSize="13sp"
                                     android:textStyle="bold"
-                                    app:cornerRadius="8dp"
+                                    app:cornerRadius="6dp"
                                     app:backgroundTint="@color/dark_blue"
-                                    app:elevation="2dp"/>
+                                    app:elevation="2dp"
+                                    app:strokeWidth="0dp"/>
 
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/btnOpen"
                                     android:layout_width="0dp"
-                                    android:layout_height="60dp"
+                                    android:layout_height="42dp"
                                     android:layout_weight="1"
-                                    android:layout_marginStart="4dp"
+                                    android:layout_marginStart="2.5dp"
                                     android:text="OPEN"
                                     android:textColor="@android:color/white"
-                                    android:textSize="16sp"
+                                    android:textSize="13sp"
                                     android:textStyle="bold"
-                                    app:cornerRadius="8dp"
+                                    app:cornerRadius="6dp"
                                     app:backgroundTint="@color/dark_blue"
-                                    app:elevation="2dp"/>
+                                    app:elevation="2dp"
+                                    app:strokeWidth="0dp"/>
 
                             </LinearLayout>
 
@@ -398,35 +357,37 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
                                 android:weightSum="2"
-                                android:layout_marginBottom="8dp">
+                                android:layout_marginBottom="5dp">
 
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/btnCycle"
                                     android:layout_width="0dp"
-                                    android:layout_height="60dp"
+                                    android:layout_height="42dp"
                                     android:layout_weight="1"
-                                    android:layout_marginEnd="4dp"
+                                    android:layout_marginEnd="2.5dp"
                                     android:text="CYCLE"
                                     android:textColor="@android:color/white"
-                                    android:textSize="16sp"
+                                    android:textSize="13sp"
                                     android:textStyle="bold"
-                                    app:cornerRadius="8dp"
+                                    app:cornerRadius="6dp"
                                     app:backgroundTint="@color/dark_blue"
-                                    app:elevation="2dp"/>
+                                    app:elevation="2dp"
+                                    app:strokeWidth="0dp"/>
 
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/btnPatte"
                                     android:layout_width="0dp"
-                                    android:layout_height="60dp"
+                                    android:layout_height="42dp"
                                     android:layout_weight="1"
-                                    android:layout_marginStart="4dp"
+                                    android:layout_marginStart="2.5dp"
                                     android:text="PATTE"
                                     android:textColor="@android:color/white"
-                                    android:textSize="16sp"
+                                    android:textSize="13sp"
                                     android:textStyle="bold"
-                                    app:cornerRadius="8dp"
+                                    app:cornerRadius="6dp"
                                     app:backgroundTint="@color/dark_blue"
-                                    app:elevation="2dp"/>
+                                    app:elevation="2dp"
+                                    app:strokeWidth="0dp"/>
 
                             </LinearLayout>
 
@@ -440,211 +401,310 @@
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/btnTp"
                                     android:layout_width="0dp"
-                                    android:layout_height="60dp"
+                                    android:layout_height="42dp"
                                     android:layout_weight="1"
-                                    android:layout_marginEnd="4dp"
+                                    android:layout_marginEnd="2.5dp"
                                     android:text="TP"
                                     android:textColor="@android:color/white"
-                                    android:textSize="16sp"
+                                    android:textSize="13sp"
                                     android:textStyle="bold"
-                                    app:cornerRadius="8dp"
+                                    app:cornerRadius="6dp"
                                     app:backgroundTint="@color/dark_blue"
-                                    app:elevation="2dp"/>
+                                    app:elevation="2dp"
+                                    app:strokeWidth="0dp"/>
 
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/btnSp"
                                     android:layout_width="0dp"
-                                    android:layout_height="60dp"
+                                    android:layout_height="42dp"
                                     android:layout_weight="1"
-                                    android:layout_marginHorizontal="4dp"
+                                    android:layout_marginHorizontal="2.5dp"
                                     android:text="SP"
                                     android:textColor="@android:color/white"
-                                    android:textSize="16sp"
+                                    android:textSize="13sp"
                                     android:textStyle="bold"
-                                    app:cornerRadius="8dp"
+                                    app:cornerRadius="6dp"
                                     app:backgroundTint="@color/dark_blue"
-                                    app:elevation="2dp"/>
+                                    app:elevation="2dp"
+                                    app:strokeWidth="0dp"/>
 
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/btnDp"
                                     android:layout_width="0dp"
-                                    android:layout_height="60dp"
+                                    android:layout_height="42dp"
                                     android:layout_weight="1"
-                                    android:layout_marginStart="4dp"
+                                    android:layout_marginStart="2.5dp"
                                     android:text="DP"
                                     android:textColor="@android:color/white"
-                                    android:textSize="16sp"
+                                    android:textSize="13sp"
                                     android:textStyle="bold"
-                                    app:cornerRadius="8dp"
+                                    app:cornerRadius="6dp"
                                     app:backgroundTint="@color/dark_blue"
-                                    app:elevation="2dp"/>
+                                    app:elevation="2dp"
+                                    app:strokeWidth="0dp"/>
 
                             </LinearLayout>
 
                         </LinearLayout>
 
                     </com.google.android.material.card.MaterialCardView>
-
-                    <!-- KEYPAD SECTION -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
-
-                        <View
-                            android:layout_width="4dp"
-                            android:layout_height="18dp"
-                            android:background="@color/dark_blue"
-                            android:layout_marginEnd="10dp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Number Keypad"
-                            android:textSize="17sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/textPrimary"
-                            android:fontFamily="sans-serif-medium"/>
-
-                    </LinearLayout>
 
                     <!-- NUMBER KEYPAD -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp"
+                        android:layout_marginBottom="10dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="3dp"
                         app:cardBackgroundColor="@android:color/white">
 
-                        <LinearLayout
+                        <GridLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="12dp">
+                            android:columnCount="3"
+                            android:rowCount="4"
+                            android:padding="8dp"
+                            android:alignmentMode="alignBounds"
+                            android:useDefaultMargins="false">
 
                             <!-- ROW 1: 1, 2, 3 -->
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:weightSum="3"
-                                android:layout_marginBottom="8dp">
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn1"
+                                android:layout_width="0dp"
+                                android:layout_height="60dp"
+                                android:layout_row="0"
+                                android:layout_column="0"
+                                android:layout_columnWeight="1"
+                                android:layout_marginEnd="2.5dp"
+                                android:layout_marginBottom="5dp"
+                                android:text="1"
+                                android:textColor="@android:color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                app:cornerRadius="8dp"
+                                app:backgroundTint="@color/dark_blue"
+                                app:elevation="2dp"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
 
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/btn1"
-                                    style="@style/KeypadButtonemp"
-                                    android:layout_marginEnd="4dp"
-                                    android:text="1"/>
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn2"
+                                android:layout_width="0dp"
+                                android:layout_height="60dp"
+                                android:layout_row="0"
+                                android:layout_column="1"
+                                android:layout_columnWeight="1"
+                                android:layout_marginHorizontal="2.5dp"
+                                android:layout_marginBottom="5dp"
+                                android:text="2"
+                                android:textColor="@android:color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                app:cornerRadius="8dp"
+                                app:backgroundTint="@color/dark_blue"
+                                app:elevation="2dp"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
 
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/btn2"
-                                    style="@style/KeypadButtonemp"
-                                    android:layout_marginHorizontal="4dp"
-                                    android:text="2"/>
-
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/btn3"
-                                    style="@style/KeypadButtonemp"
-                                    android:layout_marginStart="4dp"
-                                    android:text="3"/>
-
-                            </LinearLayout>
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn3"
+                                android:layout_width="0dp"
+                                android:layout_height="60dp"
+                                android:layout_row="0"
+                                android:layout_column="2"
+                                android:layout_columnWeight="1"
+                                android:layout_marginStart="2.5dp"
+                                android:layout_marginBottom="5dp"
+                                android:text="3"
+                                android:textColor="@android:color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                app:cornerRadius="8dp"
+                                app:backgroundTint="@color/dark_blue"
+                                app:elevation="2dp"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
 
                             <!-- ROW 2: 4, 5, 6 -->
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:weightSum="3"
-                                android:layout_marginBottom="8dp">
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn4"
+                                android:layout_width="0dp"
+                                android:layout_height="60dp"
+                                android:layout_row="1"
+                                android:layout_column="0"
+                                android:layout_columnWeight="1"
+                                android:layout_marginEnd="2.5dp"
+                                android:layout_marginBottom="5dp"
+                                android:text="4"
+                                android:textColor="@android:color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                app:cornerRadius="8dp"
+                                app:backgroundTint="@color/dark_blue"
+                                app:elevation="2dp"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
 
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/btn4"
-                                    style="@style/KeypadButtonemp"
-                                    android:layout_marginEnd="4dp"
-                                    android:text="4"/>
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn5"
+                                android:layout_width="0dp"
+                                android:layout_height="60dp"
+                                android:layout_row="1"
+                                android:layout_column="1"
+                                android:layout_columnWeight="1"
+                                android:layout_marginHorizontal="2.5dp"
+                                android:layout_marginBottom="5dp"
+                                android:text="5"
+                                android:textColor="@android:color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                app:cornerRadius="8dp"
+                                app:backgroundTint="@color/dark_blue"
+                                app:elevation="2dp"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
 
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/btn5"
-                                    style="@style/KeypadButtonemp"
-                                    android:layout_marginHorizontal="4dp"
-                                    android:text="5"/>
-
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/btn6"
-                                    style="@style/KeypadButtonemp"
-                                    android:layout_marginStart="4dp"
-                                    android:text="6"/>
-
-                            </LinearLayout>
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn6"
+                                android:layout_width="0dp"
+                                android:layout_height="60dp"
+                                android:layout_row="1"
+                                android:layout_column="2"
+                                android:layout_columnWeight="1"
+                                android:layout_marginStart="2.5dp"
+                                android:layout_marginBottom="5dp"
+                                android:text="6"
+                                android:textColor="@android:color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                app:cornerRadius="8dp"
+                                app:backgroundTint="@color/dark_blue"
+                                app:elevation="2dp"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
 
                             <!-- ROW 3: 7, 8, 9 -->
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:weightSum="3"
-                                android:layout_marginBottom="8dp">
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn7"
+                                android:layout_width="0dp"
+                                android:layout_height="60dp"
+                                android:layout_row="2"
+                                android:layout_column="0"
+                                android:layout_columnWeight="1"
+                                android:layout_marginEnd="2.5dp"
+                                android:layout_marginBottom="5dp"
+                                android:text="7"
+                                android:textColor="@android:color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                app:cornerRadius="8dp"
+                                app:backgroundTint="@color/dark_blue"
+                                app:elevation="2dp"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
 
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/btn7"
-                                    style="@style/KeypadButtonemp"
-                                    android:layout_marginEnd="4dp"
-                                    android:text="7"/>
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn8"
+                                android:layout_width="0dp"
+                                android:layout_height="60dp"
+                                android:layout_row="2"
+                                android:layout_column="1"
+                                android:layout_columnWeight="1"
+                                android:layout_marginHorizontal="2.5dp"
+                                android:layout_marginBottom="5dp"
+                                android:text="8"
+                                android:textColor="@android:color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                app:cornerRadius="8dp"
+                                app:backgroundTint="@color/dark_blue"
+                                app:elevation="2dp"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
 
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/btn8"
-                                    style="@style/KeypadButtonemp"
-                                    android:layout_marginHorizontal="4dp"
-                                    android:text="8"/>
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn9"
+                                android:layout_width="0dp"
+                                android:layout_height="60dp"
+                                android:layout_row="2"
+                                android:layout_column="2"
+                                android:layout_columnWeight="1"
+                                android:layout_marginStart="2.5dp"
+                                android:layout_marginBottom="5dp"
+                                android:text="9"
+                                android:textColor="@android:color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                app:cornerRadius="8dp"
+                                app:backgroundTint="@color/dark_blue"
+                                app:elevation="2dp"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
 
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/btn9"
-                                    style="@style/KeypadButtonemp"
-                                    android:layout_marginStart="4dp"
-                                    android:text="9"/>
+                            <!-- ROW 4: EMPTY, 0, DELETE -->
+                            <Space
+                                android:layout_width="0dp"
+                                android:layout_height="60dp"
+                                android:layout_row="3"
+                                android:layout_column="0"
+                                android:layout_columnWeight="1"/>
 
-                            </LinearLayout>
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn0"
+                                android:layout_width="0dp"
+                                android:layout_height="60dp"
+                                android:layout_row="3"
+                                android:layout_column="1"
+                                android:layout_columnWeight="1"
+                                android:layout_marginHorizontal="2.5dp"
+                                android:text="0"
+                                android:textColor="@android:color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                app:cornerRadius="8dp"
+                                app:backgroundTint="@color/dark_blue"
+                                app:elevation="2dp"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
 
-                            <!-- ROW 4: 0, DELETE -->
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:weightSum="3">
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnDelete"
+                                android:layout_width="0dp"
+                                android:layout_height="60dp"
+                                android:layout_row="3"
+                                android:layout_column="2"
+                                android:layout_columnWeight="1"
+                                android:layout_marginStart="2.5dp"
+                                android:text="DEL"
+                                android:textColor="@android:color/white"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                app:cornerRadius="8dp"
+                                app:backgroundTint="#E53935"
+                                app:elevation="2dp"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
 
-                                <Space
-                                    android:layout_width="0dp"
-                                    android:layout_height="1dp"
-                                    android:layout_weight="1"/>
-
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/btn0"
-                                    style="@style/KeypadButton"
-                                    android:layout_marginHorizontal="4dp"
-                                    android:text="0"/>
-
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/btnDelete"
-                                    android:layout_width="0dp"
-                                    android:layout_height="60dp"
-                                    android:layout_weight="1"
-                                    android:layout_marginStart="4dp"
-                                    android:text="DEL"
-                                    android:textColor="@android:color/white"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold"
-                                    app:cornerRadius="8dp"
-                                    app:backgroundTint="#E53935"
-                                    app:elevation="2dp"/>
-
-                            </LinearLayout>
-
-                        </LinearLayout>
+                        </GridLayout>
 
                     </com.google.android.material.card.MaterialCardView>
+
+                    <!-- SUBMIT BUTTON -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSubmit"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="SUBMIT BID"
+                        android:textColor="@android:color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="10dp"
+                        app:backgroundTint="@color/dark_blue"
+                        app:elevation="4dp"
+                        app:icon="@drawable/ic_check"
+                        app:iconGravity="textStart"
+                        app:iconSize="20dp"
+                        app:iconTint="@android:color/white"/>
 
                 </LinearLayout>
 
