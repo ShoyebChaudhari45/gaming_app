@@ -324,9 +324,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Enter Digits"
-                        android:textSize="11sp"
-                        android:textColor="@color/textSecondary"
-                        android:layout_marginBottom="4dp"/>
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/textPrimary"
+                        android:layout_marginBottom="8dp"/>
 
                     <EditText
                         android:id="@+id/etDigits"
@@ -353,9 +354,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Enter Points"
-                        android:textSize="11sp"
-                        android:textColor="@color/textSecondary"
-                        android:layout_marginBottom="4dp"/>
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/textPrimary"
+                        android:layout_marginBottom="8dp"/>
 
                     <EditText
                         android:id="@+id/etPoints"

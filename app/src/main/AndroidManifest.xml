@@ -20,9 +20,6 @@
         android:theme="@style/Theme.GameApp"
         android:usesCleartextTraffic="false"
         tools:targetApi="q">
-        <activity
-            android:name=".activities.UploadProofActivity"
-            android:exported="false" />
 
         <activity
             android:name=".activities.StarlineActivity"

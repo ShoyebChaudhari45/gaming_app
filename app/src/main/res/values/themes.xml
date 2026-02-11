@@ -16,7 +16,10 @@
 
     <!-- Splash Theme -->
     <style name="Theme.GameApp.Splash" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:windowBackground">@color/splash_bg</item>
+
+        <!-- ⭐ FIX: Blue screen removed -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+
         <item name="android:statusBarColor">@color/splash_bg</item>
         <item name="android:navigationBarColor">@color/splash_bg</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>

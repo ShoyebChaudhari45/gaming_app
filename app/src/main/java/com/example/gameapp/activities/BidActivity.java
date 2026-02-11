@@ -1,9 +1,13 @@
 package com.example.gameapp.activities;
 
 import android.content.res.ColorStateList;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputFilter;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -93,10 +97,6 @@ public class BidActivity extends AppCompatActivity {
         etPoints = findViewById(R.id.etPoints);
         btnProceed = findViewById(R.id.btnProceed);
         etDigits = findViewById(R.id.etDigits);
-
-        etDigits.setFilters(new InputFilter[]{
-                new InputFilter.LengthFilter(20)
-        });
     }
 
     private void setupUI() {
@@ -372,23 +372,45 @@ public class BidActivity extends AppCompatActivity {
                             txtBalance.setText(String.valueOf(newBalance));
                         }
 
-                        showSuccessDialog(successMessage);
+                        showSuccessDialogWithSound(successMessage);
                     }
 
                     @Override
                     public void onFailure(Call<UserDetailsResponse> call, Throwable t) {
-                        showSuccessDialog(successMessage);
+                        showSuccessDialogWithSound(successMessage);
                     }
                 });
     }
 
-    private void showSuccessDialog(String message) {
-        new AlertDialog.Builder(this)
-                .setTitle("Bid Success")
-                .setMessage(message)
-                .setPositiveButton("OK", (d, w) -> finish())
+    private void showSuccessDialogWithSound(String message) {
+        // Play success sound
+        try {
+            MediaPlayer mp = MediaPlayer.create(this, R.raw.success_sound);
+            mp.start();
+            mp.setOnCompletionListener(MediaPlayer::release);
+        } catch (Exception e) {
+            Log.e(TAG, "Sound error: " + e.getMessage());
+        }
+
+        // Create custom dialog
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_success, null);
+        TextView txtMessage = dialogView.findViewById(R.id.txtSuccessMessage);
+        txtMessage.setText(message);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
                 .setCancelable(false)
-                .show();
+                .create();
+
+        dialog.show();
+
+        // Auto close after 2 seconds
+        new Handler().postDelayed(() -> {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+                finish();
+            }
+        }, 2000);
     }
 
     private String getCurrentDateFormatted() {
