@@ -143,7 +143,64 @@ public class SessionManager {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getString(KEY_QR_CODE, "");
     }
+    // Add these constants at the top with other KEY_ constants
+    private static final String KEY_GAME_TYPES_SCROLL = "game_types_scroll";
+    private static final String KEY_SELECTED_GAME_POS = "selected_game_pos";
+    private static final String KEY_SAVED_DIGIT = "saved_digit";
+    private static final String KEY_SAVED_POINT = "saved_point";
 
+// Add these methods at the end of the class before the last }
+// Add these constants with other KEY_ constants
+private static final String KEY_SCROLL_POSITION = "scroll_position";
+
+    // Add these methods at the end of the class
+    public static void saveScrollPosition(Context context, int scrollY) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putInt(KEY_SCROLL_POSITION, scrollY).apply();
+    }
+
+    public static int getScrollPosition(Context context, int defaultValue) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getInt(KEY_SCROLL_POSITION, defaultValue);
+    }
+
+    public static void saveGameTypesScrollPosition(Context context, int position) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putInt(KEY_GAME_TYPES_SCROLL, position).apply();
+    }
+
+    public static int getGameTypesScrollPosition(Context context, int defaultValue) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getInt(KEY_GAME_TYPES_SCROLL, defaultValue);
+    }
+
+    public static void saveSelectedGamePosition(Context context, int position) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putInt(KEY_SELECTED_GAME_POS, position).apply();
+    }
+
+    public static int getSelectedGamePosition(Context context, int defaultValue) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getInt(KEY_SELECTED_GAME_POS, defaultValue);
+    }
+
+    public static void saveBidInputs(Context context, String digit, String point) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit()
+                .putString(KEY_SAVED_DIGIT, digit)
+                .putString(KEY_SAVED_POINT, point)
+                .apply();
+    }
+
+    public static String getSavedDigit(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY_SAVED_DIGIT, "");
+    }
+
+    public static String getSavedPoint(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY_SAVED_POINT, "");
+    }
     // ========================= LOGOUT =========================
 
     public static void logout(Context context) {
