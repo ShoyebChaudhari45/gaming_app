@@ -20,14 +20,15 @@ import java.util.Locale;
 
 public class BidHistoryAdapter extends RecyclerView.Adapter<BidHistoryAdapter.BidViewHolder> {
 
-    private Context context;
-    private List<BidItem> bidList;
-    private SimpleDateFormat inputDateFormat;
-    private SimpleDateFormat outputDateFormat;
+    private final Context context;
+    private final List<BidItem> bidList;
+    private final SimpleDateFormat inputDateFormat;
+    private final SimpleDateFormat outputDateFormat;
 
     public BidHistoryAdapter(Context context, List<BidItem> bidList) {
         this.context = context;
         this.bidList = bidList;
+        // API returns: "2026-02-06T14:50:33.000000Z"
         this.inputDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.getDefault());
         this.outputDateFormat = new SimpleDateFormat("dd MMM, h:mm a", Locale.getDefault());
     }
@@ -35,7 +36,8 @@ public class BidHistoryAdapter extends RecyclerView.Adapter<BidHistoryAdapter.Bi
     @NonNull
     @Override
     public BidViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_bid_history, parent, false);
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.item_bid_history, parent, false);
         return new BidViewHolder(view);
     }
 
@@ -43,26 +45,37 @@ public class BidHistoryAdapter extends RecyclerView.Adapter<BidHistoryAdapter.Bi
     public void onBindViewHolder(@NonNull BidViewHolder holder, int position) {
         BidItem bid = bidList.get(position);
 
-        // Set bid type
+        // Bid type (e.g. "Jodi", "Open", "SP")
         holder.txtBidType.setText(bid.getType());
 
-        // Set input value
+        // Tap name (e.g. "MILAN NIGHT")
+        if (bid.getTapName() != null && !bid.getTapName().isEmpty()) {
+            holder.txtTapName.setText(bid.getTapName());
+            holder.txtTapName.setVisibility(View.VISIBLE);
+        } else {
+            holder.txtTapName.setVisibility(View.GONE);
+        }
+
+        // Input value (digit entered)
         holder.txtInputValue.setText(bid.getInputValue());
 
-        // Set price
+        // Price (individual bid amount)
         holder.txtPrice.setText(String.valueOf(bid.getPrice()));
 
-        // Format and set date
-        String formattedDate = formatDate(bid.getCreatedOn());
-        holder.txtDate.setText(formattedDate);
+        // Total (calculated total)
+        holder.txtTotal.setText(String.valueOf(bid.getTotal()));
+
+        // Date
+        holder.txtDate.setText(formatDate(bid.getCreatedOn()));
     }
 
     @Override
     public int getItemCount() {
-        return bidList.size();
+        return bidList == null ? 0 : bidList.size();
     }
 
     private String formatDate(String dateString) {
+        if (dateString == null || dateString.isEmpty()) return "-";
         try {
             Date date = inputDateFormat.parse(dateString);
             if (date != null) {
@@ -75,14 +88,16 @@ public class BidHistoryAdapter extends RecyclerView.Adapter<BidHistoryAdapter.Bi
     }
 
     static class BidViewHolder extends RecyclerView.ViewHolder {
-        TextView txtBidType, txtInputValue, txtPrice, txtDate;
+        TextView txtBidType, txtTapName, txtInputValue, txtPrice, txtTotal, txtDate;
 
         public BidViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtBidType = itemView.findViewById(R.id.txtBidType);
+            txtBidType    = itemView.findViewById(R.id.txtBidType);
+            txtTapName    = itemView.findViewById(R.id.txtTapName);
             txtInputValue = itemView.findViewById(R.id.txtInputValue);
-            txtPrice = itemView.findViewById(R.id.txtPrice);
-            txtDate = itemView.findViewById(R.id.txtDate);
+            txtPrice      = itemView.findViewById(R.id.txtPrice);
+            txtTotal      = itemView.findViewById(R.id.txtTotal);
+            txtDate       = itemView.findViewById(R.id.txtDate);
         }
     }
 }

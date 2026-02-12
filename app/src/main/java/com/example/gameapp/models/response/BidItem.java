@@ -13,50 +13,32 @@ public class BidItem {
     @SerializedName("price")
     private int price;
 
+    @SerializedName("total")
+    private int total;
+
     @SerializedName("created_on")
     private String createdOn;
 
-    // Constructors
+    @SerializedName("tap_name")
+    private String tapName;
+
     public BidItem() {}
 
-    public BidItem(String type, String inputValue, int price, String createdOn) {
-        this.type = type;
-        this.inputValue = inputValue;
-        this.price = price;
-        this.createdOn = createdOn;
-    }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
 
-    // Getters
-    public String getType() {
-        return type;
-    }
+    public String getInputValue() { return inputValue; }
+    public void setInputValue(String inputValue) { this.inputValue = inputValue; }
 
-    public String getInputValue() {
-        return inputValue;
-    }
+    public int getPrice() { return price; }
+    public void setPrice(int price) { this.price = price; }
 
-    public int getPrice() {
-        return price;
-    }
+    public int getTotal() { return total; }
+    public void setTotal(int total) { this.total = total; }
 
-    public String getCreatedOn() {
-        return createdOn;
-    }
+    public String getCreatedOn() { return createdOn; }
+    public void setCreatedOn(String createdOn) { this.createdOn = createdOn; }
 
-    // Setters
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setInputValue(String inputValue) {
-        this.inputValue = inputValue;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public void setCreatedOn(String createdOn) {
-        this.createdOn = createdOn;
-    }
+    public String getTapName() { return tapName; }
+    public void setTapName(String tapName) { this.tapName = tapName; }
 }
