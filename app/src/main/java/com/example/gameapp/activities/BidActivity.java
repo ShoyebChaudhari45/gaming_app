@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.CompoundButtonCompat;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.gameapp.R;
 import com.example.gameapp.api.ApiClient;
@@ -221,15 +222,13 @@ public class BidActivity extends AppCompatActivity {
     }
 
     // =====================================================
-    //               🔥 VALIDATION ADDED HERE 🔥
+    //               VALIDATION
     // =====================================================
 
     private boolean isValidDigitFormat(String digits) {
 
-        // Remove "=" for clean checking
         String clean = digits.replace("=", "");
 
-        // ❌ Only digits allowed
         if (!clean.matches("[0-9]+")) {
             return false;
         }
@@ -239,19 +238,20 @@ public class BidActivity extends AppCompatActivity {
             return clean.length() % 2 == 0;
         }
 
-        // OPEN / SP / DP / CYCLE → always valid (1 digit each)
+        // OPEN / SP / DP → 1 digit each
         if (gameType.equalsIgnoreCase("Open") ||
                 gameType.equalsIgnoreCase("SP") ||
-                gameType.equalsIgnoreCase("DP") ||
-                gameType.equalsIgnoreCase("Cycle")) {
-            return clean.length() > 0; // atleast 1
+                gameType.equalsIgnoreCase("DP")) {
+            return clean.length() > 0;
         }
 
-        // PATTE / TRIPPLE PANNA → 3-digit blocks
-        if (gameType.equalsIgnoreCase("Patte") ||
-                gameType.equalsIgnoreCase("TP") ||
-                gameType.equalsIgnoreCase("Tripple Panna") ||
-                gameType.equalsIgnoreCase("Triple panna")) {
+        // CYCLE → 2-digit blocks
+        if (gameType.equalsIgnoreCase("Cycle")) {
+            return clean.length() % 2 == 0;
+        }
+
+        // PATTE → 3-digit blocks
+        if (gameType.equalsIgnoreCase("Patte")) {
             return clean.length() % 3 == 0;
         }
 
@@ -292,7 +292,6 @@ public class BidActivity extends AppCompatActivity {
             return;
         }
 
-        // 🔥 NEW VALIDATION — strictly checks the digit pattern
         if (!isValidDigitFormat(digits)) {
             toast("Invalid digit pattern for " + gameType);
             return;
@@ -305,10 +304,14 @@ public class BidActivity extends AppCompatActivity {
 
 
     // =====================================================
-    //               🔥 AUTO-FORMAT LOGIC SAME 🔥
+    //               AUTO-FORMAT LOGIC
     // =====================================================
 
     private void setupDigitAutoFormat() {
+
+        // Number-only keypad for both fields
+        etDigits.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+        etPoints.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
 
         etDigits.addTextChangedListener(new TextWatcher() {
 
@@ -328,7 +331,6 @@ public class BidActivity extends AppCompatActivity {
 
                 String input = editable.toString();
 
-                // remove old "=" and SPACES and non-digits
                 String clean = input.replace("=", "")
                         .replace(" ", "")
                         .replaceAll("[^0-9]", "");
@@ -341,19 +343,17 @@ public class BidActivity extends AppCompatActivity {
                     blockSize = 2;
                 } else if (gameType.equalsIgnoreCase("Open")
                         || gameType.equalsIgnoreCase("SP")
-                        || gameType.equalsIgnoreCase("DP")
-                        || gameType.equalsIgnoreCase("Cycle")) {
+                        || gameType.equalsIgnoreCase("DP")) {
                     blockSize = 1;
-                } else if (gameType.equalsIgnoreCase("Patte")
-                        || gameType.equalsIgnoreCase("TP")
-                        || gameType.equalsIgnoreCase("Tripple Panna")
-                        || gameType.equalsIgnoreCase("Triple panna")) {
+                } else if (gameType.equalsIgnoreCase("Cycle")) {
+                    // Cycle uses 2-character blocks
+                    blockSize = 2;
+                } else if (gameType.equalsIgnoreCase("Patte")) {
                     blockSize = 3;
                 } else {
                     blockSize = clean.length();
                 }
 
-                // Build formatted text
                 for (int i = 0; i < clean.length(); i++) {
 
                     formatted.append(clean.charAt(i));
@@ -375,9 +375,8 @@ public class BidActivity extends AppCompatActivity {
     }
 
 
-
     // =====================================================
-    //          🔥 REMAINING CODE UNTOUCHED 🔥
+    //          REMAINING CODE
     // =====================================================
 
     private String toTitleCase(String input) {
@@ -389,15 +388,23 @@ public class BidActivity extends AppCompatActivity {
                 input.substring(1).toLowerCase();
     }
 
+    // Shows gameName (the game clicked on HomeActivity e.g. "Milan Day", "Rajdhani Night")
+    // Label is "Game:" only — no "Game Tap:".
+    // Backend submitBid() still sends raw timeId — completely unchanged.
     private void showConfirmationDialog(String digit, int price, String type) {
 
-        int timeId = isOpenSelected ? openId : closeId;
+        // gameName flows: HomeActivity → GameTypesActivity → BidActivity via intent "game_name"
+        String gameDisplayName = (gameName != null && !gameName.isEmpty()) ? gameName : "Unknown";
+
+        // Capitalize first character
+        String gameDisplayFormatted = Character.toUpperCase(gameDisplayName.charAt(0))
+                + gameDisplayName.substring(1);
 
         String message =
-                "time_id: " + timeId +
-                        "\ntype: " + type +
-                        "\ndigit: " + digit +
-                        "\nprice: " + price;
+                "Game:   " + gameDisplayFormatted + "\n" +
+                        "Type:   " + type + "\n" +
+                        "Digit:  " + digit + "\n" +
+                        "Price:  " + price;
 
         new AlertDialog.Builder(this)
                 .setTitle("Confirm Bid")
@@ -407,6 +414,7 @@ public class BidActivity extends AppCompatActivity {
                 .setNegativeButton("Cancel", null)
                 .show();
     }
+
     private String cleanLastEquals(String digits) {
         if (digits.endsWith("=")) {
             return digits.substring(0, digits.length() - 1);
@@ -414,6 +422,7 @@ public class BidActivity extends AppCompatActivity {
         return digits;
     }
 
+    // Backend call completely unchanged — raw timeId sent as before
     private void submitBid(String digit, int price, String type) {
 
         int timeId = isOpenSelected ? openId : closeId;
@@ -494,17 +503,18 @@ public class BidActivity extends AppCompatActivity {
                             txtBalance.setText(String.valueOf(newBalance));
                         }
 
-                        showSuccessDialogWithSound(successMessage);
+                        showSuccessDialogWithAnimation(successMessage);
                     }
 
                     @Override
                     public void onFailure(Call<UserDetailsResponse> call, Throwable t) {
-                        showSuccessDialogWithSound(successMessage);
+                        showSuccessDialogWithAnimation(successMessage);
                     }
                 });
     }
 
-    private void showSuccessDialogWithSound(String message) {
+    // Lottie animated success tick (SweetAlert2-style)
+    private void showSuccessDialogWithAnimation(String message) {
         try {
             MediaPlayer mp = MediaPlayer.create(this, R.raw.success_sound);
             mp.start();
@@ -514,13 +524,23 @@ public class BidActivity extends AppCompatActivity {
         }
 
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_success, null);
+
         TextView txtMessage = dialogView.findViewById(R.id.txtSuccessMessage);
         txtMessage.setText(message);
+
+        LottieAnimationView lottieView = dialogView.findViewById(R.id.lottieSuccess);
+        if (lottieView != null) {
+            lottieView.playAnimation();
+        }
 
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setCancelable(false)
                 .create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
 
         dialog.show();
 
@@ -529,7 +549,7 @@ public class BidActivity extends AppCompatActivity {
                 dialog.dismiss();
                 finish();
             }
-        }, 2000);
+        }, 2500);
     }
 
     private String getCurrentDateFormatted() {
