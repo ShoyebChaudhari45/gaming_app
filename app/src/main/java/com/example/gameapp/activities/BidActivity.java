@@ -322,54 +322,60 @@ public class BidActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
             @Override
             public void afterTextChanged(Editable editable) {
-
                 if (isEditing) return;
                 isEditing = true;
 
                 String input = editable.toString();
-
                 String clean = input.replace("=", "")
                         .replace(" ", "")
                         .replaceAll("[^0-9]", "");
 
-                StringBuilder formatted = new StringBuilder();
-
                 int blockSize;
-
-                if (gameType.equalsIgnoreCase("Jodi")) {
-                    blockSize = 2;
-                } else if (gameType.equalsIgnoreCase("Open")
-                        || gameType.equalsIgnoreCase("SP")
-                        || gameType.equalsIgnoreCase("DP")) {
-                    blockSize = 1;
-                } else if (gameType.equalsIgnoreCase("Cycle")) {
-                    // Cycle uses 2-character blocks
+                if (gameType.equalsIgnoreCase("Jodi") || gameType.equalsIgnoreCase("Cycle")) {
                     blockSize = 2;
                 } else if (gameType.equalsIgnoreCase("Patte")) {
                     blockSize = 3;
-                } else {
-                    blockSize = clean.length();
+                } else { // Open, SP, DP
+                    blockSize = 1;
                 }
 
-                for (int i = 0; i < clean.length(); i++) {
+                java.util.Set<String> uniqueBlocks = new java.util.LinkedHashSet<>();
+                StringBuilder formatted = new StringBuilder();
 
-                    formatted.append(clean.charAt(i));
+                int i = 0;
+                while (i < clean.length()) {
+                    int end = Math.min(i + blockSize, clean.length());
+                    String block = clean.substring(i, end);
 
-                    boolean shouldInsert = (i + 1) % blockSize == 0;
-
-                    if (shouldInsert && (i + 1) < clean.length()) {
-                        formatted.append("=");
+                    if (block.length() == blockSize) {
+                        // Complete block - add only if unique
+                        if (!uniqueBlocks.contains(block)) {
+                            uniqueBlocks.add(block);
+                            if (formatted.length() > 0) {
+                                formatted.append("=");
+                            }
+                            formatted.append(block);
+                        }
+                        // If duplicate, skip it (don't add to formatted)
+                    } else {
+                        // Partial block - always add (user still typing)
+                        if (formatted.length() > 0) {
+                            formatted.append("=");
+                        }
+                        formatted.append(block);
                     }
+
+                    i += blockSize;
                 }
 
                 etDigits.setText(formatted.toString());
                 etDigits.setSelection(etDigits.getText().length());
-
                 isEditing = false;
             }
+
+
 
         });
     }

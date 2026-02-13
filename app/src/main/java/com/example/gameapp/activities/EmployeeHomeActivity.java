@@ -592,18 +592,35 @@ public class EmployeeHomeActivity extends AppCompatActivity {
                         .replace(" ", "")
                         .replaceAll("[^0-9]", "");
 
-                StringBuilder formatted = new StringBuilder();
-
                 int blockSize = getBlockSize(selectedGameType.getName());
 
-                // Build formatted text
-                for (int i = 0; i < clean.length(); i++) {
-                    formatted.append(clean.charAt(i));
+                java.util.Set<String> uniqueBlocks = new java.util.LinkedHashSet<>();
+                StringBuilder formatted = new StringBuilder();
 
-                    boolean shouldInsert = (i + 1) % blockSize == 0;
-                    if (shouldInsert && (i + 1) < clean.length()) {
-                        formatted.append("=");
+                int i = 0;
+                while (i < clean.length()) {
+                    int end = Math.min(i + blockSize, clean.length());
+                    String block = clean.substring(i, end);
+
+                    if (block.length() == blockSize) {
+                        // Complete block - add only if unique
+                        if (!uniqueBlocks.contains(block)) {
+                            uniqueBlocks.add(block);
+                            if (formatted.length() > 0) {
+                                formatted.append("=");
+                            }
+                            formatted.append(block);
+                        }
+                        // If duplicate, skip it (don't add to formatted)
+                    } else {
+                        // Partial block - always add (user still typing)
+                        if (formatted.length() > 0) {
+                            formatted.append("=");
+                        }
+                        formatted.append(block);
                     }
+
+                    i += blockSize;
                 }
 
                 edtDigit.setText(formatted.toString());
