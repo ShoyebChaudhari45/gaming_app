@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -60,6 +61,20 @@ public class HomeActivity extends AppCompatActivity {
     private final List<GameItem> gameItems = new ArrayList<>();
     private GameTapAdapter gameTapAdapter;
 
+    // Auto-refresh mechanism
+    private Handler balanceRefreshHandler = new Handler();
+    private static final long BALANCE_REFRESH_INTERVAL = 30000; // 30 seconds
+
+    private Runnable balanceRefreshRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!isFinishing() && !isDestroyed()) {
+                loadUserDetailsQuietly(); // Silently refresh balance
+                balanceRefreshHandler.postDelayed(this, BALANCE_REFRESH_INTERVAL);
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -96,6 +111,26 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         updateBalanceUI();
+
+        // ✅ Start auto-refresh
+        balanceRefreshHandler.removeCallbacks(balanceRefreshRunnable);
+        balanceRefreshHandler.postDelayed(balanceRefreshRunnable, BALANCE_REFRESH_INTERVAL);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // ✅ Stop auto-refresh to save battery/data
+        balanceRefreshHandler.removeCallbacks(balanceRefreshRunnable);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // ✅ Clean up handler
+        balanceRefreshHandler.removeCallbacks(balanceRefreshRunnable);
     }
 
     private void initViews() {
@@ -272,6 +307,43 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<UserDetailsResponse> call, Throwable t) {
                         Log.e(TAG, "User details failed: " + t.getMessage());
+                    }
+                });
+    }
+
+    private void loadUserDetailsQuietly() {
+        ApiClient.getClient()
+                .create(ApiService.class)
+                .getUserDetails(
+                        "Bearer " + SessionManager.getToken(this),
+                        "application/json"
+                )
+                .enqueue(new Callback<UserDetailsResponse>() {
+
+                    @Override
+                    public void onResponse(Call<UserDetailsResponse> call,
+                                           Response<UserDetailsResponse> response) {
+
+                        if (response.isSuccessful()
+                                && response.body() != null
+                                && response.body().data != null) {
+
+                            UserDetailsResponse.User user = response.body().data;
+
+                            // Update balance in session
+                            SessionManager.saveBalance(HomeActivity.this, user.balance);
+
+                            // Update UI
+                            updateBalanceUI();
+
+                            Log.d(TAG, "Balance auto-refreshed: " + user.balance);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserDetailsResponse> call, Throwable t) {
+                        Log.e(TAG, "Silent balance refresh failed: " + t.getMessage());
+                        // Don't show error to user - it's a background operation
                     }
                 });
     }
@@ -460,8 +532,10 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void updateBalanceUI() {
-        int balance = SessionManager.getBalance(this);
-        txtBalance.setText(String.valueOf(balance));
+        if (txtBalance != null) {
+            int balance = SessionManager.getBalance(this);
+            txtBalance.setText(String.valueOf(balance));
+        }
     }
 
     @Override

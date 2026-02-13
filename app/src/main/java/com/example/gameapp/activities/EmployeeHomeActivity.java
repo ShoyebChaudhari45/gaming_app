@@ -2,15 +2,16 @@ package com.example.gameapp.activities;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -23,17 +24,23 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.gameapp.R;
 import com.example.gameapp.Adapters.EmployeeGameTypeAdapter;
 import com.example.gameapp.api.ApiClient;
 import com.example.gameapp.api.ApiService;
 import com.example.gameapp.models.GameType;
+import com.example.gameapp.models.request.LotteryRateRequest;
+import com.example.gameapp.models.response.CurrentTapResponse;
 import com.example.gameapp.models.response.GamesResponse;
+import com.example.gameapp.models.response.LotteryRateResponse;
 import com.example.gameapp.models.response.SupportResponse;
 import com.example.gameapp.models.response.UserDetailsResponse;
 import com.example.gameapp.session.SessionManager;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 
@@ -50,11 +57,17 @@ public class EmployeeHomeActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private ImageButton btnMenu;
     private ScrollView mainScrollView;
+    private SwipeRefreshLayout swipeRefresh;
 
     private long lastBackPressedTime = 0;
 
     private TextView txtPlayerName, txtPlayerMobile, txtViewProfile;
     private TextView txtBalance;
+
+    // Current Tap Views
+    private MaterialCardView cardCurrentTap;
+    private TextView txtCurrentTapName, txtCurrentTapDate, txtCurrentTapType, txtCurrentTapTime;
+    private int currentTapTimeId = -1;
 
     // Game types
     private RecyclerView rvGameTypes;
@@ -100,6 +113,21 @@ public class EmployeeHomeActivity extends AppCompatActivity {
     // Handler for delayed restoration
     private Handler handler = new Handler();
 
+    // ✅ NEW: Auto-refresh mechanism
+    private Handler balanceRefreshHandler = new Handler();
+    private static final long BALANCE_REFRESH_INTERVAL = 30000; // 30 seconds
+
+    private Runnable balanceRefreshRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!isFinishing() && !isDestroyed()) {
+                loadEmployeeDetailsQuietly(); // Silently refresh balance
+                loadCurrentTapQuietly(); // Also refresh current tap
+                balanceRefreshHandler.postDelayed(this, BALANCE_REFRESH_INTERVAL);
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -121,9 +149,11 @@ public class EmployeeHomeActivity extends AppCompatActivity {
         setupGameTypesRecyclerView();
         setupKeypad();
         setupAutoSave();
+        setupSwipeRefresh();
         loadEmployeeDetails();
         loadSupportData();
         loadGameTypes();
+        loadCurrentTap();
 
         // Restore state if available
         if (savedInstanceState != null) {
@@ -160,6 +190,7 @@ public class EmployeeHomeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
         // Save the scroll position and selected state immediately
         if (rvGameTypes != null && gameTypeAdapter != null) {
             GridLayoutManager layoutManager = (GridLayoutManager) rvGameTypes.getLayoutManager();
@@ -179,6 +210,9 @@ public class EmployeeHomeActivity extends AppCompatActivity {
         if (mainScrollView != null) {
             SessionManager.saveScrollPosition(this, mainScrollView.getScrollY());
         }
+
+        // ✅ Stop auto-refresh to save battery/data
+        balanceRefreshHandler.removeCallbacks(balanceRefreshRunnable);
     }
 
     @Override
@@ -192,6 +226,7 @@ public class EmployeeHomeActivity extends AppCompatActivity {
         }
 
         updateBalanceUI();
+        loadCurrentTap();
 
         // CRITICAL FIX: Delay restoration to ensure views are ready
         handler.postDelayed(() -> {
@@ -199,13 +234,21 @@ public class EmployeeHomeActivity extends AppCompatActivity {
                 performFullStateRestoration();
             }
         }, 100);
+
+        // ✅ Start auto-refresh
+        balanceRefreshHandler.removeCallbacks(balanceRefreshRunnable);
+        balanceRefreshHandler.postDelayed(balanceRefreshRunnable, BALANCE_REFRESH_INTERVAL);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         // Clean up handlers
         handler.removeCallbacksAndMessages(null);
+
+        // ✅ Clean up balance refresh handler
+        balanceRefreshHandler.removeCallbacks(balanceRefreshRunnable);
 
         // Clean up TextWatcher to prevent memory leak
         if (currentDigitWatcher != null) {
@@ -366,6 +409,14 @@ public class EmployeeHomeActivity extends AppCompatActivity {
         btnMenu = findViewById(R.id.btnMenu);
         txtBalance = findViewById(R.id.txtBalance);
         mainScrollView = findViewById(R.id.mainScrollView);
+        swipeRefresh = findViewById(R.id.swipeRefresh);
+
+        // Current Tap Views
+        cardCurrentTap = findViewById(R.id.cardCurrentTap);
+        txtCurrentTapName = findViewById(R.id.txtCurrentTapName);
+        txtCurrentTapDate = findViewById(R.id.txtCurrentTapDate);
+        txtCurrentTapType = findViewById(R.id.txtCurrentTapType);
+        txtCurrentTapTime = findViewById(R.id.txtCurrentTapTime);
 
         // Header views
         View headerView = navigationView.getHeaderView(0);
@@ -425,6 +476,80 @@ public class EmployeeHomeActivity extends AppCompatActivity {
             rvGameTypes.setSaveEnabled(true);
             rvGameTypes.setHasFixedSize(true);
         }
+    }
+
+    private void setupSwipeRefresh() {
+        swipeRefresh.setColorSchemeResources(R.color.dark_blue);
+        swipeRefresh.setOnRefreshListener(() -> {
+            loadCurrentTap();
+            loadGameTypes();
+            loadEmployeeDetails();
+            handler.postDelayed(() -> swipeRefresh.setRefreshing(false), 1000);
+        });
+    }
+
+    private void loadCurrentTap() {
+        ApiClient.getClient()
+                .create(ApiService.class)
+                .getCurrentTap("Bearer " + SessionManager.getToken(this))
+                .enqueue(new Callback<CurrentTapResponse>() {
+                    @Override
+                    public void onResponse(Call<CurrentTapResponse> call, Response<CurrentTapResponse> response) {
+                        if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                            CurrentTapResponse.CurrentTapData data = response.body().getData();
+
+                            currentTapTimeId = data.getTapTimeId();
+
+                            txtCurrentTapName.setText(data.getName());
+                            txtCurrentTapDate.setText(data.getCurrentDate());
+                            txtCurrentTapType.setText(data.getType().toUpperCase());
+                            txtCurrentTapTime.setText(data.getStartTime() + " - " + data.getEndTime());
+
+                            cardCurrentTap.setVisibility(View.VISIBLE);
+
+                            Log.d(TAG, "Current Tap loaded: " + new Gson().toJson(data));
+                        } else {
+                            cardCurrentTap.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CurrentTapResponse> call, Throwable t) {
+                        Log.e(TAG, "Current Tap API Error: " + t.getMessage());
+                        cardCurrentTap.setVisibility(View.GONE);
+                    }
+                });
+    }
+
+    // ✅ NEW: Silent current tap refresh
+    private void loadCurrentTapQuietly() {
+        ApiClient.getClient()
+                .create(ApiService.class)
+                .getCurrentTap("Bearer " + SessionManager.getToken(this))
+                .enqueue(new Callback<CurrentTapResponse>() {
+                    @Override
+                    public void onResponse(Call<CurrentTapResponse> call, Response<CurrentTapResponse> response) {
+                        if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                            CurrentTapResponse.CurrentTapData data = response.body().getData();
+
+                            currentTapTimeId = data.getTapTimeId();
+                            txtCurrentTapName.setText(data.getName());
+                            txtCurrentTapDate.setText(data.getCurrentDate());
+                            txtCurrentTapType.setText(data.getType().toUpperCase());
+                            txtCurrentTapTime.setText(data.getStartTime() + " - " + data.getEndTime());
+                            cardCurrentTap.setVisibility(View.VISIBLE);
+
+                            Log.d(TAG, "Current Tap auto-refreshed");
+                        } else {
+                            cardCurrentTap.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CurrentTapResponse> call, Throwable t) {
+                        Log.e(TAG, "Silent current tap refresh failed: " + t.getMessage());
+                    }
+                });
     }
 
     private void setupAutoSave() {
@@ -784,6 +909,11 @@ public class EmployeeHomeActivity extends AppCompatActivity {
             return;
         }
 
+        if (currentTapTimeId == -1) {
+            toast("No active game session available");
+            return;
+        }
+
         String digit = cleanLastEquals(edtDigit.getText().toString().trim());
         String point = edtPoint.getText().toString().trim();
 
@@ -850,13 +980,18 @@ public class EmployeeHomeActivity extends AppCompatActivity {
 
     private void showConfirmationDialog(String digit, int price, String type) {
 
+        String currentTapName = txtCurrentTapName.getText().toString();
+        String gameDisplayFormatted = Character.toUpperCase(currentTapName.charAt(0))
+                + currentTapName.substring(1);
+
         String message =
-                "Game Type: " + type +
-                        "\nDigit: " + digit +
-                        "\nPoint: " + price;
+                "Game:   " + gameDisplayFormatted + "\n" +
+                        "Type:   " + toTitleCase(type) + "\n" +
+                        "Digit:  " + digit + "\n" +
+                        "Price:  " + price;
 
         new AlertDialog.Builder(this)
-                .setTitle("Confirm Entry")
+                .setTitle("Confirm Bid")
                 .setMessage(message)
                 .setPositiveButton("Confirm",
                         (dialog, which) -> submitEntry(digit, price, type))
@@ -864,29 +999,160 @@ public class EmployeeHomeActivity extends AppCompatActivity {
                 .show();
     }
 
+    private String toTitleCase(String input) {
+        if (input == null || input.isEmpty()) return input;
+        if (input.equalsIgnoreCase("SP") || input.equalsIgnoreCase("DP") || input.equalsIgnoreCase("TP"))
+            return input.toUpperCase();
+
+        return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
+    }
+
     private void submitEntry(String digit, int price, String type) {
-        // TODO: Implement actual game submission logic
-        toast("Entry Submitted: " + type + " - " + digit + " - " + price);
 
-        // Clear fields after submission
-        edtDigit.setText("");
-        edtPoint.setText("");
-        edtDigit.requestFocus();
+        String apiType = toTitleCase(type);
 
-        // Deselect game type
-        selectedGameType = null;
-        selectedPosition = -1;
-        gameTypeAdapter.setSelectedPosition(-1);
-        SessionManager.saveSelectedGamePosition(this, -1);
+        LotteryRateRequest request = new LotteryRateRequest(
+                currentTapTimeId, apiType, digit, price
+        );
 
-        // Disable inputs again
-        edtDigit.setEnabled(false);
-        edtPoint.setEnabled(false);
+        Log.d(TAG, "Submitting bid: " + new Gson().toJson(request));
 
-        // Clear saved inputs
-        SessionManager.saveBidInputs(this, "", "");
+        ApiClient.getClient()
+                .create(ApiService.class)
+                .placeBid(
+                        "Bearer " + SessionManager.getToken(this),
+                        "application/json",
+                        request
+                )
+                .enqueue(new Callback<LotteryRateResponse>() {
 
-        Log.d(TAG, "Game Entry - Type: " + type + ", Digit: " + digit + ", Point: " + price);
+                    @Override
+                    public void onResponse(Call<LotteryRateResponse> call,
+                                           Response<LotteryRateResponse> resp) {
+
+                        if (resp.isSuccessful() && resp.body() != null) {
+                            refreshWalletBalance(resp.body().getMessage());
+
+                        } else {
+                            try {
+                                String errorJson = resp.errorBody() != null
+                                        ? resp.errorBody().string()
+                                        : "Unknown error";
+
+                                String cleanMsg = "Bid failed";
+
+                                if (errorJson.contains("\"message\"")) {
+                                    int start = errorJson.indexOf("\"message\"") + 11;
+                                    int end = errorJson.indexOf("\"", start);
+                                    if (end > start) {
+                                        cleanMsg = errorJson.substring(start, end);
+                                    }
+                                }
+
+                                toast(cleanMsg);
+
+                            } catch (Exception e) {
+                                toast("Bid failed");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<LotteryRateResponse> call, Throwable t) {
+                        toast("Network error: " + t.getMessage());
+                    }
+                });
+    }
+
+    private void refreshWalletBalance(String successMessage) {
+
+        ApiClient.getClient()
+                .create(ApiService.class)
+                .getUserDetails(
+                        "Bearer " + SessionManager.getToken(this),
+                        "application/json"
+                )
+                .enqueue(new Callback<UserDetailsResponse>() {
+
+                    @Override
+                    public void onResponse(Call<UserDetailsResponse> call,
+                                           Response<UserDetailsResponse> response) {
+
+                        if (response.isSuccessful()
+                                && response.body() != null
+                                && response.body().data != null) {
+
+                            int newBalance = response.body().data.balance;
+                            SessionManager.saveBalance(EmployeeHomeActivity.this, newBalance);
+                            txtBalance.setText(String.valueOf(newBalance));
+                        }
+
+                        showSuccessDialogWithAnimation(successMessage);
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserDetailsResponse> call, Throwable t) {
+                        showSuccessDialogWithAnimation(successMessage);
+                    }
+                });
+    }
+
+    private void showSuccessDialogWithAnimation(String message) {
+        try {
+            MediaPlayer mp = MediaPlayer.create(this, R.raw.success_sound);
+            mp.start();
+            mp.setOnCompletionListener(MediaPlayer::release);
+        } catch (Exception e) {
+            Log.e(TAG, "Sound error: " + e.getMessage());
+        }
+
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_success, null);
+
+        TextView txtMessage = dialogView.findViewById(R.id.txtSuccessMessage);
+        txtMessage.setText(message);
+
+        LottieAnimationView lottieView = dialogView.findViewById(R.id.lottieSuccess);
+        if (lottieView != null) {
+            lottieView.playAnimation();
+        }
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        dialog.show();
+
+        new Handler().postDelayed(() -> {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+
+                // Clear fields after submission
+                edtDigit.setText("");
+                edtPoint.setText("");
+                edtDigit.requestFocus();
+
+                // Deselect game type
+                selectedGameType = null;
+                selectedPosition = -1;
+                gameTypeAdapter.setSelectedPosition(-1);
+                SessionManager.saveSelectedGamePosition(EmployeeHomeActivity.this, -1);
+
+                // Disable inputs again
+                edtDigit.setEnabled(false);
+                edtPoint.setEnabled(false);
+
+                // Clear saved inputs
+                SessionManager.saveBidInputs(EmployeeHomeActivity.this, "", "");
+
+                // Refresh current tap
+                loadCurrentTap();
+            }
+        }, 4000);
     }
 
     private void loadSupportData() {
@@ -969,6 +1235,40 @@ public class EmployeeHomeActivity extends AppCompatActivity {
                     public void onFailure(Call<UserDetailsResponse> call, Throwable t) {
                         toast("Failed to load details");
                         Log.e(TAG, "Error: " + t.getMessage());
+                    }
+                });
+    }
+
+    // ✅ NEW: Silent employee details refresh
+    private void loadEmployeeDetailsQuietly() {
+        ApiClient.getClient()
+                .create(ApiService.class)
+                .getUserDetails(
+                        "Bearer " + SessionManager.getToken(this),
+                        "application/json"
+                )
+                .enqueue(new Callback<UserDetailsResponse>() {
+
+                    @Override
+                    public void onResponse(Call<UserDetailsResponse> call,
+                                           Response<UserDetailsResponse> response) {
+
+                        if (response.isSuccessful()
+                                && response.body() != null
+                                && response.body().data != null) {
+
+                            UserDetailsResponse.User user = response.body().data;
+
+                            SessionManager.saveBalance(EmployeeHomeActivity.this, user.balance);
+                            updateBalanceUI();
+
+                            Log.d(TAG, "Balance auto-refreshed: " + user.balance);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserDetailsResponse> call, Throwable t) {
+                        Log.e(TAG, "Silent balance refresh failed: " + t.getMessage());
                     }
                 });
     }

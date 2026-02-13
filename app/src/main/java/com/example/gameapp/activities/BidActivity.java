@@ -555,7 +555,7 @@ public class BidActivity extends AppCompatActivity {
                 dialog.dismiss();
                 finish();
             }
-        }, 2500);
+        }, 4000);
     }
 
     private String getCurrentDateFormatted() {

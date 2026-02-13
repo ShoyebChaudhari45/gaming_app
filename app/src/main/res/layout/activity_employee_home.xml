@@ -188,341 +188,421 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- MAIN CONTENT AREA WITH SCROLL - FIXED CONSTRAINTS -->
-        <ScrollView
-            android:id="@+id/mainScrollView"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:fillViewport="true"
-            android:scrollbars="none"
-            android:fadingEdge="none"
-            android:overScrollMode="never"
             app:layout_constraintTop_toBottomOf="@id/viewHeader"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <LinearLayout
+            <ScrollView
+                android:id="@+id/mainScrollView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@color/bg_main"
-                android:padding="12dp">
+                android:layout_height="match_parent"
+                android:fillViewport="false"
+                android:scrollbars="none"
+                android:fadingEdge="none"
+                android:overScrollMode="never">
 
-                <!-- GAME TYPES SECTION -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Select Game Type"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/textPrimary"
-                    android:layout_marginBottom="8dp"/>
-
-                <!-- GAME TYPES RECYCLERVIEW - EXACTLY 3 COLUMNS -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvGameTypes"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    android:clipToPadding="false"
-                    android:overScrollMode="never"
-                    android:visibility="visible"/>
-
-                <!-- ENTER BID SECTION -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Enter Digit"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/textPrimary"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginBottom="6dp"/>
-
-                <EditText
-                    android:id="@+id/edtDigit"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:background="@drawable/bg_input_field"
-                    android:inputType="number"
-                    android:enabled="false"
-                    android:gravity="center"
-                    android:textSize="30sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/textPrimary"
-                    android:textColorHint="#9E9E9E"
-                    android:textCursorDrawable="@null"
-                    android:importantForAutofill="no"/>
-
-                <!-- ENTER POINTS SECTION -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Enter Points"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/textPrimary"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="6dp"/>
-
-                <EditText
-                    android:id="@+id/edtPoint"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:background="@drawable/bg_input_field"
-                    android:inputType="number"
-                    android:enabled="false"
-                    android:gravity="center"
-                    android:textSize="30sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/textPrimary"
-                    android:textColorHint="#9E9E9E"
-                    android:textCursorDrawable="@null"
-                    android:importantForAutofill="no"/>
-
-                <!-- STABLE KEYPAD USING LINEAR LAYOUTS - DOESN'T BREAK ON SCREEN OFF/ON -->
-                <!-- STABLE KEYPAD USING LINEAR LAYOUTS - DOESN'T BREAK ON SCREEN OFF/ON -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginTop="12dp">
+                    android:background="@color/bg_main"
+                    android:padding="12dp">
 
-                    <!-- ROW 1: 1, 2, 3 -->
+                    <!-- CURRENT TAP SECTION -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardCurrentTap"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:visibility="gone"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="@android:color/white">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:padding="8dp"
+                            android:gravity="center_vertical">
+
+                            <!-- Left: Game Name & Date -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/txtCurrentTapName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="MILAN DAY"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/dark_blue"
+                                    android:fontFamily="sans-serif-medium"/>
+
+                                <TextView
+                                    android:id="@+id/txtCurrentTapDate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="14-02-2026"
+                                    android:textSize="10sp"
+                                    android:textColor="@color/textSecondary"
+                                    android:layout_marginTop="2dp"/>
+                            </LinearLayout>
+
+                            <!-- Right: Type & Time -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="end">
+
+                                <TextView
+                                    android:id="@+id/txtCurrentTapType"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="OPEN"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/dark_blue"
+                                    android:background="@drawable/bg_type_badge"
+                                    android:paddingHorizontal="10dp"
+                                    android:paddingVertical="3dp"/>
+
+                                <TextView
+                                    android:id="@+id/txtCurrentTapTime"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="12:30 AM - 10:00 AM"
+                                    android:textSize="9sp"
+                                    android:textColor="@color/textSecondary"
+                                    android:layout_marginTop="3dp"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- GAME TYPES SECTION -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Select Game Type"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/textPrimary"
+                        android:layout_marginBottom="6dp"/>
+
+                    <!-- GAME TYPES RECYCLERVIEW - EXACTLY 3 COLUMNS -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvGameTypes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:clipToPadding="false"
+                        android:overScrollMode="never"
+                        android:visibility="visible"/>
+
+                    <!-- ENTER BID SECTION -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Enter Digit"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/textPrimary"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="4dp"/>
+
+                    <EditText
+                        android:id="@+id/edtDigit"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_input_field"
+                        android:inputType="number"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/textPrimary"
+                        android:textColorHint="#9E9E9E"
+                        android:textCursorDrawable="@null"
+                        android:importantForAutofill="no"/>
+
+                    <!-- ENTER POINTS SECTION -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Enter Points"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/textPrimary"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="4dp"/>
+
+                    <EditText
+                        android:id="@+id/edtPoint"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_input_field"
+                        android:inputType="number"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/textPrimary"
+                        android:textColorHint="#9E9E9E"
+                        android:textCursorDrawable="@null"
+                        android:importantForAutofill="no"/>
+
+                    <!-- COMPACT KEYPAD -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
+                        android:orientation="vertical"
+                        android:layout_marginTop="8dp">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn1"
-                            android:layout_width="0dp"
-                            android:layout_height="42dp"
-                            android:layout_weight="1"
-                            android:layout_margin="2dp"
-                            android:text="1"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/textPrimary"
-                            app:cornerRadius="6dp"
-                            app:backgroundTint="#E0E0E0"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"/>
+                        <!-- ROW 1: 1, 2, 3 -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="3">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn2"
-                            android:layout_width="0dp"
-                            android:layout_height="42dp"
-                            android:layout_weight="1"
-                            android:layout_margin="2dp"
-                            android:text="2"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/textPrimary"
-                            app:cornerRadius="6dp"
-                            app:backgroundTint="#E0E0E0"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"/>
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn1"
+                                android:layout_width="0dp"
+                                android:layout_height="38dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:text="1"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/textPrimary"
+                                app:cornerRadius="6dp"
+                                app:backgroundTint="#E0E0E0"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn3"
-                            android:layout_width="0dp"
-                            android:layout_height="42dp"
-                            android:layout_weight="1"
-                            android:layout_margin="2dp"
-                            android:text="3"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/textPrimary"
-                            app:cornerRadius="6dp"
-                            app:backgroundTint="#E0E0E0"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"/>
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn2"
+                                android:layout_width="0dp"
+                                android:layout_height="38dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:text="2"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/textPrimary"
+                                app:cornerRadius="6dp"
+                                app:backgroundTint="#E0E0E0"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn3"
+                                android:layout_width="0dp"
+                                android:layout_height="38dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:text="3"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/textPrimary"
+                                app:cornerRadius="6dp"
+                                app:backgroundTint="#E0E0E0"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
+                        </LinearLayout>
+
+                        <!-- ROW 2: 4, 5, 6 -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="3">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn4"
+                                android:layout_width="0dp"
+                                android:layout_height="38dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:text="4"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/textPrimary"
+                                app:cornerRadius="6dp"
+                                app:backgroundTint="#E0E0E0"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn5"
+                                android:layout_width="0dp"
+                                android:layout_height="38dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:text="5"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/textPrimary"
+                                app:cornerRadius="6dp"
+                                app:backgroundTint="#E0E0E0"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn6"
+                                android:layout_width="0dp"
+                                android:layout_height="38dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:text="6"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/textPrimary"
+                                app:cornerRadius="6dp"
+                                app:backgroundTint="#E0E0E0"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
+                        </LinearLayout>
+
+                        <!-- ROW 3: 7, 8, 9 -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="3">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn7"
+                                android:layout_width="0dp"
+                                android:layout_height="38dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:text="7"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/textPrimary"
+                                app:cornerRadius="6dp"
+                                app:backgroundTint="#E0E0E0"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn8"
+                                android:layout_width="0dp"
+                                android:layout_height="38dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:text="8"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/textPrimary"
+                                app:cornerRadius="6dp"
+                                app:backgroundTint="#E0E0E0"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn9"
+                                android:layout_width="0dp"
+                                android:layout_height="38dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:text="9"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/textPrimary"
+                                app:cornerRadius="6dp"
+                                app:backgroundTint="#E0E0E0"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
+                        </LinearLayout>
+
+                        <!-- ROW 4: CLR, 0, DEL -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="3">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnClear"
+                                android:layout_width="0dp"
+                                android:layout_height="38dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:text="CLR"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="@android:color/white"
+                                app:cornerRadius="6dp"
+                                app:backgroundTint="#FF9800"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn0"
+                                android:layout_width="0dp"
+                                android:layout_height="38dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:text="0"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/textPrimary"
+                                app:cornerRadius="6dp"
+                                app:backgroundTint="#E0E0E0"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnDelete"
+                                android:layout_width="0dp"
+                                android:layout_height="38dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:text="DEL"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="@android:color/white"
+                                app:cornerRadius="6dp"
+                                app:backgroundTint="#E53935"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"/>
+                        </LinearLayout>
                     </LinearLayout>
 
-                    <!-- ROW 2: 4, 5, 6 -->
-                    <LinearLayout
+                    <!-- SUBMIT BUTTON -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSubmit"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn4"
-                            android:layout_width="0dp"
-                            android:layout_height="42dp"
-                            android:layout_weight="1"
-                            android:layout_margin="2dp"
-                            android:text="4"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/textPrimary"
-                            app:cornerRadius="6dp"
-                            app:backgroundTint="#E0E0E0"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn5"
-                            android:layout_width="0dp"
-                            android:layout_height="42dp"
-                            android:layout_weight="1"
-                            android:layout_margin="2dp"
-                            android:text="5"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/textPrimary"
-                            app:cornerRadius="6dp"
-                            app:backgroundTint="#E0E0E0"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn6"
-                            android:layout_width="0dp"
-                            android:layout_height="42dp"
-                            android:layout_weight="1"
-                            android:layout_margin="2dp"
-                            android:text="6"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/textPrimary"
-                            app:cornerRadius="6dp"
-                            app:backgroundTint="#E0E0E0"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"/>
-                    </LinearLayout>
-
-                    <!-- ROW 3: 7, 8, 9 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn7"
-                            android:layout_width="0dp"
-                            android:layout_height="42dp"
-                            android:layout_weight="1"
-                            android:layout_margin="2dp"
-                            android:text="7"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/textPrimary"
-                            app:cornerRadius="6dp"
-                            app:backgroundTint="#E0E0E0"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn8"
-                            android:layout_width="0dp"
-                            android:layout_height="42dp"
-                            android:layout_weight="1"
-                            android:layout_margin="2dp"
-                            android:text="8"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/textPrimary"
-                            app:cornerRadius="6dp"
-                            app:backgroundTint="#E0E0E0"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn9"
-                            android:layout_width="0dp"
-                            android:layout_height="42dp"
-                            android:layout_weight="1"
-                            android:layout_margin="2dp"
-                            android:text="9"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/textPrimary"
-                            app:cornerRadius="6dp"
-                            app:backgroundTint="#E0E0E0"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"/>
-                    </LinearLayout>
-
-                    <!-- ROW 4: CLR, 0, DEL -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnClear"
-                            android:layout_width="0dp"
-                            android:layout_height="42dp"
-                            android:layout_weight="1"
-                            android:layout_margin="2dp"
-                            android:text="CLR"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@android:color/white"
-                            app:cornerRadius="6dp"
-                            app:backgroundTint="#FF9800"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn0"
-                            android:layout_width="0dp"
-                            android:layout_height="42dp"
-                            android:layout_weight="1"
-                            android:layout_margin="2dp"
-                            android:text="0"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/textPrimary"
-                            app:cornerRadius="6dp"
-                            app:backgroundTint="#E0E0E0"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnDelete"
-                            android:layout_width="0dp"
-                            android:layout_height="42dp"
-                            android:layout_weight="1"
-                            android:layout_margin="2dp"
-                            android:text="DEL"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@android:color/white"
-                            app:cornerRadius="6dp"
-                            app:backgroundTint="#E53935"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"/>
-                    </LinearLayout>
+                        android:layout_height="46dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="SUBMIT BID"
+                        android:textColor="@android:color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="8dp"
+                        app:backgroundTint="@color/dark_blue"
+                        app:elevation="3dp"
+                        app:icon="@drawable/ic_check"
+                        app:iconGravity="textStart"
+                        app:iconSize="18dp"
+                        app:iconTint="@android:color/white"/>
 
                 </LinearLayout>
-
-                <!-- SUBMIT BUTTON -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSubmit"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginBottom="12dp"
-                    android:text="SUBMIT BID"
-                    android:textColor="@android:color/white"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    app:cornerRadius="8dp"
-                    app:backgroundTint="@color/dark_blue"
-                    app:elevation="3dp"
-                    app:icon="@drawable/ic_check"
-                    app:iconGravity="textStart"
-                    app:iconSize="20dp"
-                    app:iconTint="@android:color/white"/>
-
-            </LinearLayout>
-        </ScrollView>
+            </ScrollView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -61,6 +61,13 @@ public class AddPointsActivity extends AppCompatActivity {
         gridPrices = findViewById(R.id.grid);
         imgQr = findViewById(R.id.imgQr);
         txtFileName = findViewById(R.id.txtFileName);
+        ImageButton btnRefresh = findViewById(R.id.btnRefresh);
+
+        btnRefresh.setOnClickListener(v -> {
+            btnRefresh.animate().rotationBy(360).setDuration(600).start();
+            refreshBalance();
+        });
+
 
         MaterialButton btnSelectFile = findViewById(R.id.btnSelectFile);
         MaterialButton btnSubmit = findViewById(R.id.btnSubmit);
@@ -253,6 +260,65 @@ public class AddPointsActivity extends AppCompatActivity {
         btn.setOnClickListener(v -> edtPoints.setText(amount));
 
         return btn;
+    }
+    private void refreshBalance() {
+
+        progressDialog.setMessage("Refreshing balance...");
+        progressDialog.show();
+
+        apiService.getUserDetails(
+                "Bearer " + SessionManager.getToken(this),
+                "application/json"
+        ).enqueue(new Callback<com.example.gameapp.models.response.UserDetailsResponse>() {
+
+            @Override
+            public void onResponse(
+                    Call<com.example.gameapp.models.response.UserDetailsResponse> call,
+                    Response<com.example.gameapp.models.response.UserDetailsResponse> response) {
+
+                progressDialog.dismiss();
+
+                if (response.isSuccessful()
+                        && response.body() != null
+                        && response.body().data != null) {
+
+                    int newBalance = response.body().data.balance;
+
+                    // Save new balance
+                    SessionManager.saveBalance(AddPointsActivity.this, newBalance);
+
+                    // Update UI
+                    txtPoints.setText(String.valueOf(newBalance));
+
+                    Toast.makeText(
+                            AddPointsActivity.this,
+                            "Balance updated",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                } else {
+                    Toast.makeText(
+                            AddPointsActivity.this,
+                            "Failed to refresh balance",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
+
+            @Override
+            public void onFailure(
+                    Call<com.example.gameapp.models.response.UserDetailsResponse> call,
+                    Throwable t) {
+
+                progressDialog.dismiss();
+
+                Toast.makeText(
+                        AddPointsActivity.this,
+                        "Network error",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
     }
 
     // =====================================================

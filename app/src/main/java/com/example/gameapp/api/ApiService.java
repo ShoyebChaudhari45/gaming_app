@@ -13,6 +13,7 @@ import com.example.gameapp.models.request.WithdrawRequest;
 import com.example.gameapp.models.response.BidHistoryResponse;
 import com.example.gameapp.models.response.ChangePasswordResponse;
 import com.example.gameapp.models.response.CommonResponse;
+import com.example.gameapp.models.response.CurrentTapResponse;
 import com.example.gameapp.models.response.DepositResponse;
 import com.example.gameapp.models.response.GameRateResponse;
 import com.example.gameapp.models.response.GamesResponse;
@@ -173,7 +174,10 @@ public interface ApiService {
             @Query("start_date") String startDate,
             @Query("end_date") String endDate
     );
-
+    @GET("current-tap")
+    Call<CurrentTapResponse> getCurrentTap(
+            @Header("Authorization") String token
+    );
 }
 //46|Q3mgxI7zB62rDYzmpZrxmlp8Achw43lyDL0TEpPda`c7a5f73
 // here all the api services should be placed in this file 

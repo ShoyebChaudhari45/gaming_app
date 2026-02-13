@@ -50,6 +50,9 @@ public class WithdrawActivity extends AppCompatActivity {
         txtBalance = findViewById(R.id.txtBalance);
         etAmount = findViewById(R.id.etAmount);
         imgProof = findViewById(R.id.imgProof);
+        ImageButton btnRefresh = findViewById(R.id.btnRefresh);
+
+        btnRefresh.setOnClickListener(v -> refreshBalance());
 
         ImageButton btnBack = findViewById(R.id.btnBack);
         MaterialButton btnUpload = findViewById(R.id.btnUploadProof);
@@ -127,11 +130,9 @@ public class WithdrawActivity extends AppCompatActivity {
             return;
         }
 
-        // ------------------------- NEW FIX 🔥 -------------------------
         RequestBody reqFile = RequestBody.create(MediaType.parse("*/*"), file);
         MultipartBody.Part proof =
                 MultipartBody.Part.createFormData("payment_proof", file.getName(), reqFile);
-        // ---------------------------------------------------------------
 
         RequestBody amt = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(amount));
         RequestBody mode = RequestBody.create(MediaType.parse("text/plain"), "upi");
@@ -149,13 +150,18 @@ public class WithdrawActivity extends AppCompatActivity {
 
                 if (resp.isSuccessful() && resp.body() != null) {
 
-                    int newBalance = balance - amount;
-                    SessionManager.saveBalance(WithdrawActivity.this, newBalance);
-                    txtBalance.setText(String.valueOf(newBalance));
+                    // ✅ FIX: Don't deduct balance immediately
+                    // Balance will be deducted only when backend approves
 
+                    // ❌ OLD CODE (REMOVED):
+                    // int newBalance = balance - amount;
+                    // SessionManager.saveBalance(WithdrawActivity.this, newBalance);
+                    // txtBalance.setText(String.valueOf(newBalance));
+
+                    // ✅ NEW: Show pending status message
                     Toast.makeText(
                             WithdrawActivity.this,
-                            resp.body().getMessage(),
+                            "Withdrawal request submitted! Status: Pending approval",
                             Toast.LENGTH_LONG
                     ).show();
 
@@ -173,5 +179,62 @@ public class WithdrawActivity extends AppCompatActivity {
             }
         });
     }
+    private void refreshBalance() {
+
+        dialog.setMessage("Refreshing balance...");
+        dialog.show();
+
+        apiService.getUserDetails(
+                "Bearer " + SessionManager.getToken(this),
+                "application/json"
+        ).enqueue(new Callback<com.example.gameapp.models.response.UserDetailsResponse>() {
+
+            @Override
+            public void onResponse(Call<com.example.gameapp.models.response.UserDetailsResponse> call,
+                                   Response<com.example.gameapp.models.response.UserDetailsResponse> response) {
+
+                dialog.dismiss();
+
+                if (response.isSuccessful()
+                        && response.body() != null
+                        && response.body().data != null) {
+
+                    int newBalance = response.body().data.balance;
+
+                    // Save new balance
+                    SessionManager.saveBalance(WithdrawActivity.this, newBalance);
+
+                    // Update UI
+                    txtBalance.setText(String.valueOf(newBalance));
+
+                    Toast.makeText(
+                            WithdrawActivity.this,
+                            "Balance updated",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                } else {
+                    Toast.makeText(
+                            WithdrawActivity.this,
+                            "Failed to refresh balance",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<com.example.gameapp.models.response.UserDetailsResponse> call,
+                                  Throwable t) {
+
+                dialog.dismiss();
+                Toast.makeText(
+                        WithdrawActivity.this,
+                        "Network error",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
+    }
+
 
 }
