@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="JODI"
-        android:textSize="11sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="#212121"
         android:fontFamily="sans-serif-medium"
