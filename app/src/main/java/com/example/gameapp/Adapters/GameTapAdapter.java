@@ -85,15 +85,37 @@ public class GameTapAdapter
     }
 
     private String getResultText(TapsResponse.Tap openTap, TapsResponse.Tap closeTap) {
-        if (openTap != null && openTap.getResult() != null && !openTap.getResult().isEmpty()) {
-            return openTap.getResult();
-        }
-        if (closeTap != null && closeTap.getResult() != null && !closeTap.getResult().isEmpty()) {
-            return closeTap.getResult();
-        }
-        return "***-**-***";
-    }
+        String openResult = (openTap != null && openTap.getResult() != null && !openTap.getResult().isEmpty())
+                ? openTap.getResult() : null;
 
+        String closeResult = (closeTap != null && closeTap.getResult() != null && !closeTap.getResult().isEmpty())
+                ? closeTap.getResult() : null;
+
+        if (openResult != null && closeResult != null) {
+            // open  = "180-9"   → parts: ["180", "9"]
+            // close = "9-360"   → parts: ["9",   "360"]
+            // merged → "180-" + "9" + "9" + "-360" = "180-99-360"
+
+            String[] openParts  = openResult.split("-");
+            String[] closeParts = closeResult.split("-");
+
+            String left   = openParts.length  > 0 ? openParts[0]  : "";   // "180"
+            String midL   = openParts.length  > 1 ? openParts[1]  : "";   // "9"
+            String midR   = closeParts.length > 0 ? closeParts[0] : "";   // "9"
+            String right  = closeParts.length > 1 ? closeParts[1] : "";   // "360"
+
+            return left + "-" + midL + midR + "-" + right;  // "180-99-360"
+
+        } else if (openResult != null) {
+            return openResult;   // e.g. "478-9"
+
+        } else if (closeResult != null) {
+            return closeResult;  // e.g. "9-360"
+
+        } else {
+            return "***-**-***";
+        }
+    }
     private String determineGameStatus(TapsResponse.Tap openTap, TapsResponse.Tap closeTap) {
         String openStatus = openTap != null ? openTap.getStatus() : null;
         String closeStatus = closeTap != null ? closeTap.getStatus() : null;

@@ -55,7 +55,7 @@
                 android:layout_below="@id/txtGameName"
                 android:layout_toEndOf="@id/imgGameIcon"
                 android:layout_marginStart="8dp"
-                android:text="257-4*-***"
+                android:text="257-44-767"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="#FF6B00"
