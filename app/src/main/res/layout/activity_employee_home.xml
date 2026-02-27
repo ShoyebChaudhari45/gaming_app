@@ -253,7 +253,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="14-02-2026"
-                                    android:textSize="10sp"
+                                    android:textSize="13sp"
                                     android:textColor="@color/textSecondary"
                                     android:layout_marginTop="2dp"/>
                             </LinearLayout>
@@ -270,7 +270,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="OPEN"
-                                    android:textSize="12sp"
+                                    android:textSize="15sp"
                                     android:textStyle="bold"
                                     android:textColor="@color/dark_blue"
                                     android:background="@drawable/bg_type_badge"
@@ -282,7 +282,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="12:30 AM - 10:00 AM"
-                                    android:textSize="9sp"
+                                    android:textSize="13sp"
                                     android:textColor="@color/textSecondary"
                                     android:layout_marginTop="3dp"/>
                             </LinearLayout>
@@ -590,14 +590,14 @@
                         android:layout_marginBottom="16dp"
                         android:text="SUBMIT BID"
                         android:textColor="@android:color/white"
-                        android:textSize="15sp"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         app:cornerRadius="8dp"
                         app:backgroundTint="@color/dark_blue"
                         app:elevation="3dp"
                         app:icon="@drawable/ic_check"
                         app:iconGravity="textStart"
-                        app:iconSize="18dp"
+                        app:iconSize="20dp"
                         app:iconTint="@android:color/white"/>
 
                 </LinearLayout>
