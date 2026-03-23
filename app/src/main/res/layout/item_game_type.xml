@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardGameType"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="6dp"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@android:color/white"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center">
+
+        <!-- CIRCULAR IMAGE CONTAINER -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            app:cardCornerRadius="42.5dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#F5F7FA">
+
+            <ImageView
+                android:id="@+id/imgGameType"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_placeholder"/>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- GAME NAME -->
+        <TextView
+            android:id="@+id/txtGameTypeName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Single Digit"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/textPrimary"
+            android:fontFamily="sans-serif-medium"
+            android:textAlignment="center"
+            android:maxLines="2"
+            android:ellipsize="end"/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

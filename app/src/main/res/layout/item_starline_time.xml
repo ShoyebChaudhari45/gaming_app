@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="6dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
+
+        <!-- TIME -->
+        <TextView
+            android:id="@+id/txtTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="10:00 AM"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#D32F2F"
+            android:fontFamily="sans-serif-medium"/>
+
+        <!-- RESULT CODE -->
+        <TextView
+            android:id="@+id/txtResultCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="179-7"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FF6B00"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.08"/>
+
+        <!-- PLAY BUTTON -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btnPlay"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="#D32F2F">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_play"
+                app:tint="@android:color/white"/>
+        </com.google.android.material.card.MaterialCardView>
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

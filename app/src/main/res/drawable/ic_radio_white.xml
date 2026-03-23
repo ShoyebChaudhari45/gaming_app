@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/radio_button_selector.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Checked state - White filled circle -->
+    <item android:state_checked="true">
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <size android:width="18dp" android:height="18dp"/>
+                    <solid android:color="@android:color/white"/>
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+    <!-- Unchecked state - Gray outlined circle -->
+    <item android:state_checked="false">
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <size android:width="18dp" android:height="18dp"/>
+                    <stroke android:width="2dp" android:color="#9E9E9E"/>
+                    <solid android:color="@android:color/transparent"/>
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+</selector>

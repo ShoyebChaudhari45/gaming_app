@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="24dp"
+        android:gravity="center_vertical">
+
+        <!-- GAME NAME -->
+        <TextView
+            android:id="@+id/txtGameName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Single Digit"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FF6B00"
+            android:fontFamily="sans-serif-medium"/>
+
+        <!-- PRICE RANGE -->
+        <TextView
+            android:id="@+id/txtPriceRange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10-95"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#D32F2F"
+            android:fontFamily="sans-serif-medium"/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,11 @@
+<!-- res/drawable/bg_button_primary.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#6EC1E4"/> <!-- Sky Blue -->
+    <corners android:radius="32dp"/>
+</shape>
+
+<!--    &lt;!&ndash; res/drawable/bg_button_secondary.xml &ndash;&gt;-->
+<!--<shape xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--<solid android:color="#FFD966"/> &lt;!&ndash; Light Yellow &ndash;&gt;-->
+<!--<corners android:radius="32dp"/>-->
+<!--</shape>-->

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="PinBox">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:background">@drawable/bg_pin_box</item>
+        <item name="android:layout_margin">10dp</item>
+    </style>
+
+
+    <style name="KeypadButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">72dp</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:background">@drawable/bg_keypad_btn</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="PinKey">
+        <item name="android:layout_width">@dimen/pin_btn_size</item>
+        <item name="android:layout_height">@dimen/pin_btn_size</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:background">@drawable/bg_keypad_circle</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="PointButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">44dp</item>
+        <item name="android:layout_margin">6dp</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:background">@drawable/bg_button_primary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="CircleImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+
+        <!-- Keypad Button Style -->
+        <style name="KeypadButtonemp">
+            <item name="android:layout_width">0dp</item>
+            <item name="android:layout_height">60dp</item>
+            <item name="android:layout_weight">1</item>
+            <item name="android:textColor">@color/dark_blue</item>
+            <item name="android:textSize">22sp</item>
+            <item name="android:textStyle">bold</item>
+            <item name="cornerRadius">8dp</item>
+            <item name="backgroundTint">#F5F5F5</item>
+            <item name="strokeColor">@color/dark_blue</item>
+            <item name="strokeWidth">1dp</item>
+            <item name="elevation">1dp</item>
+        </style>
+
+    </resources>
+
+

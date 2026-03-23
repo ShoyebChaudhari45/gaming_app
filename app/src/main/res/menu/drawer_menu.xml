@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_home"
+            android:title="Home"
+            android:icon="@drawable/ic_home"/>
+
+        <item
+            android:id="@+id/nav_profile"
+            android:title="Profile"
+            android:icon="@drawable/ic_profile"/>
+
+    </group>
+
+    <group android:id="@+id/group_wallet">
+
+        <item
+            android:id="@+id/nav_add_funds"
+            android:title="Add Funds"
+            android:icon="@drawable/ic_add"/>
+
+        <item
+            android:id="@+id/nav_withdraw"
+            android:title="Withdraw Funds"
+            android:icon="@drawable/ic_withdraw"/>
+
+        <item
+            android:id="@+id/nav_wallet"
+            android:title="Wallet Statement"
+            android:icon="@drawable/ic_wallet"/>
+
+    </group>
+
+    <group android:id="@+id/group_history">
+
+        <item
+            android:id="@+id/nav_bid_history"
+            android:title="Bid History"
+            android:icon="@drawable/ic_history"/>
+
+
+
+    </group>
+
+    <group android:id="@+id/group_info">
+
+        <item
+            android:id="@+id/nav_game_rates"
+            android:title="Game Rates"
+            android:icon="@drawable/ic_rates"/>
+
+        <item
+            android:id="@+id/nav_support"
+            android:title="Support"
+            android:icon="@drawable/ic_support"/>
+
+        <item
+            android:id="@+id/nav_share"
+            android:title="Share App"
+            android:icon="@drawable/ic_share"/>
+        <item
+            android:id="@+id/nav_panel_access"
+            android:title="Panel Access"
+            android:icon="@drawable/ic_panel"/>
+
+    </group>
+
+    <group android:id="@+id/group_account">
+
+        <item
+            android:id="@+id/nav_change_password"
+            android:title="Change Password"
+            android:icon="@drawable/ic_lock"/>
+
+        <item
+            android:id="@+id/nav_logout"
+            android:title="Logout"
+            android:icon="@drawable/ic_logout"/>
+
+    </group>
+
+</menu>

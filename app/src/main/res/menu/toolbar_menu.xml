@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_wallet"
+        android:title="₹ 2500"
+        android:icon="@drawable/ic_wallet"
+        android:showAsAction="always"/>
+
+</menu>
