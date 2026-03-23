@@ -13,6 +13,8 @@ Change Password
 
 Profile Management
 
+Delete Account (with double confirmation)
+
 Session handling using SharedPreferences
 
 🎯 Game & Bidding
@@ -67,6 +69,7 @@ Endpoint	Method	Description
 /user	POST	Register User
 /user/details	GET	Fetch User Profile
 /user/change-password	POST	Change Password
+/employee	DELETE	Delete (soft-delete) User Account
 💰 Wallet APIs
 Endpoint	Method	Description
 /wallet/deposit	POST	Deposit money
@@ -115,6 +118,7 @@ Experience an exciting gaming platform with real-time bidding, secure wallet tra
 ✔ Add & withdraw money securely
 ✔ Multiple game types & rates
 ✔ Track wallet history in real time
+✔ Delete account option with safety confirmation
 ✔ Fast, safe & user-friendly design
 
 Play smarter. Bid faster. Win bigger.

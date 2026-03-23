@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.GravityCompat;
@@ -32,6 +33,7 @@ import com.example.gameapp.models.response.GameItem;
 import com.example.gameapp.models.response.SupportResponse;
 import com.example.gameapp.models.response.TapsResponse;
 import com.example.gameapp.models.response.UserDetailsResponse;
+import com.example.gameapp.models.response.DeleteAccountResponse;
 import com.example.gameapp.session.SessionManager;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
@@ -223,6 +225,8 @@ public class HomeActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_VIEW,
                         Uri.parse("https://lottery.durwankurgroup.com/panel/login"));
                 startActivity(intent);
+            } else if (id == R.id.nav_delete_account) {
+                showDeleteAccountConfirmation();
             } else if (id == R.id.nav_logout) {
                 SessionManager.logout(this);
                 startActivity(new Intent(this, LoginActivity.class));
@@ -504,6 +508,58 @@ public class HomeActivity extends AppCompatActivity {
         i.putExtra(Intent.EXTRA_TEXT,
                 "Download the app:\nhttps://play.google.com/store/apps/details?id=" + getPackageName());
         startActivity(Intent.createChooser(i, "Share App"));
+    }
+
+    private void showDeleteAccountConfirmation() {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Account")
+                .setMessage("Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    // Second confirmation
+                    new AlertDialog.Builder(this)
+                            .setTitle("Final Confirmation")
+                            .setMessage("This is your last chance. Do you really want to permanently delete your account?")
+                            .setPositiveButton("Yes, Delete", (d2, w2) -> deleteAccount())
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void deleteAccount() {
+        String token = "Bearer " + SessionManager.getToken(this);
+
+        ApiClient.getClient()
+                .create(ApiService.class)
+                .deleteAccount(token)
+                .enqueue(new Callback<DeleteAccountResponse>() {
+                    @Override
+                    public void onResponse(Call<DeleteAccountResponse> call,
+                                           Response<DeleteAccountResponse> response) {
+                        if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                            Toast.makeText(HomeActivity.this,
+                                    response.body().getMessage() != null ? response.body().getMessage() : "Account deleted successfully",
+                                    Toast.LENGTH_LONG).show();
+                            SessionManager.logout(HomeActivity.this);
+                            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(HomeActivity.this,
+                                    "Failed to delete account. Please try again.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<DeleteAccountResponse> call, Throwable t) {
+                        Toast.makeText(HomeActivity.this,
+                                "Network error. Please check your connection.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void toast(String msg) {

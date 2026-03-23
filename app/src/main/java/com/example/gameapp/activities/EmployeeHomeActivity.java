@@ -39,6 +39,7 @@ import com.example.gameapp.models.response.GamesResponse;
 import com.example.gameapp.models.response.LotteryRateResponse;
 import com.example.gameapp.models.response.SupportResponse;
 import com.example.gameapp.models.response.UserDetailsResponse;
+import com.example.gameapp.models.response.DeleteAccountResponse;
 import com.example.gameapp.session.SessionManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -810,6 +811,8 @@ public class EmployeeHomeActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_VIEW,
                         Uri.parse("https://lottery.durwankurgroup.com/panel/login"));
                 startActivity(intent);
+            } else if (id == R.id.nav_delete_account) {
+                showDeleteAccountConfirmation();
             } else if (id == R.id.nav_logout) {
                 SessionManager.logout(this);
                 startActivity(new Intent(this, LoginActivity.class));
@@ -818,6 +821,58 @@ public class EmployeeHomeActivity extends AppCompatActivity {
 
             return true;
         });
+    }
+
+    private void showDeleteAccountConfirmation() {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Account")
+                .setMessage("Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    // Second confirmation
+                    new AlertDialog.Builder(this)
+                            .setTitle("Final Confirmation")
+                            .setMessage("This is your last chance. Do you really want to permanently delete your account?")
+                            .setPositiveButton("Yes, Delete", (d2, w2) -> deleteAccount())
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void deleteAccount() {
+        String token = "Bearer " + SessionManager.getToken(this);
+
+        ApiClient.getClient()
+                .create(ApiService.class)
+                .deleteAccount(token)
+                .enqueue(new Callback<DeleteAccountResponse>() {
+                    @Override
+                    public void onResponse(Call<DeleteAccountResponse> call,
+                                           Response<DeleteAccountResponse> response) {
+                        if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                            Toast.makeText(EmployeeHomeActivity.this,
+                                    response.body().getMessage() != null ? response.body().getMessage() : "Account deleted successfully",
+                                    Toast.LENGTH_LONG).show();
+                            SessionManager.logout(EmployeeHomeActivity.this);
+                            Intent intent = new Intent(EmployeeHomeActivity.this, LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(EmployeeHomeActivity.this,
+                                    "Failed to delete account. Please try again.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<DeleteAccountResponse> call, Throwable t) {
+                        Toast.makeText(EmployeeHomeActivity.this,
+                                "Network error. Please check your connection.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void setupActionButtons() {
