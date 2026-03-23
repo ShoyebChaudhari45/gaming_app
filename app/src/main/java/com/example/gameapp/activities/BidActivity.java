@@ -105,7 +105,7 @@ public class BidActivity extends AppCompatActivity {
 
     private void setupUI() {
         txtTitle.setText(gameType);
-        txtBalance.setText(String.valueOf(SessionManager.getBalance(this)));
+        txtBalance.setText(SessionManager.getFormattedBalance(this));
         txtCurrentDate.setText(getCurrentDateFormatted());
 
         if (gameImage != null)
@@ -504,9 +504,9 @@ public class BidActivity extends AppCompatActivity {
                                 && response.body() != null
                                 && response.body().data != null) {
 
-                            int newBalance = response.body().data.balance;
+                            double newBalance = response.body().data.balance;
                             SessionManager.saveBalance(BidActivity.this, newBalance);
-                            txtBalance.setText(String.valueOf(newBalance));
+                            txtBalance.setText(SessionManager.formatBalance(newBalance));
                         }
 
                         showSuccessDialogWithAnimation(successMessage);
