@@ -14,6 +14,7 @@ import com.example.gameapp.models.response.BidHistoryResponse;
 import com.example.gameapp.models.response.ChangePasswordResponse;
 import com.example.gameapp.models.response.CommonResponse;
 import com.example.gameapp.models.response.CurrentTapResponse;
+import com.example.gameapp.models.response.DeleteAccountResponse;
 import com.example.gameapp.models.response.DepositResponse;
 import com.example.gameapp.models.response.GameRateResponse;
 import com.example.gameapp.models.response.GamesResponse;
@@ -39,6 +40,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.DELETE;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
 
@@ -176,6 +178,15 @@ public interface ApiService {
     );
     @GET("current-tap")
     Call<CurrentTapResponse> getCurrentTap(
+            @Header("Authorization") String token
+    );
+
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    @DELETE("employee")
+    Call<DeleteAccountResponse> deleteAccount(
             @Header("Authorization") String token
     );
 }
