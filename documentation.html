@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game App - Complete Technical Documentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#1a1a2e;--secondary:#16213e;--accent:#0f3460;--highlight:#e94560;--gold:#f5a623;--success:#00c853;--info:#2196f3;--warn:#ff9800;--danger:#f44336;--bg:#0a0a1a;--surface:#12122a;--card:#1a1a3e;--border:#2a2a5e;--text:#e8e8f0;--text-muted:#8888aa;--gradient:linear-gradient(135deg,#667eea 0%,#764ba2 100%);--gradient2:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);--gradient3:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%)}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+
+/* COVER */
+.cover{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,#0a0a1a 0%,#1a1a3e 50%,#0f3460 100%);position:relative;overflow:hidden}
+.cover::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(233,69,96,.15),transparent 70%);top:-100px;right:-100px;border-radius:50%}
+.cover::after{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(79,172,254,.1),transparent 70%);bottom:-50px;left:-50px;border-radius:50%}
+.cover-content{position:relative;z-index:1}
+.cover h1{font-size:3.5rem;font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;letter-spacing:-1px}
+.cover .subtitle{font-size:1.3rem;color:var(--text-muted);margin-bottom:30px}
+.cover .badge{display:inline-block;background:var(--card);border:1px solid var(--border);padding:8px 20px;border-radius:50px;font-size:.85rem;color:var(--gold);margin:6px}
+.cover .version{margin-top:20px;font-size:.9rem;color:var(--text-muted)}
+
+/* TOC */
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;margin:40px auto;max-width:700px}
+.toc h2{font-size:1.4rem;margin-bottom:20px;color:var(--gold)}
+.toc ol{padding-left:24px}
+.toc li{margin:8px 0}
+.toc a{color:var(--info);text-decoration:none;transition:.2s}
+.toc a:hover{color:#fff;text-decoration:underline}
+
+/* SECTIONS */
+section{padding:60px 0;border-bottom:1px solid var(--border)}
+h2.section-title{font-size:2rem;font-weight:800;margin-bottom:8px;position:relative;display:inline-block}
+h2.section-title::after{content:'';position:absolute;bottom:-4px;left:0;width:60px;height:3px;background:var(--gradient);border-radius:3px}
+.section-num{color:var(--highlight);font-weight:900;margin-right:8px}
+h3{font-size:1.25rem;font-weight:700;margin:28px 0 12px;color:#b0b0e0}
+h4{font-size:1.05rem;font-weight:600;margin:18px 0 8px;color:#a0a0d0}
+p{margin:10px 0;color:#c0c0d8}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin:16px 0;transition:.3s}
+.card:hover{border-color:#4facfe;box-shadow:0 4px 20px rgba(79,172,254,.1)}
+.card-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.card-title{font-weight:700;font-size:1.1rem}
+
+/* GRID */
+.grid{display:grid;gap:16px;margin:16px 0}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+th{background:var(--accent);color:#fff;padding:12px 16px;text-align:left;font-weight:600;white-space:nowrap}
+td{padding:10px 16px;border-bottom:1px solid var(--border);color:#c8c8e0}
+tr:hover td{background:rgba(79,172,254,.05)}
+.tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+.tag-get{background:rgba(0,200,83,.15);color:#00c853}
+.tag-post{background:rgba(33,150,243,.15);color:#2196f3}
+.tag-delete{background:rgba(244,67,54,.15);color:#f44336}
+
+/* CODE */
+code{font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.06);padding:2px 8px;border-radius:4px;font-size:.85rem;color:#e0e0ff}
+pre{background:#0d0d20;border:1px solid var(--border);border-radius:10px;padding:16px;overflow-x:auto;margin:12px 0;font-size:.82rem;line-height:1.6}
+pre code{background:none;padding:0}
+
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center}
+.stat-num{font-size:2rem;font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{font-size:.8rem;color:var(--text-muted);margin-top:4px}
+
+/* FLOW */
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:16px 0}
+.flow-step{background:var(--card);border:1px solid var(--border);padding:10px 18px;border-radius:10px;font-size:.85rem;font-weight:600}
+.flow-arrow{color:var(--highlight);font-weight:900;font-size:1.2rem}
+
+/* LISTS */
+ul.feature-list{list-style:none;padding:0}
+ul.feature-list li{padding:8px 0 8px 28px;position:relative;color:#c0c0d8}
+ul.feature-list li::before{content:'✦';position:absolute;left:0;color:var(--gold)}
+ol.numbered{padding-left:24px}
+ol.numbered li{margin:6px 0;color:#c0c0d8}
+
+/* PRINT */
+@media print{body{background:#fff;color:#222}.cover{min-height:auto;background:#f5f5ff;padding:60px}.card{border-color:#ddd}th{background:#e0e0e0;color:#222}td{color:#333}h2.section-title,h3,h4{color:#222}pre{background:#f5f5f5;border-color:#ddd}code{background:#eee;color:#333}.stat-num{color:#333;-webkit-text-fill-color:#333}}
+@page{size:A4;margin:20mm}
+</style>
+</head>
+<body>
+
+<!-- ==================== COVER ==================== -->
+<div class="cover">
+<div class="cover-content">
+<h1>🎮 Game App</h1>
+<p class="subtitle">Complete Technical Documentation &amp; Developer Reference</p>
+<div>
+<span class="badge">📱 Android (Java)</span>
+<span class="badge">🔗 Retrofit REST API</span>
+<span class="badge">🎨 Material Design</span>
+<span class="badge">🔐 Token Auth</span>
+</div>
+<p class="version">Version 1.0 &bull; Document Date: March 25, 2026 &bull; Author: Shoyeb Chaudhari</p>
+</div>
+</div>
+
+<!-- ==================== TOC ==================== -->
+<div class="container">
+<div class="toc" id="toc">
+<h2>📑 Table of Contents</h2>
+<ol>
+<li><a href="#s1">Project Overview &amp; Statistics</a></li>
+<li><a href="#s2">Technology Stack &amp; Dependencies</a></li>
+<li><a href="#s3">Project Architecture &amp; Folder Structure</a></li>
+<li><a href="#s4">Android Manifest &amp; Permissions</a></li>
+<li><a href="#s5">Application Entry Point &amp; Splash Screen</a></li>
+<li><a href="#s6">Authentication Module (Login, Register, Password)</a></li>
+<li><a href="#s7">Home Dashboard &amp; Navigation Drawer</a></li>
+<li><a href="#s8">Game &amp; Bidding System</a></li>
+<li><a href="#s9">Wallet System (Deposit, Withdraw, Statement)</a></li>
+<li><a href="#s10">Profile Management</a></li>
+<li><a href="#s11">Support Module</a></li>
+<li><a href="#s12">Session Management (SharedPreferences)</a></li>
+<li><a href="#s13">API Layer (Retrofit + OkHttp)</a></li>
+<li><a href="#s14">Complete API Endpoint Reference</a></li>
+<li><a href="#s15">Data Models (Request &amp; Response)</a></li>
+<li><a href="#s16">RecyclerView Adapters</a></li>
+<li><a href="#s17">UI/UX &amp; XML Layouts</a></li>
+<li><a href="#s18">Security Implementation</a></li>
+<li><a href="#s19">Role-Based Access (Customer vs Employee)</a></li>
+<li><a href="#s20">Build Configuration &amp; Setup</a></li>
+</ol>
+</div>
+
+<!-- ==================== S1 ==================== -->
+<section id="s1">
+<h2 class="section-title"><span class="section-num">1.</span> Project Overview &amp; Statistics</h2>
+<p>Game App is a full-featured Android gaming application built in <strong>Java</strong> with <strong>Retrofit</strong> for REST API integration. It provides user authentication, real-time wallet management (deposit &amp; withdrawal), a bidding/lottery system with multiple game types, and complete transaction history — all wrapped in a clean Material Design UI.</p>
+
+<div class="stat-grid">
+<div class="stat"><div class="stat-num">19</div><div class="stat-label">Activity Screens</div></div>
+<div class="stat"><div class="stat-num">9</div><div class="stat-label">RecyclerView Adapters</div></div>
+<div class="stat"><div class="stat-num">22</div><div class="stat-label">API Endpoints</div></div>
+<div class="stat"><div class="stat-num">30</div><div class="stat-label">XML Layouts</div></div>
+<div class="stat"><div class="stat-num">10</div><div class="stat-label">Request Models</div></div>
+<div class="stat"><div class="stat-num">22</div><div class="stat-label">Response Models</div></div>
+</div>
+
+<h3>Key Feature Modules</h3>
+<div class="grid grid-3">
+<div class="card"><div class="card-header"><div class="card-icon" style="background:rgba(233,69,96,.15)">👤</div><div class="card-title">User Auth</div></div><p>Login, Register, Forgot/Reset Password, OTP, Change Password</p></div>
+<div class="card"><div class="card-header"><div class="card-icon" style="background:rgba(79,172,254,.15)">🎯</div><div class="card-title">Games &amp; Bidding</div></div><p>Game types, Game taps (open/close), Place bids, Bid history with date filter</p></div>
+<div class="card"><div class="card-header"><div class="card-icon" style="background:rgba(0,200,83,.15)">💰</div><div class="card-title">Wallet</div></div><p>Deposit with proof, Withdraw with proof, Wallet statement, Balance refresh</p></div>
+<div class="card"><div class="card-header"><div class="card-icon" style="background:rgba(245,166,35,.15)">📊</div><div class="card-title">Game Rates</div></div><p>Game rate listing, Starline rates &amp; times</p></div>
+<div class="card"><div class="card-header"><div class="card-icon" style="background:rgba(156,39,176,.15)">🛡️</div><div class="card-title">Security</div></div><p>Bearer token auth, Session management, Double-confirm delete, Input validation</p></div>
+<div class="card"><div class="card-header"><div class="card-icon" style="background:rgba(33,150,243,.15)">📞</div><div class="card-title">Support</div></div><p>Call, WhatsApp, Email, Telegram, Proof links — all dynamic from API</p></div>
+</div>
+</section>
+
+<!-- ==================== S2 ==================== -->
+<section id="s2">
+<h2 class="section-title"><span class="section-num">2.</span> Technology Stack &amp; Dependencies</h2>
+
+<table>
+<tr><th>#</th><th>Technology</th><th>Version</th><th>Purpose</th><th>Why Used</th></tr>
+<tr><td>1</td><td><strong>Java</strong></td><td>11</td><td>Primary language</td><td>Industry standard for Android, strong typing, wide ecosystem</td></tr>
+<tr><td>2</td><td><strong>Android SDK</strong></td><td>API 23–35</td><td>App platform</td><td>minSdk 23 covers 98%+ devices; compileSdk 35 for latest APIs</td></tr>
+<tr><td>3</td><td><strong>Retrofit 2</strong></td><td>2.9.0</td><td>HTTP client</td><td>Type-safe REST API calls, clean interface-based design</td></tr>
+<tr><td>4</td><td><strong>Gson Converter</strong></td><td>2.9.0</td><td>JSON parsing</td><td>Auto-serialization of Java POJOs ↔ JSON</td></tr>
+<tr><td>5</td><td><strong>OkHttp</strong></td><td>4.12.0</td><td>HTTP engine</td><td>Connection pooling, timeouts (15s connect/read/write)</td></tr>
+<tr><td>6</td><td><strong>Glide</strong></td><td>4.16.0</td><td>Image loading</td><td>QR codes, game type images, memory-efficient with disk cache</td></tr>
+<tr><td>7</td><td><strong>Material Components</strong></td><td>1.11.0</td><td>UI framework</td><td>MaterialButton, MaterialCardView, TextInputLayout, NavigationView</td></tr>
+<tr><td>8</td><td><strong>Lottie</strong></td><td>6.4.0</td><td>Animations</td><td>Success tick animation on bid placement</td></tr>
+<tr><td>9</td><td><strong>SwipeRefreshLayout</strong></td><td>1.1.0</td><td>Pull-to-refresh</td><td>Refresh game taps &amp; user details on Home screen</td></tr>
+<tr><td>10</td><td><strong>Navigation Component</strong></td><td>2.7.6</td><td>Fragment nav</td><td>Drawer navigation support</td></tr>
+<tr><td>11</td><td><strong>ConstraintLayout</strong></td><td>2.1.4</td><td>Layouts</td><td>Complex responsive layouts with flat view hierarchy</td></tr>
+<tr><td>12</td><td><strong>SharedPreferences</strong></td><td>Built-in</td><td>Local storage</td><td>Token, balance, user info, QR code, scroll position persistence</td></tr>
+</table>
+</section>
+
+<!-- ==================== S3 ==================== -->
+<section id="s3">
+<h2 class="section-title"><span class="section-num">3.</span> Project Architecture &amp; Folder Structure</h2>
+<p>The project follows a <strong>package-by-feature</strong> architecture with clear separation of concerns:</p>
+<pre><code>com.example.gameapp/
+├── GameApp.java                  ← Application class (forces Light Mode)
+├── activities/                   ← All 19 Activity screens
+│   ├── BaseActivity.java         ← Abstract base with role-based navigation
+│   ├── SplashActivity.java       ← Entry point, auto-login check
+│   ├── LoginActivity.java        ← Login with retry mechanism
+│   ├── RegisterActivity.java     ← User registration (customer/employee)
+│   ├── HomeActivity.java         ← Customer dashboard + drawer
+│   ├── EmployeeHomeActivity.java ← Employee dashboard
+│   ├── BidActivity.java          ← Place bids with validation
+│   ├── BidHistoryActivity.java   ← Date-filtered bid history
+│   ├── GameTypesActivity.java    ← Grid of game types
+│   ├── GameRatesActivity.java    ← Game rates listing
+│   ├── AddPointsActivity.java    ← Deposit with QR + file upload
+│   ├── WithdrawActivity.java     ← Withdraw with proof upload
+│   ├── WalletStatementActivity.java ← Transaction history
+│   ├── ProfileActivity.java      ← View/Edit profile
+│   ├── ChangePasswordActivity.java
+│   ├── ForgotPasswordActivity.java
+│   ├── ResetPasswordActivity.java
+│   ├── SupportActivity.java      ← Dynamic support contacts
+│   └── StarlineActivity.java     ← Starline rates
+├── api/
+│   ├── ApiClient.java            ← Retrofit singleton (base URL, timeouts)
+│   └── ApiService.java           ← 22 API endpoint definitions
+├── models/
+│   ├── GameRateModel.java
+│   ├── GameType.java
+│   ├── request/                  ← 10 request POJOs
+│   └── response/                 ← 22 response POJOs
+├── Adapters/                     ← 9 RecyclerView adapters
+├── session/
+│   └── SessionManager.java       ← SharedPreferences wrapper (15+ methods)
+└── utils/
+    └── FileUtils.java            ← URI → File conversion for uploads</code></pre>
+</section>
+
+<!-- ==================== S4 ==================== -->
+<section id="s4">
+<h2 class="section-title"><span class="section-num">4.</span> Android Manifest &amp; Permissions</h2>
+<h3>4.1 Permissions</h3>
+<table>
+<tr><th>#</th><th>Permission</th><th>Why Needed</th></tr>
+<tr><td>1</td><td><code>INTERNET</code></td><td>All API communication with backend server</td></tr>
+<tr><td>2</td><td><code>READ_EXTERNAL_STORAGE</code></td><td>Upload payment proof images for deposit/withdraw</td></tr>
+<tr><td>3</td><td><code>WRITE_EXTERNAL_STORAGE</code></td><td>Cache files during URI-to-File conversion</td></tr>
+<tr><td>4</td><td><code>VIBRATE</code></td><td>Haptic feedback when user taps a closed game market</td></tr>
+</table>
+
+<h3>4.2 Key Manifest Configurations</h3>
+<ul class="feature-list">
+<li><strong>Application class:</strong> <code>GameApp</code> — forces Light Mode globally via <code>AppCompatDelegate.MODE_NIGHT_NO</code></li>
+<li><strong>Network Security:</strong> <code>usesCleartextTraffic="false"</code> — HTTPS only</li>
+<li><strong>Dark mode:</strong> <code>forceDarkAllowed="false"</code> — prevents system dark mode override</li>
+<li><strong>Launcher Activity:</strong> <code>SplashActivity</code> with custom splash theme</li>
+<li><strong>EmployeeHomeActivity:</strong> Locked to portrait with config change handling</li>
+<li><strong>BidActivity:</strong> <code>windowSoftInputMode="adjustPan"</code> — prevents keyboard from hiding input fields</li>
+<li>All internal activities set <code>exported="false"</code> for security</li>
+</ul>
+</section>
+
+<!-- ==================== S5 ==================== -->
+<section id="s5">
+<h2 class="section-title"><span class="section-num">5.</span> Application Entry Point &amp; Splash Screen</h2>
+<h3>5.1 GameApp.java (Application Class)</h3>
+<p>Extends <code>android.app.Application</code>. Forces light mode globally on app startup to ensure consistent UI across all devices.</p>
+
+<h3>5.2 SplashActivity.java</h3>
+<p>The launcher activity. Displays splash for 2 seconds then performs role-based navigation:</p>
+<div class="flow">
+<div class="flow-step">App Launch</div><div class="flow-arrow">→</div>
+<div class="flow-step">SplashActivity (2s delay)</div><div class="flow-arrow">→</div>
+<div class="flow-step">isLoggedIn?</div><div class="flow-arrow">→</div>
+<div class="flow-step">Yes: Check Role</div><div class="flow-arrow">→</div>
+<div class="flow-step">Employee → EmployeeHome</div>
+</div>
+<div class="flow">
+<div class="flow-step" style="margin-left:0"></div>
+<div class="flow-step" style="visibility:hidden">pad</div><div class="flow-arrow" style="visibility:hidden">→</div>
+<div class="flow-step" style="visibility:hidden">pad</div><div class="flow-arrow">→</div>
+<div class="flow-step">No → LoginActivity</div>
+<div class="flow-arrow" style="visibility:hidden">→</div>
+<div class="flow-step" style="visibility:hidden">pad</div><div class="flow-arrow">→</div>
+<div class="flow-step">Customer → HomeActivity</div>
+</div>
+</section>
+
+<!-- ==================== S6 ==================== -->
+<section id="s6">
+<h2 class="section-title"><span class="section-num">6.</span> Authentication Module</h2>
+
+<h3>6.1 LoginActivity</h3>
+<ul class="feature-list">
+<li><strong>Auto-login:</strong> If <code>SessionManager.isLoggedIn()</code> is true, skips to home immediately</li>
+<li><strong>Validation:</strong> Mobile must match regex <code>^[6-9]\d{9}$</code> (Indian 10-digit), password must not be empty</li>
+<li><strong>API Call:</strong> <code>POST /user/login</code> with <code>LoginRequest(mobile_no, password)</code></li>
+<li><strong>On success:</strong> saves token, user name, mobile, email, user type, fetches full details (balance, QR)</li>
+<li><strong>Retry mechanism:</strong> If user-details fetch fails, retries up to 3 times with delays [500ms, 1500ms, 3000ms]</li>
+<li><strong>Security:</strong> Shows generic "Invalid mobile or password" on failure (prevents enumeration)</li>
+<li><strong>Panel Access:</strong> Button to open web panel at <code>lottery.durwankurgroup.com/panel/login</code></li>
+</ul>
+
+<h3>6.2 RegisterActivity</h3>
+<ul class="feature-list">
+<li><strong>Fields:</strong> Name, Mobile, Email, Password, Referral Code (optional), User Type (Customer/Employee radio)</li>
+<li><strong>Validations:</strong> Name required, 10-digit mobile, valid email pattern, min 4-char password, user type selection</li>
+<li><strong>Backend error handling:</strong> Parses error JSON — shows "Email already exists" or "Mobile already exists"</li>
+<li><strong>Password reveal:</strong> On validation failure, switches to visible password to show the error</li>
+</ul>
+
+<h3>6.3 ForgotPasswordActivity</h3>
+<ul class="feature-list">
+<li><strong>Flow:</strong> Enter email → <code>POST /user/forgot-password</code> → OTP sent → redirect to ResetPasswordActivity</li>
+<li><strong>Validation:</strong> Checks empty + valid email pattern using <code>Patterns.EMAIL_ADDRESS</code></li>
+</ul>
+
+<h3>6.4 ResetPasswordActivity</h3>
+<ul class="feature-list">
+<li><strong>Fields:</strong> 6-digit OTP, New Password (min 6 chars), Confirm Password</li>
+<li><strong>API:</strong> <code>POST /user/reset-password</code> with email, OTP, new_password, confirmation</li>
+<li><strong>Resend OTP:</strong> <code>POST /user/resend-otp</code> with email</li>
+<li><strong>On success:</strong> Clears task stack, redirects to LoginActivity</li>
+</ul>
+
+<h3>6.5 ChangePasswordActivity</h3>
+<ul class="feature-list">
+<li><strong>Email:</strong> Auto-fetched from SessionManager (not user input)</li>
+<li><strong>API:</strong> <code>POST /user/change-password</code> with Bearer token</li>
+<li><strong>On success:</strong> Shows AlertDialog → "Login Again" button → Logout → Login screen</li>
+</ul>
+</section>
+
+<!-- ==================== S7 ==================== -->
+<section id="s7">
+<h2 class="section-title"><span class="section-num">7.</span> Home Dashboard &amp; Navigation Drawer</h2>
+<h3>7.1 HomeActivity (Customer)</h3>
+<ul class="feature-list">
+<li><strong>Protection:</strong> If user is employee, auto-redirects to EmployeeHomeActivity</li>
+<li><strong>Balance display:</strong> Shows formatted balance from SessionManager, auto-refreshes every 30 seconds</li>
+<li><strong>Game Taps:</strong> RecyclerView with GameTapAdapter, loaded from <code>GET /taps</code></li>
+<li><strong>Sorting:</strong> Games sorted by priority — Running/Open first, Upcoming second, Closed last</li>
+<li><strong>Closed market interaction:</strong> Shake animation + haptic vibration (200ms) + "Market is closed" toast</li>
+<li><strong>SwipeRefreshLayout:</strong> Pull-to-refresh reloads user details and game taps</li>
+<li><strong>WhatsApp button:</strong> Opens WhatsApp with support number from API</li>
+<li><strong>Double-back exit:</strong> Press back twice within 2 seconds to exit app</li>
+</ul>
+
+<h3>7.2 Navigation Drawer Items</h3>
+<table>
+<tr><th>#</th><th>Menu Item</th><th>Destination</th></tr>
+<tr><td>1</td><td>Home</td><td>Current screen (no-op)</td></tr>
+<tr><td>2</td><td>Profile</td><td>ProfileActivity</td></tr>
+<tr><td>3</td><td>Add Funds</td><td>AddPointsActivity</td></tr>
+<tr><td>4</td><td>Withdraw</td><td>WithdrawActivity</td></tr>
+<tr><td>5</td><td>Wallet Statement</td><td>WalletStatementActivity</td></tr>
+<tr><td>6</td><td>Bid History</td><td>BidHistoryActivity</td></tr>
+<tr><td>7</td><td>Game Rates</td><td>GameRatesActivity</td></tr>
+<tr><td>8</td><td>Support</td><td>SupportActivity</td></tr>
+<tr><td>9</td><td>Change Password</td><td>ChangePasswordActivity</td></tr>
+<tr><td>10</td><td>Share App</td><td>Share intent with Play Store link</td></tr>
+<tr><td>11</td><td>Panel Access</td><td>Opens web panel in browser</td></tr>
+<tr><td>12</td><td>Delete Account</td><td>Double-confirmation dialog → <code>DELETE /employee</code></td></tr>
+<tr><td>13</td><td>Logout</td><td>Clear session → LoginActivity</td></tr>
+</table>
+
+<h3>7.3 Delete Account Flow</h3>
+<div class="flow">
+<div class="flow-step">Tap "Delete Account"</div><div class="flow-arrow">→</div>
+<div class="flow-step">1st AlertDialog<br>"Are you sure?"</div><div class="flow-arrow">→</div>
+<div class="flow-step">2nd AlertDialog<br>"Final Confirmation"</div><div class="flow-arrow">→</div>
+<div class="flow-step">DELETE /employee</div><div class="flow-arrow">→</div>
+<div class="flow-step">Logout + Login Screen</div>
+</div>
+</section>
+
+<!-- ==================== S8 ==================== -->
+<section id="s8">
+<h2 class="section-title"><span class="section-num">8.</span> Game &amp; Bidding System</h2>
+
+<h3>8.1 Game Taps (HomeActivity)</h3>
+<p>Games are loaded from <code>GET /taps</code>. Each game has open/close taps with statuses: <strong>running</strong>, <strong>open</strong>, <strong>upcoming</strong>, <strong>closed</strong>. Games are sorted by priority for better UX.</p>
+
+<h3>8.2 GameTypesActivity</h3>
+<p>Displays game types (Open, Jodi, SP, DP, Cycle, Patte) in a 2-column grid using <code>GridLayoutManager</code>. Loaded from <code>GET /games</code>. Each type has a name and image.</p>
+
+<h3>8.3 BidActivity — Placing Bids</h3>
+<ul class="feature-list">
+<li><strong>Open/Close selection:</strong> Cards toggle between open and close sessions; unavailable sessions are grayed out (alpha 0.4)</li>
+<li><strong>Auto-format digits:</strong> TextWatcher formats input based on game type — Jodi/Cycle: 2-digit blocks, Patte: 3-digit blocks, Open/SP/DP: single digits, separated by <code>=</code></li>
+<li><strong>Duplicate detection:</strong> LinkedHashSet prevents duplicate digit blocks</li>
+<li><strong>Validation:</strong> Checks digit format, points &gt; 0, session availability</li>
+<li><strong>Confirmation dialog:</strong> Shows Game, Type, Digit, Price before submitting</li>
+<li><strong>API:</strong> <code>POST /lottery</code> with timeId, type, digit, price</li>
+<li><strong>Success animation:</strong> Lottie tick animation + success sound + auto-dismiss after 4s</li>
+<li><strong>Balance refresh:</strong> Wallet balance is refreshed from API after successful bid</li>
+</ul>
+
+<h3>8.4 BidHistoryActivity</h3>
+<p>Date-range filtered bid history with DatePickerDialog. API: <code>GET /lottery/list?start_date=&amp;end_date=</code>. Default range: last 7 days. Shows empty state when no bids found.</p>
+
+<h3>8.5 Game Rates &amp; Starline</h3>
+<ul class="feature-list">
+<li><strong>GameRatesActivity:</strong> Fetches from <code>GET /gamerate</code>, displays name + price-digit rate</li>
+<li><strong>StarlineActivity:</strong> Fetches from <code>GET /starline_rate</code>, displays starline-specific rates</li>
+</ul>
+</section>
+
+<!-- ==================== S9-S20 (Remaining Sections) ==================== -->
+<section id="s9">
+<h2 class="section-title"><span class="section-num">9.</span> Wallet System</h2>
+<h3>9.1 AddPointsActivity (Deposit)</h3>
+<ul class="feature-list">
+<li><strong>QR Code:</strong> Loaded via Glide from SessionManager URL with disk caching</li>
+<li><strong>Quick prices:</strong> Grid of preset amounts from <code>GET /prices</code>, auto-fills amount field on tap</li>
+<li><strong>File upload:</strong> User selects payment proof image → converted via <code>FileUtils.getFileFromUri()</code></li>
+<li><strong>API:</strong> <code>POST /wallet/deposit</code> as multipart (amount + payment_proof file)</li>
+<li><strong>Balance refresh:</strong> Button with 360° rotation animation</li>
+</ul>
+
+<h3>9.2 WithdrawActivity</h3>
+<ul class="feature-list">
+<li><strong>Validation:</strong> Minimum ₹100, cannot exceed balance, proof image required</li>
+<li><strong>API:</strong> <code>POST /wallet/withdraw</code> as multipart (amount + payment_mode "upi" + payment_proof)</li>
+<li><strong>Balance not deducted:</strong> Balance deduction happens only after backend approval (pending status)</li>
+</ul>
+
+<h3>9.3 WalletStatementActivity</h3>
+<p>Displays transaction history from <code>GET /wallet/statement</code> using WalletStatementAdapter. Shows balance, add funds &amp; withdraw shortcuts.</p>
+</section>
+
+<section id="s10">
+<h2 class="section-title"><span class="section-num">10.</span> Profile Management</h2>
+<ul class="feature-list">
+<li><strong>View mode:</strong> Name, Email (disabled), Mobile (always disabled), User Type badge</li>
+<li><strong>Edit mode:</strong> Toggle via "Edit Profile" button → enables Name &amp; Email fields, button changes to "Submit Request"</li>
+<li><strong>API:</strong> <code>POST /profile</code> with name, email; Fetch: <code>GET /user/details</code></li>
+<li><strong>Logout:</strong> AlertDialog confirmation → clear session → LoginActivity</li>
+</ul>
+</section>
+
+<section id="s11">
+<h2 class="section-title"><span class="section-num">11.</span> Support Module</h2>
+<p>Fully dynamic support page loaded from <code>GET /support</code> API:</p>
+<table>
+<tr><th>#</th><th>Channel</th><th>Action</th><th>Intent Type</th></tr>
+<tr><td>1</td><td>📞 Call</td><td>Opens phone dialer</td><td><code>ACTION_DIAL</code></td></tr>
+<tr><td>2</td><td>💬 WhatsApp</td><td>Opens WhatsApp chat via wa.me</td><td><code>ACTION_VIEW</code></td></tr>
+<tr><td>3</td><td>📧 Email</td><td>Opens email client with subject</td><td><code>ACTION_SENDTO</code></td></tr>
+<tr><td>4</td><td>✈️ Telegram</td><td>Opens Telegram link</td><td><code>ACTION_VIEW</code></td></tr>
+<tr><td>5</td><td>📋 Proof</td><td>Opens proof verification link</td><td><code>ACTION_VIEW</code></td></tr>
+</table>
+<p>Each channel is shown/hidden dynamically based on <code>hasValidX()</code> checks on API data.</p>
+</section>
+
+<section id="s12">
+<h2 class="section-title"><span class="section-num">12.</span> Session Management</h2>
+<p><code>SessionManager.java</code> — Static utility class wrapping <code>SharedPreferences</code> with pref name <code>"game_session"</code>.</p>
+<table>
+<tr><th>#</th><th>Key</th><th>Type</th><th>Purpose</th></tr>
+<tr><td>1</td><td>token</td><td>String</td><td>JWT Bearer token for API auth</td></tr>
+<tr><td>2</td><td>logged_in</td><td>Boolean</td><td>Login state flag</td></tr>
+<tr><td>3</td><td>balance</td><td>String</td><td>Wallet balance (stored as String for decimal support)</td></tr>
+<tr><td>4</td><td>user_email</td><td>String</td><td>Used for change-password API</td></tr>
+<tr><td>5</td><td>user_name</td><td>String</td><td>Display in drawer header</td></tr>
+<tr><td>6</td><td>user_mobile</td><td>String</td><td>Display in drawer header</td></tr>
+<tr><td>7</td><td>user_type</td><td>String</td><td>"customer" or "employee" — role-based routing</td></tr>
+<tr><td>8</td><td>qr_code</td><td>String</td><td>QR code URL for deposit screen</td></tr>
+<tr><td>9</td><td>support_whatsapp</td><td>String</td><td>WhatsApp number for home screen button</td></tr>
+<tr><td>10</td><td>scroll_position</td><td>int</td><td>Persists scroll position across sessions</td></tr>
+<tr><td>11</td><td>game_types_scroll</td><td>int</td><td>Game types list scroll position</td></tr>
+<tr><td>12</td><td>saved_digit / saved_point</td><td>String</td><td>Persist bid inputs during navigation</td></tr>
+</table>
+<p><strong>Backward compatibility:</strong> <code>getBalance()</code> handles both String and int storage formats via try-catch.</p>
+</section>
+
+<section id="s13">
+<h2 class="section-title"><span class="section-num">13.</span> API Layer</h2>
+<h3>13.1 ApiClient.java — Retrofit Singleton</h3>
+<ul class="feature-list">
+<li><strong>Base URL:</strong> <code>https://lottery.durwankurgroup.com/api/</code></li>
+<li><strong>OkHttp timeouts:</strong> Connect: 15s, Read: 15s, Write: 15s</li>
+<li><strong>Converter:</strong> GsonConverterFactory for automatic JSON ↔ Java serialization</li>
+<li><strong>Pattern:</strong> Lazy singleton — instance created on first call</li>
+</ul>
+
+<h3>13.2 ApiService.java — Interface</h3>
+<p>Defines all 22 API endpoints using Retrofit annotations (<code>@GET</code>, <code>@POST</code>, <code>@DELETE</code>, <code>@Multipart</code>). All secured endpoints accept <code>@Header("Authorization")</code> for Bearer token.</p>
+</section>
+
+<section id="s14">
+<h2 class="section-title"><span class="section-num">14.</span> Complete API Endpoint Reference</h2>
+<table>
+<tr><th>#</th><th>Method</th><th>Endpoint</th><th>Auth</th><th>Body Type</th><th>Description</th></tr>
+<tr><td>1</td><td><span class="tag tag-post">POST</span></td><td>/user</td><td>No</td><td>JSON</td><td>Register new user</td></tr>
+<tr><td>2</td><td><span class="tag tag-post">POST</span></td><td>/user/login</td><td>No</td><td>JSON</td><td>User login, returns token</td></tr>
+<tr><td>3</td><td><span class="tag tag-get">GET</span></td><td>/user/details</td><td>Bearer</td><td>—</td><td>Fetch user profile &amp; balance</td></tr>
+<tr><td>4</td><td><span class="tag tag-post">POST</span></td><td>/user/change-password</td><td>Bearer</td><td>JSON</td><td>Change password</td></tr>
+<tr><td>5</td><td><span class="tag tag-post">POST</span></td><td>/user/forgot-password</td><td>No</td><td>JSON</td><td>Send OTP to email</td></tr>
+<tr><td>6</td><td><span class="tag tag-post">POST</span></td><td>/user/reset-password</td><td>No</td><td>JSON</td><td>Reset password with OTP</td></tr>
+<tr><td>7</td><td><span class="tag tag-post">POST</span></td><td>/user/resend-otp</td><td>No</td><td>JSON</td><td>Resend OTP</td></tr>
+<tr><td>8</td><td><span class="tag tag-post">POST</span></td><td>/profile</td><td>Bearer</td><td>JSON</td><td>Update name &amp; email</td></tr>
+<tr><td>9</td><td><span class="tag tag-delete">DELETE</span></td><td>/employee</td><td>Bearer</td><td>—</td><td>Soft-delete user account</td></tr>
+<tr><td>10</td><td><span class="tag tag-get">GET</span></td><td>/games</td><td>Bearer</td><td>—</td><td>List game types</td></tr>
+<tr><td>11</td><td><span class="tag tag-get">GET</span></td><td>/taps</td><td>Bearer</td><td>—</td><td>Game taps with times &amp; status</td></tr>
+<tr><td>12</td><td><span class="tag tag-get">GET</span></td><td>/current-tap</td><td>Bearer</td><td>—</td><td>Current active tap</td></tr>
+<tr><td>13</td><td><span class="tag tag-get">GET</span></td><td>/prices</td><td>Bearer</td><td>—</td><td>Quick deposit amounts</td></tr>
+<tr><td>14</td><td><span class="tag tag-get">GET</span></td><td>/gamerate</td><td>Bearer</td><td>—</td><td>Game rate list</td></tr>
+<tr><td>15</td><td><span class="tag tag-post">POST</span></td><td>/lottery</td><td>Bearer</td><td>JSON</td><td>Place a bid</td></tr>
+<tr><td>16</td><td><span class="tag tag-get">GET</span></td><td>/lottery/list</td><td>Bearer</td><td>Query</td><td>Bid history (date range)</td></tr>
+<tr><td>17</td><td><span class="tag tag-post">POST</span></td><td>/wallet/deposit</td><td>Bearer</td><td>Multipart</td><td>Deposit with proof</td></tr>
+<tr><td>18</td><td><span class="tag tag-post">POST</span></td><td>/wallet/withdraw</td><td>Bearer</td><td>Multipart</td><td>Withdraw with proof</td></tr>
+<tr><td>19</td><td><span class="tag tag-get">GET</span></td><td>/wallet/statement</td><td>Bearer</td><td>—</td><td>Transaction history</td></tr>
+<tr><td>20</td><td><span class="tag tag-get">GET</span></td><td>/support</td><td>Bearer</td><td>—</td><td>Support contact details</td></tr>
+<tr><td>21</td><td><span class="tag tag-get">GET</span></td><td>/starline_rate</td><td>Bearer</td><td>—</td><td>Starline rates</td></tr>
+<tr><td>22</td><td><span class="tag tag-get">GET</span></td><td>/starline_times</td><td>Bearer</td><td>—</td><td>Starline times</td></tr>
+</table>
+</section>
+
+<section id="s15">
+<h2 class="section-title"><span class="section-num">15.</span> Data Models</h2>
+<h3>15.1 Request Models (10 POJOs)</h3>
+<table>
+<tr><th>#</th><th>Model</th><th>Fields</th><th>Used By</th></tr>
+<tr><td>1</td><td>LoginRequest</td><td>mobile_no, password</td><td>LoginActivity</td></tr>
+<tr><td>2</td><td>RegisterRequest</td><td>name, mobile_no, email, password, status, user_type, referral_code</td><td>RegisterActivity</td></tr>
+<tr><td>3</td><td>ForgotPasswordRequest</td><td>email</td><td>ForgotPasswordActivity</td></tr>
+<tr><td>4</td><td>ResetPasswordRequest</td><td>email, otp, new_password, new_password_confirmation</td><td>ResetPasswordActivity</td></tr>
+<tr><td>5</td><td>ResendOtpRequest</td><td>email</td><td>ResetPasswordActivity</td></tr>
+<tr><td>6</td><td>ChangePasswordRequest</td><td>email, new_password, new_password_confirmation</td><td>ChangePasswordActivity</td></tr>
+<tr><td>7</td><td>UpdateProfileRequest</td><td>name, email</td><td>ProfileActivity</td></tr>
+<tr><td>8</td><td>DepositRequest</td><td>price</td><td>AddPointsActivity</td></tr>
+<tr><td>9</td><td>WithdrawRequest</td><td>price, payment_mode</td><td>WithdrawActivity</td></tr>
+<tr><td>10</td><td>LotteryRateRequest</td><td>time_id, type, digit, price</td><td>BidActivity</td></tr>
+</table>
+
+<h3>15.2 Response Models (22 POJOs)</h3>
+<p>Each response model maps to a specific API response JSON. Key models include: <code>LoginResponse</code> (token + user data), <code>UserDetailsResponse</code> (nested User object with balance, QR, userType), <code>TapsResponse</code> (game data with open/close taps), <code>BidHistoryResponse</code> (list of BidItems), <code>SupportResponse</code> (nested SupportData with validation methods).</p>
+</section>
+
+<section id="s16">
+<h2 class="section-title"><span class="section-num">16.</span> RecyclerView Adapters</h2>
+<table>
+<tr><th>#</th><th>Adapter</th><th>Used In</th><th>Purpose</th></tr>
+<tr><td>1</td><td>GameTapAdapter</td><td>HomeActivity</td><td>Displays game taps with open/close status, times, results</td></tr>
+<tr><td>2</td><td>GameTypeAdapter</td><td>GameTypesActivity</td><td>2-column grid of game types with images</td></tr>
+<tr><td>3</td><td>GameRateAdapter</td><td>GameRatesActivity</td><td>Displays game name + rate (price-digit format)</td></tr>
+<tr><td>4</td><td>BidHistoryAdapter</td><td>BidHistoryActivity</td><td>Bid records with game, type, digit, points, date</td></tr>
+<tr><td>5</td><td>WalletStatementAdapter</td><td>WalletStatementActivity</td><td>Deposit/withdraw transactions with status</td></tr>
+<tr><td>6</td><td>WalletAdapter</td><td>WalletStatement</td><td>Simple wallet item display</td></tr>
+<tr><td>7</td><td>StarlineRateAdapter</td><td>StarlineActivity</td><td>Starline game rates</td></tr>
+<tr><td>8</td><td>StarlineTimeAdapter</td><td>StarlineActivity</td><td>Starline timing info</td></tr>
+<tr><td>9</td><td>EmployeeGameTypeAdapter</td><td>EmployeeHomeActivity</td><td>Employee-specific game type display</td></tr>
+</table>
+</section>
+
+<section id="s17">
+<h2 class="section-title"><span class="section-num">17.</span> UI/UX &amp; XML Layouts</h2>
+<p><strong>30 XML layout files</strong> covering activities, items, dialogs, and headers. Key design decisions:</p>
+<ul class="feature-list">
+<li><strong>Material Design:</strong> MaterialButton, MaterialCardView, TextInputLayout with outlined style</li>
+<li><strong>Color scheme:</strong> Dark blue primary (<code>dark_blue</code>), white cards, accent highlights</li>
+<li><strong>Custom drawables:</strong> 95+ XML drawables for backgrounds, gradients, icons, shapes</li>
+<li><strong>Animations:</strong> Shake animation (<code>R.anim.shake_view</code>) for closed markets, Lottie for success</li>
+<li><strong>Success sound:</strong> <code>R.raw.success_sound</code> on bid placement</li>
+<li><strong>Responsive:</strong> Separate values for <code>w600dp</code> and <code>w1240dp</code> breakpoints</li>
+</ul>
+</section>
+
+<section id="s18">
+<h2 class="section-title"><span class="section-num">18.</span> Security Implementation</h2>
+<div class="grid grid-2">
+<div class="card"><h4>🔐 Authentication</h4><ul class="feature-list"><li>Bearer token in every secured API call</li><li>Token stored in SharedPreferences</li><li>Auto-logout on session expiry</li></ul></div>
+<div class="card"><h4>🛡️ Network</h4><ul class="feature-list"><li>HTTPS only (cleartext disabled)</li><li>Network security config in manifest</li><li>15-second timeouts prevent hang</li></ul></div>
+<div class="card"><h4>✅ Input Validation</h4><ul class="feature-list"><li>Mobile: Indian 10-digit regex</li><li>Email: Patterns.EMAIL_ADDRESS</li><li>Password: min length enforcement</li><li>Amount: min ₹100 for withdraw</li></ul></div>
+<div class="card"><h4>🗑️ Account Deletion</h4><ul class="feature-list"><li>Double AlertDialog confirmation</li><li>DELETE API call with token</li><li>Full session clear on delete</li><li>Redirects to login with clear task</li></ul></div>
+</div>
+</section>
+
+<section id="s19">
+<h2 class="section-title"><span class="section-num">19.</span> Role-Based Access</h2>
+<p>The app supports two user roles: <strong>Customer</strong> and <strong>Employee</strong>.</p>
+<table>
+<tr><th>Feature</th><th>Customer</th><th>Employee</th></tr>
+<tr><td>Home Screen</td><td>HomeActivity</td><td>EmployeeHomeActivity</td></tr>
+<tr><td>Navigation</td><td>Full drawer menu</td><td>Employee-specific menu</td></tr>
+<tr><td>Bidding</td><td>✅</td><td>✅ (different UI)</td></tr>
+<tr><td>Wallet</td><td>✅ Deposit/Withdraw</td><td>✅</td></tr>
+</table>
+<p><strong>Enforcement:</strong> <code>BaseActivity</code> provides <code>navigateToHome()</code>, <code>checkUserTypeAccess()</code>, and <code>enforceUserTypeAccess()</code>. HomeActivity checks <code>isEmployee()</code> in both <code>onCreate</code> and <code>onResume</code>. SplashActivity routes based on role at startup.</p>
+</section>
+
+<section id="s20">
+<h2 class="section-title"><span class="section-num">20.</span> Build Configuration &amp; Setup</h2>
+<pre><code>// app/build.gradle
+applicationId  "com.example.gameapp"
+minSdk         23          // Android 6.0 Marshmallow
+targetSdk      34          // Android 14
+compileSdk     35          // Android 15
+versionCode    1
+versionName    "1.0"
+Java Version   11</code></pre>
+
+<h3>Setup Instructions</h3>
+<ol class="numbered">
+<li>Clone: <code>git clone https://github.com/ShoyebChaudhari45/gaming_app.git</code></li>
+<li>Open in Android Studio (Arctic Fox+)</li>
+<li>Verify/update base URL in <code>ApiClient.java</code></li>
+<li>Sync Gradle dependencies</li>
+<li>Run on emulator (API 23+) or physical device</li>
+</ol>
+
+<h3>ProGuard</h3>
+<p>Release builds have <code>minifyEnabled false</code> — no obfuscation. ProGuard rules file present for future optimization.</p>
+</section>
+
+<!-- FOOTER -->
+<div style="text-align:center;padding:60px 0 40px;border-top:1px solid var(--border);margin-top:40px">
+<p style="font-size:1.5rem;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent">🎮 Game App Documentation</p>
+<p style="color:var(--text-muted);margin-top:8px">Version 1.0 &bull; Generated March 25, 2026</p>
+<p style="color:var(--text-muted);margin-top:4px">Author: Shoyeb Chaudhari &bull; <a href="https://github.com/ShoyebChaudhari45" style="color:var(--info)">GitHub</a></p>
+<p style="color:var(--text-muted);margin-top:12px;font-size:.8rem">This document covers all 19 activities, 22 API endpoints, 9 adapters, 32 data models, and complete architecture of the Game App Android application.</p>
+</div>
+
+</div><!-- container -->
+</body>
+</html>

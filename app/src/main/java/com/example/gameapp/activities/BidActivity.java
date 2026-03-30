@@ -4,7 +4,6 @@ import android.content.res.ColorStateList;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +29,6 @@ import com.example.gameapp.models.response.UserDetailsResponse;
 import com.example.gameapp.session.SessionManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
-import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -75,6 +73,40 @@ public class BidActivity extends AppCompatActivity {
         initViews();
         setupUI();
         setupClickListeners();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Auto-refresh wallet balance every time this screen becomes visible
+        refreshBalanceOnResume();
+    }
+
+    private void refreshBalanceOnResume() {
+        ApiClient.getClient()
+                .create(ApiService.class)
+                .getUserDetails(
+                        "Bearer " + SessionManager.getToken(this),
+                        "application/json"
+                )
+                .enqueue(new Callback<UserDetailsResponse>() {
+                    @Override
+                    public void onResponse(Call<UserDetailsResponse> call,
+                                           Response<UserDetailsResponse> response) {
+                        if (response.isSuccessful()
+                                && response.body() != null
+                                && response.body().data != null) {
+                            double newBalance = response.body().data.balance;
+                            SessionManager.saveBalance(BidActivity.this, newBalance);
+                            txtBalance.setText(SessionManager.formatBalance(newBalance));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserDetailsResponse> call, Throwable t) {
+                        // Silently ignore — show cached balance
+                    }
+                });
     }
 
     private void getIntentData() {
@@ -437,7 +469,6 @@ public class BidActivity extends AppCompatActivity {
                 timeId, type, digit, price
         );
 
-        Log.e("FINAL_REQUEST", new Gson().toJson(request));
 
         ApiClient.getClient()
                 .create(ApiService.class)
