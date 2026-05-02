@@ -51,8 +51,7 @@ The application facilitates a multi-role user environment (Customer and Employee
 * **Animations:** Lottie Vectors
 * **UI Components:** AndroidX, Material Components 1.11, SwipeRefreshLayout
 
----
-
+--
 ## ⚙️ Installation & Setup
 
 1. **Clone the repository:**
